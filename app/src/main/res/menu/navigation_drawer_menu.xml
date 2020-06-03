@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:title="Profile"
+        android:id="@+id/profile"
+        android:icon="@drawable/ic_person_24px" />
+
+    <item
+        android:title="Home"
+        android:id="@+id/home"
+        android:icon="@drawable/ic_home_24px" />
+
+    <item
+        android:title="Live Lecture"
+        android:id="@+id/liveLecture"
+        android:icon="@drawable/ic_streaming" />
+    <item
+        android:title="Tests"
+        android:id="@+id/test"
+        android:icon="@drawable/ic_test" />
+    <item
+        android:title="Announcements"
+        android:id="@+id/announcements"
+        android:icon="@drawable/ic_bullhorn" />
+    <item
+        android:title="About Us"
+        android:id="@+id/aboutUs"
+        android:icon="@drawable/ic_info_24px" />
+    <item
+        android:title="Settings"
+        android:id="@+id/setting"
+        android:icon="@drawable/ic_settings" />
+    <item
+        android:title="Rate Us"
+        android:id="@+id/rateUs"
+        android:icon="@drawable/ic_star" />
+    <item
+        android:title="Log Out"
+        android:id="@+id/logOut"
+        android:icon="@drawable/ic_sign_out" />
+
+
+</menu>

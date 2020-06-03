@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LoginActivity">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/thirdRelLayout">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:id="@+id/firstRelLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="140dp"
+                android:layout_centerHorizontal="true">
+
+                <TextView
+                    android:id="@+id/eLearn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:text="@string/english_classes"
+                    android:textStyle="bold"
+                    android:textSize="28sp" />
+
+                <TextView
+                    android:id="@+id/by_someone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/eLearn"
+                    android:gravity="top"
+                    android:text="@string/by_sir"
+                    android:textSize="18sp" />
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/secondRelLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/firstRelLayout"
+                android:layout_margin="20dp"
+                android:padding="10dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/relLayoutEmail">
+
+                    <com.rengwuxian.materialedittext.MaterialEditText
+                        android:id="@+id/editTextEmail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableStart="@drawable/ic_alternate_email_24px"
+                        android:drawablePadding="10dp"
+                        android:drawableTint="@color/colorPrimary"
+                        android:hint="@string/email"
+                        app:met_textColorHint="#808080"
+                        android:inputType="textEmailAddress"
+                        android:selectAllOnFocus="true"
+                        app:met_floatingLabel="highlight" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/relLayoutPassword"
+                    android:layout_below="@id/relLayoutEmail">
+
+
+                    <com.rengwuxian.materialedittext.MaterialEditText
+                        android:id="@+id/editTextPassword"
+                        app:met_textColorHint="#808080"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:drawableStart="@drawable/ic_vpn_key_24px"
+                        android:drawablePadding="10dp"
+                        android:drawableTint="@color/colorPrimary"
+                        android:hint="@string/password"
+                        android:inputType="textPassword"
+                        android:selectAllOnFocus="true"
+                        app:met_floatingLabel="highlight"
+                        tools:ignore="RtlSymmetry" />
+
+                </RelativeLayout>
+
+
+                <ru.katso.livebutton.LiveButton xmlns:livebutton="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/btnLogin"
+                    android:layout_width="140dp"
+                    android:layout_height="43dp"
+                    android:layout_below="@id/relLayoutPassword"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center"
+                    android:text="@string/login"
+                    android:textColor="@color/white1"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    livebutton:backgroundColor="@color/button1"
+                    livebutton:corners="4dp"
+                    livebutton:normalHeight="6dp"
+                    livebutton:pressedHeight="2dp"
+                    livebutton:shadowColor="#47776F" />
+
+                <TextView
+                    android:id="@+id/textViewForgetPassword"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/btnLogin"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="15dp"
+                    android:text="@string/forget_password"
+                    android:textColor="@color/button1"
+                    android:textSize="15sp" />
+
+                <RelativeLayout
+                    android:id="@+id/fourthRelLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/textViewForgetPassword"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="20dp">
+
+                    <TextView
+                        android:id="@+id/textNotHaveAccount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/don_t_have_a_account"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/textViewSignUp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_toEndOf="@id/textNotHaveAccount"
+                        android:text="@string/sign_up"
+                        android:textColor="@color/button1"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+
+        </RelativeLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+
+    <RelativeLayout
+        android:id="@+id/thirdRelLayout"
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:layout_alignParentBottom="true">
+
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="160dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="-20dp"
+            app:cardBackgroundColor="@color/card_background"
+            app:cardCornerRadius="20dp" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

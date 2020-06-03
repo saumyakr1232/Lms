@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_above="@+id/bottomNavigationView"
+        android:layout_height="match_parent">
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:id="@+id/NotificationCenter">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/notificationRecView" />
+
+            </RelativeLayout>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/txtUpcomingEvents"
+                android:layout_below="@id/NotificationCenter"
+                android:text="Upcoming Events"
+                android:layout_marginLeft="10dp"
+                android:textSize="25sp"
+                android:textStyle="bold" />
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recViewUpcomingEvents"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/txtUpcomingEvents"
+                android:layout_marginTop="10dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textLive"
+                android:text="Live"
+                android:layout_marginLeft="10dp"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                android:layout_below="@+id/recViewUpcomingEvents" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Quizzes Summary"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                android:id="@+id/textQuizSummary"
+                android:layout_below="@id/recViewLive" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/recViewQuizSummary"
+                android:layout_below="@id/textQuizSummary" />
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recViewLive"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/textLive"
+                android:layout_marginTop="10dp" />
+
+
+        </RelativeLayout>
+
+
+    </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:itemRippleColor="@color/colorPrimaryDark"
+        app:menu="@menu/bottom_navigation_view_list_items" />
+
+
+</RelativeLayout>

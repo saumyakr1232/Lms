@@ -1,0 +1,36 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="512dp"
+    android:height="512dp"
+    android:viewportWidth="64"
+    android:viewportHeight="64">
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="m7,39v2.59l2.59,-2.59z" />
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="m11,43v-2.59l-2.59,2.59z" />
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="m7,29v2.59l2.59,-2.59z" />
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="m11,33v-2.59l-2.59,2.59z" />
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="m42,7h-34v14h34zM16,11h-2v8h-2v-8h-2v-2h6zM24,11h-4v2h4v2h-4v2h4v2h-5a1,1 0,0 1,-1 -1v-8a1,1 0,0 1,1 -1h5zM32,11h-3a1,1 0,0 0,0 2,3 3,0 0,1 0,6h-3v-2h3a1,1 0,0 0,0 -2,3 3,0 0,1 0,-6h3zM40,11h-2v8h-2v-8h-2v-2h6z" />
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="m7,49h4v4h-4z" />
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="m35.4032,42.9992l18.58,-18.58l2.5876,2.5876l-18.58,18.58z" />
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="m36.25,46.66 l-1.91,-1.91 -1.44,3.35z" />
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="m55.3994,23.005l2.5876,-2.5876l2.5876,2.5876l-2.5876,2.5876z" />
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="m38.39,47.92 l-7,3a1,1 0,0 1,-0.39 0.08,1 1,0 0,1 -0.92,-1.39l2.4,-5.61h-17.48v-2h18.59l2,-2h-20.59v-2h22.59l4,-4h-26.59v-2h28.59l3.41,-3.41v-25.59h-44v58h44v-21.59l-8.29,8.3a1.11,1.11 0,0 1,-0.32 0.21zM28,48v2h-13v-2zM44,30h-29v-2h29zM6,6a1,1 0,0 1,1 -1h36a1,1 0,0 1,1 1v16a1,1 0,0 1,-1 1h-36a1,1 0,0 1,-1 -1zM5,28a1,1 0,0 1,1 -1h5.59l2.7,-2.71 1.42,1.42 -2.71,2.7v5.59a1,1 0,0 1,-1 1h-6a1,1 0,0 1,-1 -1zM13,54a1,1 0,0 1,-1 1h-6a1,1 0,0 1,-1 -1v-6a1,1 0,0 1,1 -1h6a1,1 0,0 1,1 1zM13,38.41v5.59a1,1 0,0 1,-1 1h-6a1,1 0,0 1,-1 -1v-6a1,1 0,0 1,1 -1h5.59l1.7,-1.71 1.42,1.42zM44,54h-29v-2h29z" />
+</vector>

@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "367995228969",
+    "firebase_url": "https://elearn-4a461.firebaseio.com",
+    "project_id": "elearn-4a461",
+    "storage_bucket": "elearn-4a461.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:367995228969:android:7de26aedb47be3fc719d38",
+        "android_client_info": {
+          "package_name": "com.labstechnology.project1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "367995228969-ajt6iuaon01qinbea9pb04v3qd2nkkkl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC5HIOUqe3FaOtDx0LOWKs2Kg3Fh3_7Qqk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "367995228969-ajt6iuaon01qinbea9pb04v3qd2nkkkl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

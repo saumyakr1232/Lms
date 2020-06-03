@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:title="@string/home"
+        android:id="@+id/home"
+        android:icon="@drawable/ic_home_24px" />
+    <item
+        android:title="@string/live"
+        android:id="@+id/live"
+        android:icon="@drawable/ic_streaming" />
+    <item
+        android:title="@string/tests"
+        android:icon="@drawable/ic_test"
+        android:id="@+id/tests" />
+
+    <item
+        android:title="@string/announcements"
+        android:id="@+id/announcements"
+        android:icon="@drawable/ic_bullhorn" />
+
+
+</menu>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="380dp"
+    android:layout_height="wrap_content"
+    android:layout_margin="5dp"
+    android:elevation="5dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:id="@+id/imageViewThumbnail"
+            android:src="@drawable/ic_undraw_detailed_analysis_xn7y"
+            android:scaleType="center"
+            android:background="#B2DFDB"
+
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="Title of the video and may be somthing more"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:layout_below="@id/imageViewThumbnail"
+            android:id="@+id/textViewTitle" />
+
+        <RelativeLayout
+            android:id="@+id/relLayoutTimeAndDate"
+            android:layout_width="match_parent"
+            android:layout_margin="5dp"
+            android:layout_height="30dp"
+            android:layout_below="@id/textViewTitle">
+
+            <TextView
+                android:id="@+id/txtdate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="15dp"
+                android:layout_centerVertical="true"
+                android:text="date"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/txtTime"
+                style="@style/textStyle1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="15dp"
+                android:layout_marginBottom="10dp"
+                android:text="8:30 am"
+                android:textSize="14sp" />
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/relLiveIcon"
+            android:layout_width="match_parent"
+            android:layout_margin="5dp"
+            android:layout_height="30dp"
+            android:layout_below="@id/textViewTitle">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_live1"
+                android:layout_centerInParent="true" />
+
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+
+
+</androidx.cardview.widget.CardView>

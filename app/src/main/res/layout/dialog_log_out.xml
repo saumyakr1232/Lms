@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="30dp">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:ignore="UselessParent">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageExit"
+            android:src="@drawable/ic_exit"
+            android:contentDescription="@string/exitDialogImage" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/oh_no_you_re_leaving"
+            android:textStyle="bold"
+            android:id="@+id/txtDesc"
+            android:textSize="20sp"
+            android:layout_below="@id/imageExit"
+            android:layout_centerHorizontal="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/are_you_sure"
+            android:layout_below="@id/txtDesc"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:textSize="16sp"
+            android:id="@+id/txtDesc2" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorAccent"
+            android:text="@string/naah_just_kidding"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_below="@id/txtDesc2"
+            android:id="@+id/btnNaah"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp" />
+
+
+        <com.google.android.material.button.MaterialButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/white1"
+            android:layout_below="@id/btnNaah"
+            android:layout_centerHorizontal="true"
+            android:text="@string/yes_log_me_out"
+            android:textColor="@color/colorAccent"
+            android:layout_margin="10dp"
+            android:id="@+id/btnYesLogMeOut"
+            app:strokeColor="@color/colorAccent"
+            app:strokeWidth="2dp" />
+
+
+    </RelativeLayout>
+
+
+</LinearLayout>

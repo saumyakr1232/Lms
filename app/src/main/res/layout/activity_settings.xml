@@ -1,48 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".SettingsActivity">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/appBarLayout">
 
-        <com.google.android.material.appbar.CollapsingToolbarLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:contentScrim="?attr/colorPrimary"
-            app:expandedTitleGravity="top"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
             <androidx.appcompat.widget.Toolbar
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
+                android:id="@+id/toolbar"
+                android:layout_height="wrap_content"
                 android:background="@color/colorPrimaryDark"
-                android:id="@+id/setting_toolbar" />
-        </com.google.android.material.appbar.CollapsingToolbarLayout>
-
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
+                android:elevation="4dp" />
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_below="@id/toolbar">
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/CardDarkMode"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_margin="5dp"
-                android:padding="5dp"
-                android:id="@+id/CardDarkMode">
+                android:padding="5dp">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -51,40 +36,31 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/switch_to_dark_mode"
-                        android:textStyle="bold"
                         android:layout_centerVertical="true"
                         android:layout_marginStart="10dp"
-                        android:textSize="20sp" />
+                        android:text="@string/switch_to_dark_mode"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
 
-                    <com.suke.widget.SwitchButton
-                        android:id="@+id/switchDayNight"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                    <com.mahfa.dnswitch.DayNightSwitch
+                        android:id="@+id/dayNightSwitch"
+                        android:layout_width="55dp"
+                        android:layout_height="28dp"
                         android:layout_alignParentEnd="true"
-                        android:layout_marginEnd="10dp"
                         android:layout_centerVertical="true"
-                        app:sb_enable_effect="true"
-                        android:soundEffectsEnabled="true"
-                        app:sb_checked="true"
-                        app:sb_checked_color="#2C2727"
-                        app:sb_uncheck_color="#2267F6"
-                        app:sb_uncheckcircle_color="#2267F6"
-                        app:sb_checkline_color="@color/white1"
-                        app:sb_button_color="@color/colorPrimaryDark"
-                        tools:ignore="RelativeOverlap" />
+                        android:layout_marginEnd="10dp" />
 
                 </RelativeLayout>
 
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/CardTermsAndCondition"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:layout_margin="5dp"
-                android:padding="5dp"
                 android:layout_below="@id/CardDarkMode"
-                android:id="@+id/CardTermsAndCondition">
+                android:layout_margin="5dp"
+                android:padding="5dp">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -93,30 +69,30 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/terms_and_conditions"
-                        android:textStyle="bold"
-                        android:layout_marginStart="10dp"
                         android:layout_centerVertical="true"
-                        android:textSize="20sp" />
+                        android:layout_marginStart="10dp"
+                        android:text="@string/terms_and_conditions"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
 
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_arrow_forward_ios_24px"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:layout_marginEnd="20dp"
-                        android:contentDescription="@string/arrow_forward" />
+                        android:contentDescription="@string/arrow_forward"
+                        android:src="@drawable/ic_arrow_forward_ios_24px" />
                 </RelativeLayout>
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/CardPrivacyPolicy"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:layout_margin="5dp"
-                android:padding="5dp"
                 android:layout_below="@id/CardTermsAndCondition"
-                android:id="@+id/CardPrivacyPolicy">
+                android:layout_margin="5dp"
+                android:padding="5dp">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -125,30 +101,30 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/privacy_policy"
-                        android:textStyle="bold"
                         android:layout_centerVertical="true"
                         android:layout_marginStart="10dp"
-                        android:textSize="20sp" />
+                        android:text="@string/privacy_policy"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
 
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_arrow_forward_ios_24px"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
+                        android:layout_marginEnd="20dp"
                         android:contentDescription="@string/arrow_forward"
-                        android:layout_marginEnd="20dp" />
+                        android:src="@drawable/ic_arrow_forward_ios_24px" />
                 </RelativeLayout>
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/CardTPartyNotice"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:layout_margin="5dp"
-                android:padding="5dp"
                 android:layout_below="@id/CardPrivacyPolicy"
-                android:id="@+id/CardTPartyNotice">
+                android:layout_margin="5dp"
+                android:padding="5dp">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -157,28 +133,26 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/third_party_notices"
-                        android:textStyle="bold"
                         android:layout_centerVertical="true"
                         android:layout_marginStart="10dp"
-                        android:textSize="20sp" />
+                        android:text="@string/third_party_notices"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
 
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_arrow_forward_ios_24px"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
+                        android:layout_marginEnd="20dp"
                         android:contentDescription="@string/arrow_forward"
-                        android:layout_marginEnd="20dp" />
+                        android:src="@drawable/ic_arrow_forward_ios_24px" />
                 </RelativeLayout>
             </androidx.cardview.widget.CardView>
-
 
         </RelativeLayout>
 
 
-    </androidx.core.widget.NestedScrollView>
+    </RelativeLayout>
 
-
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</RelativeLayout>

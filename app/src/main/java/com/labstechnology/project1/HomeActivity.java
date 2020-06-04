@@ -18,13 +18,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.labstechnology.project1.adapters.NotificationRecViewAdapter;
 import com.labstechnology.project1.models.Announcement;
 
@@ -37,9 +30,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private NavigationView navigationView;
     private androidx.appcompat.widget.Toolbar toolbar;
 
-    private FirebaseAuth mAuth;
-    private DatabaseReference myRef;
-    private FirebaseDatabase database;
+
 
     private boolean value = Utils.value;
 
@@ -72,65 +63,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         transaction.commit();
 
 
-        mAuth = FirebaseAuth.getInstance();
-        database = FirebaseDatabase.getInstance();
-        myRef = database.getReference().child("user");
 
 
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-
-        if (currentUser == null) {
-            // SendUserToLoginActivity();
-        } else {
-
-            //checkUserDataExistence();
-        }
-    }
-
-    private void checkUserDataExistence() {
-        Log.d(TAG, "checkUserDataExistence: called");
-        final String CURRENT_USER_ID = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
-        Log.d(TAG, "checkUserDataExistence: user id" + CURRENT_USER_ID);
-
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Log.d(TAG, "onDataChange: called");
-
-                if (!dataSnapshot.hasChild(CURRENT_USER_ID) && value) {
-                    sendUserToSetupActivity();      //TODO : Clean this login
-                    Utils.value = false;
-                    Log.d(TAG, "onDataChange: ");
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.d(TAG, "onCancelled: Failed to read value" + databaseError.toException());
-
-            }
-        });
-    }
-
-    private void sendUserToSetupActivity() {
-        Log.d(TAG, "sendUserToSetupActivity: called");
-
-        Intent intent = new Intent(HomeActivity.this, SetupUserActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-    }
-
-    private void SendUserToLoginActivity() {
-        Log.d(TAG, "SendUserToLoginActivity: called");
-        Intent loginIntent = new Intent(HomeActivity.this, LoginActivity.class);
-        loginIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(loginIntent);
     }
 
     private void initViews() {
@@ -172,7 +106,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 Intent intent1 = new Intent(HomeActivity.this, AboutUsWebActivity.class);
-                                intent1.putExtra("url", "http://www.youtube.com");
+                                intent1.putExtra("url", "http://labstechnologies.in/");
                                 startActivity(intent1);
                             }
                         }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

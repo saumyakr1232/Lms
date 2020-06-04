@@ -42,7 +42,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recViewUpcomingEvents"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="160dp"
                 android:layout_below="@id/txtUpcomingEvents"
                 android:layout_marginTop="10dp" />
 
@@ -67,7 +67,7 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="160dp"
                 android:id="@+id/recViewQuizSummary"
                 android:layout_below="@id/textQuizSummary" />
 
@@ -75,7 +75,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recViewLive"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="300dp"
                 android:layout_below="@id/textLive"
                 android:layout_marginTop="10dp" />
 

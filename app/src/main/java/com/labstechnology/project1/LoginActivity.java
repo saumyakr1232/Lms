@@ -55,6 +55,11 @@ public class LoginActivity extends AppCompatActivity {
 
         progressDialog = new ProgressDialog(this);
 
+        if (Utils.getDarkThemePreference(this)) {
+            editTextEmail.setTextColor(getColor(R.color.white1));
+            editTextPassword.setTextColor(getColor(R.color.white1));
+        }
+
         imageHide.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -76,6 +81,7 @@ public class LoginActivity extends AppCompatActivity {
         editTextEmail.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
 
             }
 

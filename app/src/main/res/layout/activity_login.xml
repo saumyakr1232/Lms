@@ -28,8 +28,8 @@
                     android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true"
                     android:text="@string/english_classes"
-                    android:textStyle="bold"
-                    android:textSize="28sp" />
+                    android:textSize="28sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/by_someone"
@@ -51,9 +51,9 @@
                 android:padding="10dp">
 
                 <RelativeLayout
+                    android:id="@+id/relLayoutEmail"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:id="@+id/relLayoutEmail">
+                    android:layout_height="match_parent">
 
                     <com.rengwuxian.materialedittext.MaterialEditText
                         android:id="@+id/editTextEmail"
@@ -63,23 +63,22 @@
                         android:drawablePadding="10dp"
                         android:drawableTint="@color/colorPrimary"
                         android:hint="@string/email"
-                        app:met_textColorHint="#808080"
                         android:inputType="textEmailAddress"
                         android:selectAllOnFocus="true"
-                        app:met_floatingLabel="highlight" />
+                        app:met_floatingLabel="highlight"
+                        app:met_textColorHint="#808080" />
 
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/relLayoutPassword"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:id="@+id/relLayoutPassword"
                     android:layout_below="@id/relLayoutEmail">
 
 
                     <com.rengwuxian.materialedittext.MaterialEditText
                         android:id="@+id/editTextPassword"
-                        app:met_textColorHint="#808080"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
@@ -90,6 +89,7 @@
                         android:inputType="textPassword"
                         android:selectAllOnFocus="true"
                         app:met_floatingLabel="highlight"
+                        app:met_textColorHint="#808080"
                         tools:ignore="RtlSymmetry" />
 
                     <ImageView

@@ -57,15 +57,13 @@ dependencies {
 
     //toggle switch
     implementation 'com.jackandphantom.android:customtogglebutton:1.0.1'
-    compile('com.mikepenz:materialdrawer:5.2.0@aar') {
-        transitive = true
-    }
 
 
-    compile 'com.mikepenz:google-material-typeface:2.2.0.1@aar'
-    compile 'com.mikepenz:fontawesome-typeface:4.4.0.1@aar'
-    compile 'com.android.support:appcompat-v7:29.0.3'
-    compile 'com.squareup.picasso:picasso:2.5.2'
-    compile 'com.mikepenz:itemanimators:0.2.4@aar'
+    implementation 'com.android.support:appcompat-v7:29.0.3'
+    implementation 'com.squareup.picasso:picasso:2.5.2'
+
+
+    //cute day night switch
+    implementation 'com.github.Mahfa:DayNightSwitch:1.2'
 
 }

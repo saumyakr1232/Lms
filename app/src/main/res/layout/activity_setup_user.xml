@@ -27,6 +27,7 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
+
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -35,6 +36,16 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="20dp"
+                android:indeterminate="true"
+                android:visibility="gone" />
 
             <RelativeLayout
                 android:id="@+id/profilePicRelLayout"
@@ -58,6 +69,7 @@
                         <ImageView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:id="@+id/imageProfile"
                             android:layout_centerHorizontal="true"
                             android:layout_centerVertical="true" />
 
@@ -148,6 +160,79 @@
                     app:met_floatingLabel="highlight"
                     app:met_textColorHint="#808080"
                     tools:ignore="RtlSymmetry" />
+
+                <RadioGroup
+                    android:id="@+id/rgGender"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/editTextMobileNo"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/rbMale"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:buttonTint="@color/colorPrimary"
+                        android:checked="true"
+                        android:text="Male" />
+
+                    <RadioButton
+                        android:id="@+id/rbFemale"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:buttonTint="@color/colorPrimary"
+                        android:text="Female" />
+
+                    <RadioButton
+                        android:id="@+id/rbOther"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:buttonTint="@color/colorPrimary"
+                        android:text="Other" />
+
+
+                </RadioGroup>
+
+
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:id="@+id/editDOB"
+                    android:layout_width="175dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/rgGender"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="8dp"
+                    android:drawableStart="@drawable/ic_birthday_cake"
+                    android:drawableEnd="@drawable/ic_event_24px"
+                    android:drawablePadding="10dp"
+                    android:drawableTint="@color/colorPrimary"
+                    android:hint="dd-mm-yyyy"
+                    android:inputType="date"
+                    android:selectAllOnFocus="true"
+                    app:met_floatingLabel="highlight"
+                    app:met_textColorHint="#808080"
+                    tools:ignore="RtlSymmetry" />
+
+                <ru.katso.livebutton.LiveButton xmlns:livebutton="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/btnDone"
+                    android:layout_width="140dp"
+                    android:layout_height="43dp"
+                    android:layout_below="@id/editDOB"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:gravity="center"
+                    android:text="Done"
+                    android:textColor="@color/white1"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    livebutton:backgroundColor="@color/button1"
+                    livebutton:corners="4dp"
+                    livebutton:normalHeight="6dp"
+                    livebutton:pressedHeight="2dp"
+                    livebutton:shadowColor="#47776F" />
+
             </RelativeLayout>
 
 

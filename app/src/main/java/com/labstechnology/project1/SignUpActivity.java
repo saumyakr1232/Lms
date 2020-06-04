@@ -9,6 +9,7 @@ import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -36,6 +37,8 @@ public class SignUpActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private Utils utils;
     private ImageView btnBackArrow;
+    private ProgressBar progressBar;
+
 
 
     @Override
@@ -44,7 +47,14 @@ public class SignUpActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
         initViews();
+        utils = new Utils(this);
 
+        if (Utils.getDarkThemePreference(this)) {
+            emailEditText.setTextColor(getColor(R.color.white1));
+            passwordEditText.setTextColor(getColor(R.color.white1));
+            nameEditText.setTextColor(getColor(R.color.white1));
+            confPassEditText.setTextColor(getColor(R.color.white1));
+        }
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -79,7 +89,7 @@ public class SignUpActivity extends AppCompatActivity {
             public void onClick(View v) {
                 imageHide1.setVisibility(View.GONE);
                 imageShow1.setVisibility(View.VISIBLE);
-                passwordEditText.setTransformationMethod(null);
+                confPassEditText.setTransformationMethod(null);
             }
         });
 
@@ -126,6 +136,42 @@ public class SignUpActivity extends AppCompatActivity {
             }
         });
 
+        passwordEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                passwordEditText.setMinCharacters(8);
+                passwordEditText.setMaxCharacters(20);
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                //TODO: Validate password
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        confPassEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                confPassEditText.setMinCharacters(8);
+                confPassEditText.setMaxCharacters(20);
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                //TODO: validate password
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("ResourceType")
             @Override
@@ -134,6 +180,7 @@ public class SignUpActivity extends AppCompatActivity {
                         || nameEditText.getText().toString().isEmpty()
                         || passwordEditText.getText().toString().isEmpty()
                         || confPassEditText.getText().toString().isEmpty()) {
+                    progressBar.setVisibility(View.GONE);
                     emailEditText.setMinCharacters(5);
                     confPassEditText.setMinCharacters(8);
                     passwordEditText.setMinCharacters(8);
@@ -164,19 +211,34 @@ public class SignUpActivity extends AppCompatActivity {
                             return !isEmpty;
                         }
                     });
-                    return;
-
                 } else if (Objects.equals(passwordEditText.getText().toString(), confPassEditText.getText().toString())) {
+                    progressBar.setVisibility(View.VISIBLE);
                     mAuth.createUserWithEmailAndPassword(emailEditText.getText().toString(), passwordEditText.getText().toString())
                             .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
                                         Toast.makeText(SignUpActivity.this, getString(R.string.registration_successful), Toast.LENGTH_SHORT).show();
-                                        Intent intent = new Intent(SignUpActivity.this, SetupUserActivity.class);
-                                        utils.setSignedIn(true);
-                                        startActivity(intent);
+                                        mAuth.signInWithEmailAndPassword(emailEditText.getText().toString(), passwordEditText.getText().toString())
+                                                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<AuthResult> task) {
+                                                        if (task.isSuccessful()) {
+                                                            progressBar.setVisibility(View.GONE);
+                                                            Toast.makeText(SignUpActivity.this, "Logged In", Toast.LENGTH_SHORT).show();
+                                                            Intent intent = new Intent(SignUpActivity.this, SetupUserActivity.class);
+                                                            startActivity(intent);
+                                                        } else {
+                                                            Toast.makeText(SignUpActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                                            progressBar.setVisibility(View.GONE);
+                                                            Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
+                                                            startActivity(intent);
+                                                        }
+
+                                                    }
+                                                });
                                     } else {
+                                        progressBar.setVisibility(View.GONE);
                                         Toast.makeText(SignUpActivity.this, task.getException().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                                         utils.setSignedIn(false);
                                     }
@@ -186,9 +248,9 @@ public class SignUpActivity extends AppCompatActivity {
                             });
 
                 } else {
+                    progressBar.setVisibility(View.GONE);
                     passwordEditText.setError(getString(R.string.passwords_did_not_match));
                     confPassEditText.setError(getString(R.string.passwords_did_not_match));
-                    ;
                     utils.setSignedIn(false);
                 }
 
@@ -211,6 +273,7 @@ public class SignUpActivity extends AppCompatActivity {
         imageShow1 = (ImageView) findViewById(R.id.imageShow1);
         nameEditText.addValidator(new RegexpValidator("Not a valid name", Utils.getRegexNamePattern()));
         emailEditText.addValidator(new RegexpValidator("Not a valid Email", Utils.getRegexEmailPattern()));
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
     }
 }

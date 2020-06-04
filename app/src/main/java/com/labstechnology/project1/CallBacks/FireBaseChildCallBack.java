@@ -1,6 +1,7 @@
 package com.labstechnology.project1.CallBacks;
 
-public abstract class FireBaseChildCallBack {
+public abstract class
+FireBaseChildCallBack {
 
     public abstract void onChildAdded(Object object);
 

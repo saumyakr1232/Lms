@@ -1,19 +1,19 @@
 package com.labstechnology.project1;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.labstechnology.project1.adapters.NotificationRecViewAdapter;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
+    private FirebaseAuth mAuth;
+
 
     final Utils utils = new Utils(this);
 
@@ -22,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
         Utils.setTheme(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mAuth = FirebaseAuth.getInstance();
 
 
     }
@@ -30,23 +31,42 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Log.d(TAG, "run: logged in :" + utils.isSignedIn());
-                if (utils.isSignedIn()) {
-                    Intent intent = new Intent(MainActivity.this, HomeActivity.class);
-                    Log.d(TAG, "run: sending user to Home activity");
-                    startActivity(intent);
-                } else {
-                    Intent intent1 = new Intent(MainActivity.this, LoginActivity.class);
-                    intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    Log.d(TAG, "run: sending user to login activity");
-                    startActivity(intent1);
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser == null) {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    sendUserToLoginActivity();
                 }
-            }
-        }, 2000);
+            }, 3000);
+
+        } else {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    sendUserToHomeActivity();
+                }
+            }, 3000);
+        }
+
 
     }
+
+
+    private void sendUserToHomeActivity() {
+        Log.d(TAG, "sendUserToHomeActivity: called");
+        Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+
+    private void sendUserToLoginActivity() {
+        Log.d(TAG, "sendUserToLoginActivity: called");
+        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
+    }
+
+
 }

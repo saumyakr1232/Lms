@@ -1,15 +1,14 @@
 package com.labstechnology.project1;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -35,6 +34,11 @@ public class ForgetPasswordActivity extends AppCompatActivity {
         setContentView(R.layout.activity_forget_password);
 
         initViews();
+
+        if (Utils.getDarkThemePreference(this)) {
+            editTextEmail.setTextColor(getColor(R.color.white1));
+
+        }
 
         mAuth = FirebaseAuth.getInstance();
 

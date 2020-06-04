@@ -11,7 +11,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.labstechnology.project1.CallBacks.FireBaseCallBack;
 
@@ -38,14 +37,26 @@ public class Utils {
             "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
             ")+";
     private static final String REGEX_NAME_PATTERN = "^[\\p{L} .'-]+$";
+    private static final String REGEX_MOBILE_NO_PATTERN = "^[6-9]\\d{9}$";
+    private static final String REGEX_DATE_PATTERN = "^(?:(?:31(\\/|-|\\.)(?:0?[13578]|1[02]))\\1|(?:(?:29|30)(\\/|-|\\.)(?:0?[13-9]|1[0-2])\\2))(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$|^(?:29(\\/|-|\\.)0?2\\3(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\\d|2[0-8])(\\/|-|\\.)(?:(?:0?[1-9])|(?:1[0-2]))\\4(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$";
+
 
 
     private Context context;
-    private FirebaseDatabase database;
+    private FirebaseAuth mAuth;
+    private DatabaseReference UserReference;
 
 
     public Utils(Context context) {
         this.context = context;
+    }
+
+    public static String getRegexMobileNoPattern() {
+        return REGEX_MOBILE_NO_PATTERN;
+    }
+
+    public static String getRegexDatePattern() {
+        return REGEX_DATE_PATTERN;
     }
 
     public static String getRegexEmailPattern() {
@@ -445,4 +456,30 @@ public class Utils {
         return sharedPreferences.getBoolean("signedIn", false);
 
     }
+
+
+    private void checkUserExistence(final FireBaseCallBack fireBaseCallBack) {
+        Log.d(TAG, "checkUserExistence: called");
+        mAuth = FirebaseAuth.getInstance();
+        UserReference = FirebaseDatabaseReference.DATABASE.getReference().child("User");
+        final String current_user_id = mAuth.getCurrentUser().getUid();
+
+
+        UserReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (!dataSnapshot.hasChild(current_user_id)) {
+                    fireBaseCallBack.onSuccess(dataSnapshot);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                fireBaseCallBack.onError(databaseError);
+            }
+        });
+
+
+    }
+
 }

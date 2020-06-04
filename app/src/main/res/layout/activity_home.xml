@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".HomeActivity"
     tools:openDrawer="start"
+    android:fitsSystemWindows="true"
     android:id="@+id/drawer">
 
 
@@ -36,6 +37,4 @@
         app:itemIconTint="@color/colorPrimary"
         app:headerLayout="@layout/navigation_header"
         android:layout_gravity="start" />
-
-
 </androidx.drawerlayout.widget.DrawerLayout>

@@ -1,25 +1,23 @@
 package com.labstechnology.project1;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.FirebaseDatabase;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.rengwuxian.materialedittext.validation.METValidator;
 import com.rengwuxian.materialedittext.validation.RegexpValidator;
@@ -33,6 +31,8 @@ public class SignUpActivity extends AppCompatActivity {
 
     private MaterialEditText nameEditText, emailEditText, passwordEditText, confPassEditText;
     private LiveButton btnSignUp;
+    private ImageView imageHide, imageShow, imageShow1, imageHide1;
+
     private FirebaseAuth mAuth;
     private Utils utils;
     private ImageView btnBackArrow;
@@ -52,6 +52,43 @@ public class SignUpActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 onBackPressed();
+            }
+        });
+
+
+        imageHide.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                imageHide.setVisibility(View.GONE);
+                imageShow.setVisibility(View.VISIBLE);
+                passwordEditText.setTransformationMethod(null);
+            }
+        });
+
+        imageShow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                imageHide.setVisibility(View.VISIBLE);
+                imageShow.setVisibility(View.GONE);
+                passwordEditText.setTransformationMethod(new PasswordTransformationMethod());
+            }
+        });
+
+        imageHide1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                imageHide1.setVisibility(View.GONE);
+                imageShow1.setVisibility(View.VISIBLE);
+                passwordEditText.setTransformationMethod(null);
+            }
+        });
+
+        imageShow1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                imageHide1.setVisibility(View.VISIBLE);
+                imageShow1.setVisibility(View.GONE);
+                confPassEditText.setTransformationMethod(new PasswordTransformationMethod());
             }
         });
 
@@ -168,6 +205,10 @@ public class SignUpActivity extends AppCompatActivity {
         confPassEditText = (MaterialEditText) findViewById(R.id.editTextPasswordConfirm);
         btnSignUp = (LiveButton) findViewById(R.id.btnSignUp);
         btnBackArrow = (ImageView) findViewById(R.id.btnBackArrow);
+        imageHide = (ImageView) findViewById(R.id.imageHide);
+        imageShow = (ImageView) findViewById(R.id.imageShow);
+        imageHide1 = (ImageView) findViewById(R.id.imageHide1);
+        imageShow1 = (ImageView) findViewById(R.id.imageShow1);
         nameEditText.addValidator(new RegexpValidator("Not a valid name", Utils.getRegexNamePattern()));
         emailEditText.addValidator(new RegexpValidator("Not a valid Email", Utils.getRegexEmailPattern()));
 

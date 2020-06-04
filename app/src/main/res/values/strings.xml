@@ -43,4 +43,7 @@
     <string name="switch_to_dark_mode">Switch To Dark Mode</string>
     <string name="arrow_forward">arrow forward</string>
     <string name="third_party_notices">Third-party notices</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="mobile_number">Mobile Number</string>
 </resources>

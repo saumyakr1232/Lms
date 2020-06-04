@@ -1,23 +1,19 @@
 package com.labstechnology.project1;
 
-import androidx.annotation.ColorInt;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-import androidx.core.content.ContextCompat;
-
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -26,8 +22,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.rengwuxian.materialedittext.validation.METValidator;
 import com.rengwuxian.materialedittext.validation.RegexpValidator;
-
-import org.w3c.dom.Text;
 
 import java.util.Objects;
 
@@ -39,7 +33,9 @@ public class LoginActivity extends AppCompatActivity {
     private LiveButton btnLogIn;
     private MaterialEditText editTextEmail, editTextPassword;
     private TextView textViewSignUp, forgotPassword;
+    private ImageView imageHide, imageShow;
     private FirebaseAuth mAuth;
+
 
     private boolean validEmail = false;
     private ProgressDialog progressDialog;
@@ -59,9 +55,24 @@ public class LoginActivity extends AppCompatActivity {
 
         progressDialog = new ProgressDialog(this);
 
+        imageHide.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                imageHide.setVisibility(View.GONE);
+                imageShow.setVisibility(View.VISIBLE);
+                editTextPassword.setTransformationMethod(null);
+            }
+        });
 
-        final String password = editTextPassword.getText().toString();
-        String email = editTextEmail.getText().toString();
+        imageShow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                imageHide.setVisibility(View.VISIBLE);
+                imageShow.setVisibility(View.GONE);
+                editTextPassword.setTransformationMethod(new PasswordTransformationMethod());
+            }
+        });
+
         editTextEmail.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -80,6 +91,7 @@ public class LoginActivity extends AppCompatActivity {
                 Log.d(TAG, "onTextChanged: valid :" + validEmail);
             }
         });
+
 
         editTextPassword.addTextChangedListener(new TextWatcher() {
             @Override
@@ -188,5 +200,8 @@ public class LoginActivity extends AppCompatActivity {
         textViewSignUp = (TextView) findViewById(R.id.textViewSignUp);
         forgotPassword = (TextView) findViewById(R.id.textViewForgetPassword);
         editTextEmail.addValidator(new RegexpValidator("Not a valid email", Utils.getRegexEmailPattern()));
+        imageHide = (ImageView) findViewById(R.id.imageHide);
+        imageShow = (ImageView) findViewById(R.id.imageShow);
+
     }
 }

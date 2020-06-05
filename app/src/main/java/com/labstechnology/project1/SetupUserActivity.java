@@ -77,6 +77,13 @@ public class SetupUserActivity extends AppCompatActivity {
 
         initViews();
 
+        Intent intent = getIntent();
+        if (intent != null) {
+            String emailFromSignUpPage = intent.getStringExtra("email");
+            EmailEditText.setText(emailFromSignUpPage);
+        }
+
+
         mAuth = FirebaseAuth.getInstance();
         currentUserID = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
 
@@ -219,7 +226,6 @@ public class SetupUserActivity extends AppCompatActivity {
             }
             final String gender = rbGender.getText().toString();
             final String dob = DOBEditText.getText().toString(); //TODO:Validate date of birth
-            final String finalLName = lName;
             final String finalLName1 = lName;
             HashMap<String, Object> userMap = new HashMap<>();
             userMap.put("emailId", emailId);

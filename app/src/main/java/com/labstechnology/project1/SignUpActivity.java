@@ -73,6 +73,119 @@ public class SignUpActivity extends AppCompatActivity {
         });
 
 
+        handleEditText();
+
+        btnSignUp.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("ResourceType")
+            @Override
+            public void onClick(View v) {
+                if (Objects.requireNonNull(emailEditText.getText()).toString().isEmpty()
+                        || Objects.requireNonNull(nameEditText.getText()).toString().isEmpty()
+                        || Objects.requireNonNull(passwordEditText.getText()).toString().isEmpty()
+                        || Objects.requireNonNull(confPassEditText.getText()).toString().isEmpty()) {
+                    addValidations();
+                } else if (Objects.equals(passwordEditText.getText().toString(), confPassEditText.getText().toString())) {
+                    progressBar.setVisibility(View.VISIBLE);
+                    mAuth.createUserWithEmailAndPassword(emailEditText.getText().toString(), passwordEditText.getText().toString())
+                            .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (task.isSuccessful()) {
+                                        Toast.makeText(SignUpActivity.this, getString(R.string.registration_successful), Toast.LENGTH_SHORT).show();
+                                        signInUser();
+                                    } else {
+                                        progressBar.setVisibility(View.GONE);
+                                        Toast.makeText(SignUpActivity.this, Objects.requireNonNull(task.getException()).getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                                        utils.setSignedIn(false);
+                                    }
+
+
+                                }
+                            });
+
+                } else {
+                    progressBar.setVisibility(View.GONE);
+                    passwordEditText.setError(getString(R.string.passwords_did_not_match));
+                    confPassEditText.setError(getString(R.string.passwords_did_not_match));
+                    utils.setSignedIn(false);
+                }
+
+            }
+        });
+
+    }
+
+    private void signInUser() {
+        Log.d(TAG, "signInUser: called");
+        mAuth.signInWithEmailAndPassword(emailEditText.getText().toString(), passwordEditText.getText().toString())
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+
+                            handleEnrollmentSituation();
+
+                            progressBar.setVisibility(View.GONE);
+                            Toast.makeText(SignUpActivity.this, "Logged In", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(SignUpActivity.this, SetupUserActivity.class);
+                            String email = emailEditText.getText().toString();
+                            intent.putExtra("email", email);
+                            startActivity(intent);
+                        } else {
+                            Toast.makeText(SignUpActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            progressBar.setVisibility(View.GONE);
+                            Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
+                            startActivity(intent);
+                        }
+
+                    }
+                });
+
+    }
+
+    private void handleEnrollmentSituation() {
+        Log.d(TAG, "handleEnrollmentSituation: called");
+        //Finding last enrollment no to add to users data
+        Utils.findLastEnrollmentNo(new FireBaseCallBack() {
+            @Override
+            public void onSuccess(Object object) {
+                Toast.makeText(SignUpActivity.this, "Getting enrollment no for you", Toast.LENGTH_SHORT).show();
+                String value = (String) object;
+                Integer enrollment = Integer.parseInt(value) + 1;
+                value = enrollment.toString();
+                Log.d(TAG, "onSuccess: got last enrollment no" + enrollment);
+                HashMap<String, Object> userMap = new HashMap<>();
+                userMap.put("enrollmentNo", value);
+                currentUserID = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
+                userDatabase = FirebaseDatabaseReference.DATABASE.getReference().child(FirebaseConstants.USERS).child(currentUserID);
+                //adding enrollment no to user database
+                userDatabase.updateChildren(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "onComplete: enrollment no is set");
+                            Toast.makeText(SignUpActivity.this, "EnrollmentNo is set ", Toast.LENGTH_SHORT).show();
+
+                        } else {
+                            Toast.makeText(SignUpActivity.this, Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+                //Updated lastEnrollment No
+                Utils.updateLastEnrollmentNo(value);
+
+            }
+
+            @Override
+            public void onError(Object object) {
+
+            }
+        });
+
+    }
+
+    private void handleEditText() {
+        Log.d(TAG, "handleEditText: called");
         imageHide.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -178,128 +291,41 @@ public class SignUpActivity extends AppCompatActivity {
 
             }
         });
+    }
 
-        btnSignUp.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("ResourceType")
+    private void addValidations() {
+        Log.d(TAG, "addValidations: called");
+        progressBar.setVisibility(View.GONE);
+        emailEditText.setMinCharacters(5);
+        confPassEditText.setMinCharacters(8);
+        passwordEditText.setMinCharacters(8);
+        passwordEditText.setMaxCharacters(20);
+        confPassEditText.setMaxCharacters(20);
+        nameEditText.setMinCharacters(2);
+        nameEditText.validateWith(new METValidator("Field can'nt be empty") {
             @Override
-            public void onClick(View v) {
-                if (emailEditText.getText().toString().isEmpty()
-                        || nameEditText.getText().toString().isEmpty()
-                        || passwordEditText.getText().toString().isEmpty()
-                        || confPassEditText.getText().toString().isEmpty()) {
-                    progressBar.setVisibility(View.GONE);
-                    emailEditText.setMinCharacters(5);
-                    confPassEditText.setMinCharacters(8);
-                    passwordEditText.setMinCharacters(8);
-                    passwordEditText.setMaxCharacters(20);
-                    confPassEditText.setMaxCharacters(20);
-                    nameEditText.setMinCharacters(2);
-                    nameEditText.validateWith(new METValidator("Field can'nt be empty") {
-                        @Override
-                        public boolean isValid(@NonNull CharSequence text, boolean isEmpty) {
-                            return !isEmpty;
-                        }
-                    });
-                    emailEditText.validateWith(new METValidator("Field con'nt be empty") {
-                        @Override
-                        public boolean isValid(@NonNull CharSequence text, boolean isEmpty) {
-                            return !isEmpty;
-                        }
-                    });
-                    passwordEditText.validateWith(new METValidator("Field can'nt be empty") {
-                        @Override
-                        public boolean isValid(@NonNull CharSequence text, boolean isEmpty) {
-                            return !isEmpty;
-                        }
-                    });
-                    confPassEditText.validateWith(new METValidator("Field can'nt be empty") {
-                        @Override
-                        public boolean isValid(@NonNull CharSequence text, boolean isEmpty) {
-                            return !isEmpty;
-                        }
-                    });
-                } else if (Objects.equals(passwordEditText.getText().toString(), confPassEditText.getText().toString())) {
-                    progressBar.setVisibility(View.VISIBLE);
-                    mAuth.createUserWithEmailAndPassword(emailEditText.getText().toString(), passwordEditText.getText().toString())
-                            .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<AuthResult> task) {
-                                    if (task.isSuccessful()) {
-                                        Toast.makeText(SignUpActivity.this, getString(R.string.registration_successful), Toast.LENGTH_SHORT).show();
-                                        mAuth.signInWithEmailAndPassword(emailEditText.getText().toString(), passwordEditText.getText().toString())
-                                                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<AuthResult> task) {
-                                                        if (task.isSuccessful()) {
-                                                            //Finding last enrollment no to add to users data
-                                                            Utils.findLastEnrollmentNo(new FireBaseCallBack() {
-                                                                @Override
-                                                                public void onSuccess(Object object) {
-                                                                    Toast.makeText(SignUpActivity.this, "Getting enrollment no for you", Toast.LENGTH_SHORT).show();
-                                                                    String value = (String) object;
-                                                                    Integer enrollment = Integer.parseInt(value) + 1;
-                                                                    value = enrollment.toString();
-                                                                    Log.d(TAG, "onSuccess: got last enrollment no" + enrollment);
-                                                                    HashMap<String, Object> userMap = new HashMap<>();
-                                                                    userMap.put("enrollmentNo", value);
-                                                                    currentUserID = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
-                                                                    userDatabase = FirebaseDatabaseReference.DATABASE.getReference().child(FirebaseConstants.USERS).child(currentUserID);
-                                                                    //adding enrollment no to user database
-                                                                    userDatabase.updateChildren(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                        @Override
-                                                                        public void onComplete(@NonNull Task<Void> task) {
-                                                                            if (task.isSuccessful()) {
-                                                                                Log.d(TAG, "onComplete: enrollment no is set");
-                                                                                Toast.makeText(SignUpActivity.this, "EnrollmentNo is set ", Toast.LENGTH_SHORT).show();
-
-                                                                            } else {
-                                                                                Toast.makeText(SignUpActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                                                                            }
-                                                                        }
-                                                                    });
-                                                                    //Updated lastEnrollment No
-                                                                    Utils.updateLastEnrollmentNo(value);
-
-                                                                }
-
-                                                                @Override
-                                                                public void onError(Object object) {
-
-                                                                }
-                                                            });
-                                                            progressBar.setVisibility(View.GONE);
-                                                            Toast.makeText(SignUpActivity.this, "Logged In", Toast.LENGTH_SHORT).show();
-                                                            Intent intent = new Intent(SignUpActivity.this, SetupUserActivity.class);
-                                                            startActivity(intent);
-                                                        } else {
-                                                            Toast.makeText(SignUpActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                                                            progressBar.setVisibility(View.GONE);
-                                                            Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
-                                                            startActivity(intent);
-                                                        }
-
-                                                    }
-                                                });
-                                    } else {
-                                        progressBar.setVisibility(View.GONE);
-                                        Toast.makeText(SignUpActivity.this, task.getException().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                                        utils.setSignedIn(false);
-                                    }
-
-
-                                }
-                            });
-
-                } else {
-                    progressBar.setVisibility(View.GONE);
-                    passwordEditText.setError(getString(R.string.passwords_did_not_match));
-                    confPassEditText.setError(getString(R.string.passwords_did_not_match));
-                    utils.setSignedIn(false);
-                }
-
+            public boolean isValid(@NonNull CharSequence text, boolean isEmpty) {
+                return !isEmpty;
             }
         });
-
+        emailEditText.validateWith(new METValidator("Field con'nt be empty") {
+            @Override
+            public boolean isValid(@NonNull CharSequence text, boolean isEmpty) {
+                return !isEmpty;
+            }
+        });
+        passwordEditText.validateWith(new METValidator("Field can'nt be empty") {
+            @Override
+            public boolean isValid(@NonNull CharSequence text, boolean isEmpty) {
+                return !isEmpty;
+            }
+        });
+        confPassEditText.validateWith(new METValidator("Field can'nt be empty") {
+            @Override
+            public boolean isValid(@NonNull CharSequence text, boolean isEmpty) {
+                return !isEmpty;
+            }
+        });
     }
 
     private void initViews() {

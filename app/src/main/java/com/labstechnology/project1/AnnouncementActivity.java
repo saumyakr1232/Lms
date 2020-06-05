@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -35,6 +36,7 @@ public class AnnouncementActivity extends AppCompatActivity implements Navigatio
     private RecyclerView recyclerViewAnnouncements;
     private BottomNavigationView bottomNavigationView;
     private AnnouncementRecViewAdapter adapter;
+    private ProgressBar progressBar;
 
     private Utils utils;
 
@@ -52,12 +54,17 @@ public class AnnouncementActivity extends AppCompatActivity implements Navigatio
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
         toolbar.setTitle("Announcements");
         toolbar.setTitleTextColor(getResources().getColor(R.color.white1));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white);
+
 
         initBottomNavigation();
 
         initRecView();
 
         utils = new Utils(this);
+        progressBar.setVisibility(View.VISIBLE);
 
         database = FirebaseDatabaseReference.DATABASE;
 
@@ -78,12 +85,13 @@ public class AnnouncementActivity extends AppCompatActivity implements Navigatio
                 }
                 Log.d(TAG, "onDataChange: announcement:" + announcements);
                 adapter.setAnnouncements(announcements);
-
+                progressBar.setVisibility(View.GONE);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                progressBar.setVisibility(View.GONE);
+                Toast.makeText(AnnouncementActivity.this, "some error occurred" + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -116,6 +124,7 @@ public class AnnouncementActivity extends AppCompatActivity implements Navigatio
         recyclerViewAnnouncements = (RecyclerView) findViewById(R.id.recViewAnnouncements);
         btnAddAnnouncements = (FloatingActionButton) findViewById(R.id.btnAddAnnouncements);
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottomNavigationView);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
 
     }
@@ -156,5 +165,11 @@ public class AnnouncementActivity extends AppCompatActivity implements Navigatio
             }
         });
 
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 }

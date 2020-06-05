@@ -44,6 +44,15 @@
             android:layout_above="@id/bottomNavigationView"
             android:layout_margin="12dp" />
 
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_margin="20dp"
+            android:indeterminate="true"
+            android:visibility="gone" />
+
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottomNavigationView"

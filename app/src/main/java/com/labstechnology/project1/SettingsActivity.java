@@ -37,6 +37,9 @@ public class SettingsActivity extends AppCompatActivity {
         toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
         toolbar.setTitle("Settings");
         toolbar.setTitleTextColor(getColor(R.color.white1));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
 
         btnDayNight.setDuration(450);
 
@@ -140,5 +143,11 @@ public class SettingsActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 }

@@ -128,7 +128,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 Intent intent1 = new Intent(HomeActivity.this, AboutUsWebActivity.class);
-                                intent1.putExtra("url", "http://labstechnologies.in/");
+                                intent1.putExtra("url", "https://labstechnologies.in/");
                                 startActivity(intent1);
                             }
                         }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

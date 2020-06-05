@@ -16,22 +16,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.FirebaseError;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.internal.Util;
-import com.google.gson.reflect.TypeToken;
-import com.labstechnology.project1.CallBacks.FireBaseCallBack;
 import com.labstechnology.project1.adapters.NotificationRecViewAdapter;
 import com.labstechnology.project1.models.Announcement;
-import com.labstechnology.project1.models.Assignment;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 
 public class MainFragment extends Fragment {
@@ -46,7 +39,6 @@ public class MainFragment extends Fragment {
 
     private FirebaseDatabase database;
     private DatabaseReference myRef;
-    private FirebaseRepository repository;
 
 
     @Nullable
@@ -62,42 +54,31 @@ public class MainFragment extends Fragment {
 
         database = FirebaseDatabaseReference.DATABASE;
 
-        myRef = database.getReference("announcements2");
-//        myRef.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                Log.d(TAG, "onDataChange: snapshot"+ dataSnapshot.toString());
-//                ArrayList<Announcement> announcements = new ArrayList<>();
-//
-//                for (DataSnapshot oneSnapshot: dataSnapshot.getChildren()){
-//                    Announcement announcement = oneSnapshot.getValue(Announcement.class);
-//                    announcements.add(announcement);
-//
-//                }
-//                Log.d(TAG, "onDataChange: announcement:" + announcements);
-//                notificationRecViewAdapter.setItems(announcements);
-//
-//            }
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
+        myRef = database.getReference("announcements");
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.d(TAG, "onDataChange: snapshot" + dataSnapshot.toString());
+                ArrayList<Announcement> announcements = new ArrayList<>();
 
-//        readAnnouncements(new FireBaseCallBack() {
-//            @Override
-//            public void onSuccess(Object object) {
-//                Announcement announcement = (Announcement) object;
-//                Log.d(TAG, "onSuccess: announcement :"+ announcement.toString());
-//            }
-//
-//            @Override
-//            public void onError(Object object) {
-//                FirebaseError error = (FirebaseError) object;
-//                Log.d(TAG, "onError: "+error.getErrorCode());
-//
-//            }
-//        });
+                for (DataSnapshot oneSnapshot : dataSnapshot.getChildren()) {
+                    Announcement announcement = oneSnapshot.getValue(Announcement.class);
+                    Log.d(TAG, "onDataChange: announcement" + announcement);
+                    Log.d(TAG, "onDataChange: announcement key" + oneSnapshot.getKey());
+                    announcements.add(announcement);
+
+                }
+                Log.d(TAG, "onDataChange: announcement:" + announcements);
+                notificationRecViewAdapter.setItems(announcements);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
 
         return view;
     }
@@ -153,21 +134,5 @@ public class MainFragment extends Fragment {
 
     }
 
-    private void readAnnouncements(final FireBaseCallBack callBack) {
-        Log.d(TAG, "readAnnouncements: called");
-        DatabaseReference myRef = database.getReference("announcements/test");
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Announcement announcement = dataSnapshot.getValue(Announcement.class);
-                callBack.onSuccess(announcement);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                callBack.onError(databaseError);
-            }
-        });
-    }
 
 }

@@ -77,6 +77,15 @@ public class SetupUserActivity extends AppCompatActivity {
 
         initViews();
 
+        if (Utils.getDarkThemePreference(this)) {
+            EmailEditText.setTextColor(getColor(R.color.white1));
+            FNameEditText.setTextColor(getColor(R.color.white1));
+            LNameEditText.setTextColor(getColor(R.color.white1));
+            PhoneEditText.setTextColor(getColor(R.color.white1));
+            DOBEditText.setTextColor(getColor(R.color.white1));
+
+        }
+
         Intent intent = getIntent();
         if (intent != null) {
             String emailFromSignUpPage = intent.getStringExtra("email");

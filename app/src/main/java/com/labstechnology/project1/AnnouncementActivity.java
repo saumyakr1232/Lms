@@ -10,12 +10,21 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.labstechnology.project1.adapters.AnnouncementRecViewAdapter;
+import com.labstechnology.project1.models.Announcement;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class AnnouncementActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -25,8 +34,12 @@ public class AnnouncementActivity extends AppCompatActivity implements Navigatio
     private FloatingActionButton btnAddAnnouncements;
     private RecyclerView recyclerViewAnnouncements;
     private BottomNavigationView bottomNavigationView;
+    private AnnouncementRecViewAdapter adapter;
 
     private Utils utils;
+
+    private FirebaseDatabase database;
+    private DatabaseReference myRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +59,35 @@ public class AnnouncementActivity extends AppCompatActivity implements Navigatio
 
         utils = new Utils(this);
 
+        database = FirebaseDatabaseReference.DATABASE;
+
+        myRef = database.getReference("announcements");
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.d(TAG, "onDataChange: snapshot" + dataSnapshot.toString());
+                ArrayList<Announcement> announcements = new ArrayList<>();
+
+                for (DataSnapshot oneSnapshot : dataSnapshot.getChildren()) {
+                    Announcement announcement = oneSnapshot.getValue(Announcement.class);
+                    Log.d(TAG, "onDataChange: announcement" + announcement);
+                    Log.d(TAG, "onDataChange: announcement key" + oneSnapshot.getKey());
+                    announcements.add(announcement);
+
+
+                }
+                Log.d(TAG, "onDataChange: announcement:" + announcements);
+                adapter.setAnnouncements(announcements);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
         if (!utils.isAdmin()) {
             btnAddAnnouncements.setVisibility(View.GONE);
         } else {
@@ -62,7 +104,10 @@ public class AnnouncementActivity extends AppCompatActivity implements Navigatio
 
     private void initRecView() {
         Log.d(TAG, "initRecView: called");
-        //TODO: populate recycler views
+        adapter = new AnnouncementRecViewAdapter(this);
+        recyclerViewAnnouncements.setAdapter(adapter);
+        recyclerViewAnnouncements.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
+
     }
 
     private void initViews() {

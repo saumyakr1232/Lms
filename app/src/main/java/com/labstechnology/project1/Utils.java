@@ -14,7 +14,16 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.labstechnology.project1.CallBacks.FireBaseCallBack;
+import com.labstechnology.project1.models.Announcement;
+
+import java.lang.reflect.Type;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.TimeZone;
 
 
 public class Utils {
@@ -190,6 +199,74 @@ public class Utils {
         editor.putBoolean("signedIn", value);
         editor.apply();
 
+    }
+
+    /**
+     * @param time        in milliseconds (Timestamp)
+     * @param mDateFormat SimpleDateFormat
+     * @return
+     */
+    public static String getDateTimeFromTimeStamp(Long time, String mDateFormat) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(mDateFormat);
+        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        Date dateTime = new Date(time);
+        return dateFormat.format(dateTime);
+    }
+
+    public void setAckAnnouncement(Announcement ackAnnouncement) {
+        Log.d(TAG, "setAckAnnouncement: called" + ackAnnouncement.getId());
+        SharedPreferences sharedPreferences = context.getSharedPreferences(DATABASE_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Gson gson = new Gson();
+        Type type = new TypeToken<ArrayList<String>>() {
+        }.getType();
+
+        String value = sharedPreferences.getString("ackAnnouncements", null);
+        ArrayList<String> oldAcks = gson.fromJson(value, type);
+
+        if (oldAcks != null) {
+            oldAcks.add(ackAnnouncement.getId());
+            editor.putString("ackAnnouncements", gson.toJson(oldAcks));
+            editor.commit();
+        } else {
+            oldAcks = new ArrayList<>();
+            oldAcks.add(ackAnnouncement.getId());
+            editor.putString("ackAnnouncements", gson.toJson(oldAcks));
+            editor.commit();
+        }
+
+    }
+
+    public ArrayList<String> getAckAnnouncements() {
+        Log.d(TAG, "getAckAnnouncements: called");
+        SharedPreferences sharedPreferences = context.getSharedPreferences(DATABASE_NAME, Context.MODE_PRIVATE);
+        String value = sharedPreferences.getString("ackAnnouncements", null);
+        Gson gson = new Gson();
+        Type type = new TypeToken<ArrayList<String>>() {
+        }.getType();
+        ArrayList<String> ackAnnouncements = gson.fromJson(value, type);
+        if (ackAnnouncements != null) {
+            Log.d(TAG, "getAckAnnouncements: ackAnnouncements " + ackAnnouncements.toString());
+            return ackAnnouncements;
+        }
+        return new ArrayList<>();
+
+    }
+
+    public boolean isNewAnnouncement(Announcement announcement) {
+        Gson gson = new Gson();
+        Type type = new TypeToken<ArrayList<String>>() {
+        }.getType();
+        ArrayList<String> ackAnnouncements = getAckAnnouncements();
+        if (announcement != null) {
+            if (ackAnnouncements.contains(announcement.getId())) {
+                return false;
+            } else {
+                return true;
+            }
+        } else {
+            return true;
+        }
     }
 
     public void setDarkThemePreference(boolean value) {

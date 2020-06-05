@@ -3,8 +3,6 @@ package com.labstechnology.project1.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.labstechnology.project1.Utils;
-
 
 public class Assignment implements Parcelable {
     private int id;
@@ -31,7 +29,6 @@ public class Assignment implements Parcelable {
     }
 
     public Assignment(String title, String description, String resourceLink, int dayStart, int monthStart, int yearStart, int hourStart, int minuteStart, int dayEnd, int monthEnd, int yearEnd, int hourEnd, int minuteEnd) {
-        this.id = Utils.getAssignmentId();
         this.title = title;
         this.description = description;
         this.resourceLink = resourceLink;

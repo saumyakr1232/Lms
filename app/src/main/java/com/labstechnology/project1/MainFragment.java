@@ -51,6 +51,8 @@ public class MainFragment extends Fragment {
 
         initRecView();
 
+        utils = new Utils(getActivity());
+
 
         database = FirebaseDatabaseReference.DATABASE;
 
@@ -65,7 +67,10 @@ public class MainFragment extends Fragment {
                     Announcement announcement = oneSnapshot.getValue(Announcement.class);
                     Log.d(TAG, "onDataChange: announcement" + announcement);
                     Log.d(TAG, "onDataChange: announcement key" + oneSnapshot.getKey());
-                    announcements.add(announcement);
+                    if (utils.isNewAnnouncement(announcement)) {
+                        announcements.add(announcement);
+                    }
+
 
                 }
                 Log.d(TAG, "onDataChange: announcement:" + announcements);

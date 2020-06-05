@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -44,6 +45,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private DatabaseReference userDatabase;
     private String currentUserID;
 
+    private Utils utils;
+
 
 
     private boolean value = Utils.value;
@@ -62,23 +65,25 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         userDatabase = FirebaseDatabaseReference.DATABASE.getReference().child(FirebaseConstants.USERS).child(currentUserID);
 
+        utils = new Utils(this);
+
         initViews();
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
         toolbar.setTitle("English Classes");
         toolbar.setSubtitle("by S B Patel Sir");
-        toolbar.setTitleTextColor(getResources().getColor(R.color.white1));
-        toolbar.setSubtitleTextColor(getResources().getColor(R.color.white1));
+        toolbar.setTitleTextColor(Color.parseColor("#FCFEFE"));
+        toolbar.setSubtitleTextColor(Color.parseColor("#FCFEFE"));
         toolbar.setTitleMarginStart(100);
         toolbar.setLogo(R.drawable.ic_computer);
-        toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+        toolbar.setBackgroundColor(Color.parseColor("#3F3D56"));
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
                 R.string.drawer_open, R.string.drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
-        updateNavigationHeaderView();
+
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, new MainFragment());
@@ -87,6 +92,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        updateNavigationHeaderView();
     }
 
     private void initViews() {
@@ -159,7 +170,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onDeletingResult(Announcement announcement) {
         Log.d(TAG, "onDeletingResult: called");
-
+        if (announcement != null) {
+            utils.setAckAnnouncement(announcement);
+            Log.d(TAG, "onDeletingResult: HERE" + utils.getAckAnnouncements().toString());
+        }
     }
 
     private void rateMe() {

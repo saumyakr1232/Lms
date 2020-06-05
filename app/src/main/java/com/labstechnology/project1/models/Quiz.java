@@ -3,8 +3,6 @@ package com.labstechnology.project1.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.labstechnology.project1.Utils;
-
 import java.util.ArrayList;
 
 public class Quiz implements Parcelable {
@@ -28,7 +26,6 @@ public class Quiz implements Parcelable {
     }
 
     public Quiz(String title, String description, int dayStart, int monthStart, int yearStart, int hourStart, int minuteStart, int dayEnd, int monthEnd, int yearEnd, int hourEnd, int minuteEnd, ArrayList<MultipleChoiceQuestion> questions) {
-        this.id = Utils.getQuizId();
         this.title = title;
         this.description = description;
         this.dayStart = dayStart;

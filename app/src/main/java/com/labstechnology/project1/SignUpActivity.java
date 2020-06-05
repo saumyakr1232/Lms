@@ -19,10 +19,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.labstechnology.project1.CallBacks.FireBaseCallBack;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.rengwuxian.materialedittext.validation.METValidator;
 import com.rengwuxian.materialedittext.validation.RegexpValidator;
 
+import java.util.HashMap;
 import java.util.Objects;
 
 import ru.katso.livebutton.LiveButton;
@@ -38,6 +41,10 @@ public class SignUpActivity extends AppCompatActivity {
     private Utils utils;
     private ImageView btnBackArrow;
     private ProgressBar progressBar;
+
+    private DatabaseReference userDatabase;
+
+    private String currentUserID;
 
 
 
@@ -224,6 +231,42 @@ public class SignUpActivity extends AppCompatActivity {
                                                     @Override
                                                     public void onComplete(@NonNull Task<AuthResult> task) {
                                                         if (task.isSuccessful()) {
+                                                            //Finding last enrollment no to add to users data
+                                                            Utils.findLastEnrollmentNo(new FireBaseCallBack() {
+                                                                @Override
+                                                                public void onSuccess(Object object) {
+                                                                    Toast.makeText(SignUpActivity.this, "Getting enrollment no for you", Toast.LENGTH_SHORT).show();
+                                                                    String value = (String) object;
+                                                                    Integer enrollment = Integer.parseInt(value) + 1;
+                                                                    value = enrollment.toString();
+                                                                    Log.d(TAG, "onSuccess: got last enrollment no" + enrollment);
+                                                                    HashMap<String, Object> userMap = new HashMap<>();
+                                                                    userMap.put("enrollmentNo", value);
+                                                                    currentUserID = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
+                                                                    userDatabase = FirebaseDatabaseReference.DATABASE.getReference().child(FirebaseConstants.USERS).child(currentUserID);
+                                                                    //adding enrollment no to user database
+                                                                    userDatabase.updateChildren(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                        @Override
+                                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                                            if (task.isSuccessful()) {
+                                                                                Log.d(TAG, "onComplete: enrollment no is set");
+                                                                                Toast.makeText(SignUpActivity.this, "EnrollmentNo is set ", Toast.LENGTH_SHORT).show();
+
+                                                                            } else {
+                                                                                Toast.makeText(SignUpActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                                                            }
+                                                                        }
+                                                                    });
+                                                                    //Updated lastEnrollment No
+                                                                    Utils.updateLastEnrollmentNo(value);
+
+                                                                }
+
+                                                                @Override
+                                                                public void onError(Object object) {
+
+                                                                }
+                                                            });
                                                             progressBar.setVisibility(View.GONE);
                                                             Toast.makeText(SignUpActivity.this, "Logged In", Toast.LENGTH_SHORT).show();
                                                             Intent intent = new Intent(SignUpActivity.this, SetupUserActivity.class);

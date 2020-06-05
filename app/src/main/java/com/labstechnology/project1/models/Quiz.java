@@ -22,6 +22,7 @@ public class Quiz implements Parcelable {
     private int hourEnd;
     private int minuteEnd;
     private ArrayList<MultipleChoiceQuestion> questions;
+    private ArrayList<User> attemptedBy;
 
     public Quiz() {
     }
@@ -71,6 +72,15 @@ public class Quiz implements Parcelable {
             return new Quiz[size];
         }
     };
+
+    public ArrayList<User> getAttemptedBy() {
+        return attemptedBy;
+    }
+
+    public void setAttemptedBy(ArrayList<User> attemptedBy) {
+        this.attemptedBy = attemptedBy;
+    }
+
 
     public int getId() {
         return id;
@@ -226,6 +236,8 @@ public class Quiz implements Parcelable {
         dest.writeInt(minuteEnd);
         dest.writeTypedList(questions);
     }
+
+
 }
 
 

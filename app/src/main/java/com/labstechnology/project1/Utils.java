@@ -7,6 +7,8 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -111,6 +113,59 @@ public class Utils {
 
         announcementId++;
         return announcementId;
+    }
+
+    public static void setLastEnrollmentNo() {
+        Log.d(TAG, "setLastEnrollmentNo: called");
+        final DatabaseReference myRef = FirebaseDatabaseReference.DATABASE.getReference().child("lastEnrollmentNo");
+        myRef.setValue("20200000").addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Log.d(TAG, "onComplete: lastEnrollment no is set");
+                } else {
+                    Log.d(TAG, "onComplete: error occurred during setting last enrollment no " + task.getException().getLocalizedMessage());
+                }
+            }
+        });
+
+    }
+
+    public static void findLastEnrollmentNo(final FireBaseCallBack callBack) {
+        final DatabaseReference myRef = FirebaseDatabaseReference.DATABASE.getReference().child("lastEnrollmentNo");
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.d(TAG, "onDataChange: datasnapshot" + dataSnapshot);
+                String lastEnrollmentNo = dataSnapshot.getValue(String.class);
+                Log.d(TAG, "onDataChange: got last enrollment no" + lastEnrollmentNo);
+                callBack.onSuccess(lastEnrollmentNo);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+    }
+
+    public static void updateLastEnrollmentNo(String enrollmentNo) {
+        Log.d(TAG, "updateLastEnrollmentNo: called");
+        final DatabaseReference myRef = FirebaseDatabaseReference.DATABASE.getReference().child("lastEnrollmentNo");
+        myRef.setValue(enrollmentNo).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Log.d(TAG, "onComplete: updating of enrollment no is complete");
+                } else {
+                    Log.d(TAG, "onComplete: error occurred during the updating of enrollment no" + task.getException().getLocalizedMessage());
+                }
+            }
+        });
+
+
     }
 
     public static void setAnnouncementId(int announcementId) {
@@ -449,12 +504,6 @@ public class Utils {
                 "\n" +
                 "Mauris rhoncus aenean vel elit scelerisque mauris. Senectus et netus et malesuada fames ac turpis egestas sed. Dictum sit amet justo donec enim diam vulputate ut. Nunc mattis enim ut tellus. Justo nec ultrices dui sapien eget. Nulla posuere sollicitudin aliquam ultrices sagittis orci a scelerisque. Ipsum suspendisse ultrices gravida dictum fusce ut placerat orci nulla. Nisl suscipit adipiscing bibendum est ultricies. Dignissim convallis aenean et tortor at risus viverra adipiscing at. Facilisis volutpat est velit egestas dui id ornare arcu. Pellentesque habitant morbi tristique senectus et netus et. Elementum pulvinar etiam non quam lacus suspendisse faucibus interdum posuere. Eget nunc scelerisque viverra mauris in aliquam. Morbi blandit cursus risus at ultrices mi tempus imperdiet. Viverra aliquet eget sit amet tellus. In ornare quam viverra orci sagittis eu volutpat odio facilisis. Lacus laoreet non curabitur gravida.";
         return value;
-    }
-
-    public boolean isSignedIn() {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(DATABASE_NAME, Context.MODE_PRIVATE);
-        return sharedPreferences.getBoolean("signedIn", false);
-
     }
 
 

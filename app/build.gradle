@@ -66,4 +66,13 @@ dependencies {
     //cute day night switch
     implementation 'com.github.Mahfa:DayNightSwitch:1.2'
 
+    //crop image
+    api 'com.theartofdev.edmodo:android-image-cropper:2.8.+'
+
+    //Glide
+
+    implementation 'com.github.bumptech.glide:glide:4.11.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+    androidTestImplementation'com.android.support.test:runner:1.0.2'
+    androidTestImplementation'com.android.support.test.espresso:espresso-core:3.0.2'
 }

@@ -58,7 +58,7 @@
                     android:layout_height="140dp"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="10dp"
-                    android:elevation="0dp"
+                    app:cardElevation="5dp"
                     app:cardBackgroundColor="@color/colorAccent"
                     app:cardCornerRadius="100dp">
 
@@ -165,7 +165,7 @@
                     android:id="@+id/rgGender"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/editTextMobileNo"
+                    android:layout_below="@id/editDOB"
                     android:orientation="horizontal">
 
                     <RadioButton
@@ -200,7 +200,7 @@
                     android:id="@+id/editDOB"
                     android:layout_width="175dp"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/rgGender"
+                    android:layout_below="@id/editTextMobileNo"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="8dp"
                     android:drawableStart="@drawable/ic_birthday_cake"
@@ -218,7 +218,7 @@
                     android:id="@+id/btnDone"
                     android:layout_width="140dp"
                     android:layout_height="43dp"
-                    android:layout_below="@id/editDOB"
+                    android:layout_below="@id/rgGender"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="10dp"

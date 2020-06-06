@@ -48,8 +48,10 @@ public class AnnouncementRecViewAdapter extends RecyclerView.Adapter<Announcemen
          *  time=1591372821226, day=5**/
         if (timestamp.get("time") != null) {
             long timeMills = Long.parseLong(timestamp.get("time").toString());
-            String dateTime = Utils.getDateTimeFromTimeStamp(timeMills, "yyyy.MM.dd 'at' HH:mm:ss ");
-            holder.txtTimestamp.setText(dateTime);
+            String date = Utils.getDateTimeFromTimeStamp(timeMills, "d MMM 'at'");
+            String Time = Utils.getDateTimeFromTimeStamp(timeMills, "HH:mm a");
+            holder.txtTimestamp.setText(Time);
+            holder.txtDate.setText(date);
         }
 
 
@@ -68,7 +70,7 @@ public class AnnouncementRecViewAdapter extends RecyclerView.Adapter<Announcemen
         private static final String TAG = "AnnouncementViewHolder";
 
         private CardView parent;
-        private TextView txtTitle;
+        private TextView txtTitle, txtDate;
         private TextView txtTimestamp;
 
         public AnnouncementViewHolder(@NonNull View itemView) {
@@ -76,6 +78,7 @@ public class AnnouncementRecViewAdapter extends RecyclerView.Adapter<Announcemen
             parent = (CardView) itemView.findViewById(R.id.parent);
             txtTitle = (TextView) itemView.findViewById(R.id.txtTitle);
             txtTimestamp = (TextView) itemView.findViewById(R.id.txtTimestamp);
+            txtDate = (TextView) itemView.findViewById(R.id.txtDateAt);
         }
     }
 

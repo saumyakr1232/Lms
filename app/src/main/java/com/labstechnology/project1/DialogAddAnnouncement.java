@@ -2,10 +2,13 @@ package com.labstechnology.project1;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -31,7 +34,8 @@ public class DialogAddAnnouncement extends DialogFragment {
     private LiveButton btnDone;
     private MaterialEditText titleEditText, descriptionEditText;
     private ProgressBar progressBar;
-    private ImageView btnBackArrow;
+    private ImageView btnBackArrow, imgAnnounce;
+    private LinearLayout parent;
 
     @NonNull
     @Override
@@ -41,6 +45,16 @@ public class DialogAddAnnouncement extends DialogFragment {
                 .setView(view);
 
         initViews(view);
+
+        parent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                assert imm != null;
+                imm.hideSoftInputFromWindow(parent.getWindowToken(), 0);
+            }
+        });
 
 
         titleEditText.setPrimaryColor(getContext().getColor(R.color.colorAccent));
@@ -120,7 +134,11 @@ public class DialogAddAnnouncement extends DialogFragment {
         descriptionEditText = (MaterialEditText) view.findViewById(R.id.editTextDescription);
         progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
         btnBackArrow = (ImageView) view.findViewById(R.id.btnBackArrow);
+        parent = (LinearLayout) view.findViewById(R.id.parentAddAnnouncementDialog);
+        imgAnnounce = (ImageView) view.findViewById(R.id.imgAnnounce);
 
 
     }
+
+
 }

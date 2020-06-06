@@ -1,8 +1,156 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".TestActivity">
 
-</RelativeLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/txtAssignments"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="Assignments"
+                android:textSize="25sp"
+                android:textStyle="bold" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recViewAssignments"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_below="@id/txtAssignments"
+                android:layout_margin="10dp"
+                android:orientation="vertical"
+                android:padding="5dp" />
+
+
+            <TextView
+                android:id="@+id/txtQuizzes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/recViewAssignments"
+                android:layout_marginLeft="10dp"
+                android:text="Quizzes"
+                android:textSize="25sp"
+                android:textStyle="bold" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recViewQuiz"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/txtQuizzes"
+                android:layout_margin="10dp"
+                android:orientation="vertical"
+                android:padding="5dp" />
+
+            <View
+                android:id="@+id/overLay"
+                android:layout_width="match_parent"
+                android:layout_height="900dp"
+                android:layout_centerInParent="true"
+                android:background="#F0000000"
+                android:visibility="gone" />
+
+        </RelativeLayout>
+
+
+    </androidx.core.widget.NestedScrollView>
+
+
+    <com.github.clans.fab.FloatingActionMenu
+        android:id="@+id/fbMenuTests"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_add"
+        app:menu_animationDelayPerItem="55"
+        app:menu_buttonSpacing="0dp"
+        app:menu_colorNormal="@color/colorPrimaryDark"
+        app:menu_colorPressed="@color/colorAccent"
+        app:menu_colorRipple="@color/colorAccent"
+        app:menu_fab_hide_animation="@anim/fab_slide_out_to_right"
+        app:menu_fab_label="Tests"
+        app:menu_fab_size="normal"
+        app:menu_labels_colorNormal="@color/colorPrimaryDark"
+        app:menu_labels_colorPressed="@color/colorAccent"
+        app:menu_labels_colorRipple="@color/colorAccent"
+        app:menu_labels_cornerRadius="3dp"
+        app:menu_labels_ellipsize="none"
+        app:menu_labels_margin="0dp"
+        app:menu_labels_maxLines="-1"
+        app:menu_labels_padding="8dp"
+        app:menu_labels_position="left"
+        app:menu_labels_showAnimation="@anim/fab_slide_in_from_right"
+        app:menu_labels_showShadow="true"
+        app:menu_labels_singleLine="false"
+        app:menu_labels_textColor="@color/textcolor"
+        app:menu_labels_textSize="15sp"
+        app:menu_openDirection="up"
+        app:menu_shadowColor="#86EEF1"
+        app:menu_shadowRadius="6dp"
+        app:menu_shadowXOffset="1dp"
+        app:menu_shadowYOffset="4dp"
+        app:menu_showShadow="true">
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fabAddQuiz"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/fab_add"
+
+            app:fab_colorDisabled="@color/colorPrimary"
+            app:fab_colorNormal="@color/colorPrimaryDark"
+            app:fab_colorPressed="@color/colorAccent"
+            app:fab_label="Quiz"
+            app:fab_size="mini" />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fabAddAssignment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/fab_add"
+            app:fab_colorDisabled="@color/colorPrimary"
+            app:fab_colorNormal="@color/colorPrimaryDark"
+            app:fab_colorPressed="@color/colorAccent"
+            app:fab_label="Assignments"
+            app:fab_size="mini" />
+
+    </com.github.clans.fab.FloatingActionMenu>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_margin="20dp"
+        android:indeterminate="true"
+        android:visibility="gone" />
+
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/tests_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimaryDark"
+            app:layout_scrollFlags="scroll|enterAlways" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

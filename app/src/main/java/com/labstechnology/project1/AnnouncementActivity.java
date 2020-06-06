@@ -19,6 +19,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
@@ -76,10 +77,16 @@ public class AnnouncementActivity extends AppCompatActivity implements Navigatio
                 ArrayList<Announcement> announcements = new ArrayList<>();
 
                 for (DataSnapshot oneSnapshot : dataSnapshot.getChildren()) {
-                    Announcement announcement = oneSnapshot.getValue(Announcement.class);
-                    Log.d(TAG, "onDataChange: announcement" + announcement);
-                    Log.d(TAG, "onDataChange: announcement key" + oneSnapshot.getKey());
-                    announcements.add(announcement);
+                    try {
+                        Announcement announcement = oneSnapshot.getValue(Announcement.class);
+                        Log.d(TAG, "onDataChange: announcement" + announcement);
+                        Log.d(TAG, "onDataChange: announcement key" + oneSnapshot.getKey());
+                        announcements.add(0, announcement);
+                        adapter.notifyDataSetChanged();
+                    } catch (DatabaseException e) {
+                        Log.d(TAG, "onDataChange: error occurred  at " + dataSnapshot.getChildren().toString() + e.getLocalizedMessage());
+                        e.printStackTrace();
+                    }
 
 
                 }
@@ -152,7 +159,8 @@ public class AnnouncementActivity extends AppCompatActivity implements Navigatio
                         Toast.makeText(AnnouncementActivity.this, "Live selected", Toast.LENGTH_SHORT).show();
                         break;
                     case R.id.tests:
-                        Toast.makeText(AnnouncementActivity.this, "Tests selected", Toast.LENGTH_SHORT).show();
+                        Intent intentTest = new Intent(AnnouncementActivity.this, TestActivity.class);
+                        startActivity(intentTest);
                         break;
                     case R.id.announcements:
                         Toast.makeText(AnnouncementActivity.this, "Already in Announcements", Toast.LENGTH_SHORT).show();

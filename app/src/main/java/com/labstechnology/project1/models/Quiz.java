@@ -4,58 +4,26 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Quiz implements Parcelable {
     private int id;
     private String title;
     private String description;
-    private int dayStart;
-    private int monthStart;
-    private int yearStart;
-    private int hourStart;
-    private int minuteStart;
-    private int dayEnd;
-    private int monthEnd;
-    private int yearEnd;
-    private int hourEnd;
-    private int minuteEnd;
+    private HashMap<String, Object> timeStamp;
     private ArrayList<MultipleChoiceQuestion> questions;
     private ArrayList<User> attemptedBy;
+    private HashMap<String, String> results;
 
     public Quiz() {
-    }
-
-    public Quiz(String title, String description, int dayStart, int monthStart, int yearStart, int hourStart, int minuteStart, int dayEnd, int monthEnd, int yearEnd, int hourEnd, int minuteEnd, ArrayList<MultipleChoiceQuestion> questions) {
-        this.title = title;
-        this.description = description;
-        this.dayStart = dayStart;
-        this.monthStart = monthStart;
-        this.yearStart = yearStart;
-        this.hourStart = hourStart;
-        this.minuteStart = minuteStart;
-        this.dayEnd = dayEnd;
-        this.monthEnd = monthEnd;
-        this.yearEnd = yearEnd;
-        this.hourEnd = hourEnd;
-        this.minuteEnd = minuteEnd;
-        this.questions = questions;
     }
 
     protected Quiz(Parcel in) {
         id = in.readInt();
         title = in.readString();
         description = in.readString();
-        dayStart = in.readInt();
-        monthStart = in.readInt();
-        yearStart = in.readInt();
-        hourStart = in.readInt();
-        minuteStart = in.readInt();
-        dayEnd = in.readInt();
-        monthEnd = in.readInt();
-        yearEnd = in.readInt();
-        hourEnd = in.readInt();
-        minuteEnd = in.readInt();
         questions = in.createTypedArrayList(MultipleChoiceQuestion.CREATOR);
+        attemptedBy = in.createTypedArrayList(User.CREATOR);
     }
 
     public static final Creator<Quiz> CREATOR = new Creator<Quiz>() {
@@ -69,15 +37,6 @@ public class Quiz implements Parcelable {
             return new Quiz[size];
         }
     };
-
-    public ArrayList<User> getAttemptedBy() {
-        return attemptedBy;
-    }
-
-    public void setAttemptedBy(ArrayList<User> attemptedBy) {
-        this.attemptedBy = attemptedBy;
-    }
-
 
     public int getId() {
         return id;
@@ -103,84 +62,12 @@ public class Quiz implements Parcelable {
         this.description = description;
     }
 
-    public int getDayStart() {
-        return dayStart;
+    public HashMap<String, Object> getTimeStamp() {
+        return timeStamp;
     }
 
-    public void setDayStart(int dayStart) {
-        this.dayStart = dayStart;
-    }
-
-    public int getMonthStart() {
-        return monthStart;
-    }
-
-    public void setMonthStart(int monthStart) {
-        this.monthStart = monthStart;
-    }
-
-    public int getYearStart() {
-        return yearStart;
-    }
-
-    public void setYearStart(int yearStart) {
-        this.yearStart = yearStart;
-    }
-
-    public int getHourStart() {
-        return hourStart;
-    }
-
-    public void setHourStart(int hourStart) {
-        this.hourStart = hourStart;
-    }
-
-    public int getMinuteStart() {
-        return minuteStart;
-    }
-
-    public void setMinuteStart(int minuteStart) {
-        this.minuteStart = minuteStart;
-    }
-
-    public int getDayEnd() {
-        return dayEnd;
-    }
-
-    public void setDayEnd(int dayEnd) {
-        this.dayEnd = dayEnd;
-    }
-
-    public int getMonthEnd() {
-        return monthEnd;
-    }
-
-    public void setMonthEnd(int monthEnd) {
-        this.monthEnd = monthEnd;
-    }
-
-    public int getYearEnd() {
-        return yearEnd;
-    }
-
-    public void setYearEnd(int yearEnd) {
-        this.yearEnd = yearEnd;
-    }
-
-    public int getHourEnd() {
-        return hourEnd;
-    }
-
-    public void setHourEnd(int hourEnd) {
-        this.hourEnd = hourEnd;
-    }
-
-    public int getMinuteEnd() {
-        return minuteEnd;
-    }
-
-    public void setMinuteEnd(int minuteEnd) {
-        this.minuteEnd = minuteEnd;
+    public void setTimeStamp(HashMap<String, Object> timeStamp) {
+        this.timeStamp = timeStamp;
     }
 
     public ArrayList<MultipleChoiceQuestion> getQuestions() {
@@ -191,23 +78,32 @@ public class Quiz implements Parcelable {
         this.questions = questions;
     }
 
+    public ArrayList<User> getAttemptedBy() {
+        return attemptedBy;
+    }
+
+    public void setAttemptedBy(ArrayList<User> attemptedBy) {
+        this.attemptedBy = attemptedBy;
+    }
+
+    public HashMap<String, String> getResults() {
+        return results;
+    }
+
+    public void setResults(HashMap<String, String> results) {
+        this.results = results;
+    }
+
     @Override
     public String toString() {
         return "Quiz{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
-                ", dayStart=" + dayStart +
-                ", monthStart=" + monthStart +
-                ", yearStart=" + yearStart +
-                ", hourStart=" + hourStart +
-                ", minuteStart=" + minuteStart +
-                ", dayEnd=" + dayEnd +
-                ", monthEnd=" + monthEnd +
-                ", yearEnd=" + yearEnd +
-                ", hourEnd=" + hourEnd +
-                ", minuteEnd=" + minuteEnd +
+                ", timeStamp=" + timeStamp +
                 ", questions=" + questions +
+                ", attemptedBy=" + attemptedBy +
+                ", results=" + results +
                 '}';
     }
 
@@ -221,20 +117,9 @@ public class Quiz implements Parcelable {
         dest.writeInt(id);
         dest.writeString(title);
         dest.writeString(description);
-        dest.writeInt(dayStart);
-        dest.writeInt(monthStart);
-        dest.writeInt(yearStart);
-        dest.writeInt(hourStart);
-        dest.writeInt(minuteStart);
-        dest.writeInt(dayEnd);
-        dest.writeInt(monthEnd);
-        dest.writeInt(yearEnd);
-        dest.writeInt(hourEnd);
-        dest.writeInt(minuteEnd);
         dest.writeTypedList(questions);
+        dest.writeTypedList(attemptedBy);
     }
-
-
 }
 
 

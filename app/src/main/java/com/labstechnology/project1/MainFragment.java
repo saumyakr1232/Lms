@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
@@ -68,11 +69,17 @@ public class MainFragment extends Fragment {
                 ArrayList<Announcement> announcements = new ArrayList<>();
 
                 for (DataSnapshot oneSnapshot : dataSnapshot.getChildren()) {
-                    Announcement announcement = oneSnapshot.getValue(Announcement.class);
-                    Log.d(TAG, "onDataChange: announcement" + announcement);
-                    Log.d(TAG, "onDataChange: announcement key" + oneSnapshot.getKey());
-                    if (utils.isNewAnnouncement(announcement)) {
-                        announcements.add(announcement);
+                    try {
+                        Announcement announcement = oneSnapshot.getValue(Announcement.class);
+                        Log.d(TAG, "onDataChange: announcement" + announcement);
+                        Log.d(TAG, "onDataChange: announcement key" + oneSnapshot.getKey());
+                        if (utils.isNewAnnouncement(announcement)) {
+                            announcements.add(0, announcement);
+                            notificationRecViewAdapter.notifyDataSetChanged();
+                        }
+                    } catch (DatabaseException e) {
+                        e.printStackTrace();
+                        Log.d(TAG, "onDataChange: error occurred  at " + dataSnapshot.getChildren().toString() + e.getLocalizedMessage());
                     }
 
 
@@ -130,13 +137,13 @@ public class MainFragment extends Fragment {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.home:
-                        Toast.makeText(getActivity(), "Already in Home", Toast.LENGTH_SHORT).show();
                         break;
                     case R.id.live:
                         Toast.makeText(getActivity(), "Live selected", Toast.LENGTH_SHORT).show();
                         break;
                     case R.id.tests:
-                        Toast.makeText(getActivity(), "Tests selected", Toast.LENGTH_SHORT).show();
+                        Intent intentTest = new Intent(getActivity(), TestActivity.class);
+                        startActivity(intentTest);
                         break;
                     case R.id.announcements:
                         Intent intent = new Intent(getActivity(), AnnouncementActivity.class);
@@ -174,8 +181,12 @@ public class MainFragment extends Fragment {
                 if (count == notificationRecViewAdapter.getItemCount())
                     count = 0;
                 if (count < notificationRecViewAdapter.getItemCount()) {
-                    notificationRecView.smoothScrollToPosition(++count);
-                    handler.postDelayed(this, speedScroll);
+                    try {
+                        notificationRecView.smoothScrollToPosition(++count);
+                        handler.postDelayed(this, speedScroll);
+                    } catch (NullPointerException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         };

@@ -3,66 +3,31 @@ package com.labstechnology.project1.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 
 public class Assignment implements Parcelable {
     private int id;
     private String title;
     private String description;
-    private String resourceLink;
-    private int dayStart;
-    private int monthStart;
-    private int yearStart;
-    private int hourStart;
-    private int minuteStart;
-    private int dayEnd;
-    private int monthEnd;
-    private int yearEnd;
-    private int hourEnd;
-    private int minuteEnd;
-    private boolean completed;
-    private String score;
-    private int flag;
-    private int attemptsAllowed;
-
+    private String deadLineDate;
+    private String deadLineTime;
+    private HashMap<String, Object> timestamp;
+    private ArrayList<User> attemptedBy;
+    private ArrayList<AssignmentResponse> responses;
 
     public Assignment() {
-    }
-
-    public Assignment(String title, String description, String resourceLink, int dayStart, int monthStart, int yearStart, int hourStart, int minuteStart, int dayEnd, int monthEnd, int yearEnd, int hourEnd, int minuteEnd) {
-        this.title = title;
-        this.description = description;
-        this.resourceLink = resourceLink;
-        this.dayStart = dayStart;
-        this.monthStart = monthStart;
-        this.yearStart = yearStart;
-        this.hourStart = hourStart;
-        this.minuteStart = minuteStart;
-        this.dayEnd = dayEnd;
-        this.monthEnd = monthEnd;
-        this.yearEnd = yearEnd;
-        this.hourEnd = hourEnd;
-        this.minuteEnd = minuteEnd;
     }
 
     protected Assignment(Parcel in) {
         id = in.readInt();
         title = in.readString();
         description = in.readString();
-        resourceLink = in.readString();
-        dayStart = in.readInt();
-        monthStart = in.readInt();
-        yearStart = in.readInt();
-        hourStart = in.readInt();
-        minuteStart = in.readInt();
-        dayEnd = in.readInt();
-        monthEnd = in.readInt();
-        yearEnd = in.readInt();
-        hourEnd = in.readInt();
-        minuteEnd = in.readInt();
-        completed = in.readByte() != 0;
-        score = in.readString();
-        flag = in.readInt();
-        attemptsAllowed = in.readInt();
+        deadLineDate = in.readString();
+        deadLineTime = in.readString();
+        attemptedBy = in.createTypedArrayList(User.CREATOR);
+        responses = in.createTypedArrayList(AssignmentResponse.CREATOR);
     }
 
     public static final Creator<Assignment> CREATOR = new Creator<Assignment>() {
@@ -101,124 +66,44 @@ public class Assignment implements Parcelable {
         this.description = description;
     }
 
-    public String getResourceLink() {
-        return resourceLink;
+    public String getDeadLineDate() {
+        return deadLineDate;
     }
 
-    public void setResourceLink(String resourceLink) {
-        this.resourceLink = resourceLink;
+    public void setDeadLineDate(String deadLineDate) {
+        this.deadLineDate = deadLineDate;
     }
 
-    public int getDayStart() {
-        return dayStart;
+    public String getDeadLineTime() {
+        return deadLineTime;
     }
 
-    public void setDayStart(int dayStart) {
-        this.dayStart = dayStart;
+    public void setDeadLineTime(String deadLineTime) {
+        this.deadLineTime = deadLineTime;
     }
 
-    public int getMonthStart() {
-        return monthStart;
+    public HashMap<String, Object> getTimestamp() {
+        return timestamp;
     }
 
-    public void setMonthStart(int monthStart) {
-        this.monthStart = monthStart;
+    public void setTimestamp(HashMap<String, Object> timestamp) {
+        this.timestamp = timestamp;
     }
 
-    public int getYearStart() {
-        return yearStart;
+    public ArrayList<User> getAttemptedBy() {
+        return attemptedBy;
     }
 
-    public void setYearStart(int yearStart) {
-        this.yearStart = yearStart;
+    public void setAttemptedBy(ArrayList<User> attemptedBy) {
+        this.attemptedBy = attemptedBy;
     }
 
-    public int getHourStart() {
-        return hourStart;
+    public ArrayList<AssignmentResponse> getResponses() {
+        return responses;
     }
 
-    public void setHourStart(int hourStart) {
-        this.hourStart = hourStart;
-    }
-
-    public int getMinuteStart() {
-        return minuteStart;
-    }
-
-    public void setMinuteStart(int minuteStart) {
-        this.minuteStart = minuteStart;
-    }
-
-    public int getDayEnd() {
-        return dayEnd;
-    }
-
-    public void setDayEnd(int dayEnd) {
-        this.dayEnd = dayEnd;
-    }
-
-    public int getMonthEnd() {
-        return monthEnd;
-    }
-
-    public void setMonthEnd(int monthEnd) {
-        this.monthEnd = monthEnd;
-    }
-
-    public int getYearEnd() {
-        return yearEnd;
-    }
-
-    public void setYearEnd(int yearEnd) {
-        this.yearEnd = yearEnd;
-    }
-
-    public int getHourEnd() {
-        return hourEnd;
-    }
-
-    public void setHourEnd(int hourEnd) {
-        this.hourEnd = hourEnd;
-    }
-
-    public int getMinuteEnd() {
-        return minuteEnd;
-    }
-
-    public void setMinuteEnd(int minuteEnd) {
-        this.minuteEnd = minuteEnd;
-    }
-
-    public boolean isCompleted() {
-        return completed;
-    }
-
-    public void setCompleted(boolean completed) {
-        this.completed = completed;
-    }
-
-    public String getScore() {
-        return score;
-    }
-
-    public void setScore(String score) {
-        this.score = score;
-    }
-
-    public int getFlag() {
-        return flag;
-    }
-
-    public void setFlag(int flag) {
-        this.flag = flag;
-    }
-
-    public int getAttemptsAllowed() {
-        return attemptsAllowed;
-    }
-
-    public void setAttemptsAllowed(int attemptsAllowed) {
-        this.attemptsAllowed = attemptsAllowed;
+    public void setResponses(ArrayList<AssignmentResponse> responses) {
+        this.responses = responses;
     }
 
     @Override
@@ -227,23 +112,14 @@ public class Assignment implements Parcelable {
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
-                ", resourceLink='" + resourceLink + '\'' +
-                ", dayStart=" + dayStart +
-                ", monthStart=" + monthStart +
-                ", yearStart=" + yearStart +
-                ", hourStart=" + hourStart +
-                ", minuteStart=" + minuteStart +
-                ", dayEnd=" + dayEnd +
-                ", monthEnd=" + monthEnd +
-                ", yearEnd=" + yearEnd +
-                ", hourEnd=" + hourEnd +
-                ", minuteEnd=" + minuteEnd +
-                ", completed=" + completed +
-                ", score='" + score + '\'' +
-                ", flag=" + flag +
-                ", attemptsAllowed=" + attemptsAllowed +
+                ", deadLineDate='" + deadLineDate + '\'' +
+                ", deadLineTime='" + deadLineTime + '\'' +
+                ", timestamp=" + timestamp +
+                ", attemptedBy=" + attemptedBy +
+                ", responses=" + responses +
                 '}';
     }
+
 
     @Override
     public int describeContents() {
@@ -255,20 +131,9 @@ public class Assignment implements Parcelable {
         dest.writeInt(id);
         dest.writeString(title);
         dest.writeString(description);
-        dest.writeString(resourceLink);
-        dest.writeInt(dayStart);
-        dest.writeInt(monthStart);
-        dest.writeInt(yearStart);
-        dest.writeInt(hourStart);
-        dest.writeInt(minuteStart);
-        dest.writeInt(dayEnd);
-        dest.writeInt(monthEnd);
-        dest.writeInt(yearEnd);
-        dest.writeInt(hourEnd);
-        dest.writeInt(minuteEnd);
-        dest.writeByte((byte) (completed ? 1 : 0));
-        dest.writeString(score);
-        dest.writeInt(flag);
-        dest.writeInt(attemptsAllowed);
+        dest.writeString(deadLineDate);
+        dest.writeString(deadLineTime);
+        dest.writeTypedList(attemptedBy);
+        dest.writeTypedList(responses);
     }
 }

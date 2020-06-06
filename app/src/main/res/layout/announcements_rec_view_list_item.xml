@@ -21,34 +21,49 @@
             <ImageView
                 android:id="@+id/imageAnnounce"
                 android:layout_width="match_parent"
-                android:layout_height="140dp"
+                android:layout_height="160dp"
                 android:src="@drawable/ic_undraw_newsletter_vovu" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="55dp"
                 android:layout_below="@id/imageAnnounce">
 
                 <TextView
                     android:id="@+id/txtTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
+                    android:layout_alignParentStart="true"
                     android:layout_marginStart="20dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_toLeftOf="@id/txtTimestamp"
                     android:text="Title"
                     android:textColor="@color/white1"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/txtTimestamp"
+                    android:id="@+id/txtDateAt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginEnd="20dp"
-                    android:text="23:45 june 25"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="7dp"
+                    android:layout_toRightOf="@id/txtTitle"
+                    android:text="6 jun at"
                     android:textColor="@color/white1"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/txtTimestamp"
+                    android:layout_width="wrap_content"
+                    android:layout_below="@id/txtTitle"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginStart="10dp"
+                    android:textColor="@color/white1"
+                    android:text="23:45"
                     android:textSize="12sp" />
 
             </RelativeLayout>

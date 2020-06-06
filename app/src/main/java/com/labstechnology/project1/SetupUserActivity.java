@@ -64,8 +64,6 @@ public class SetupUserActivity extends AppCompatActivity {
     private int mYear, mMonth, mDay;
     private ProgressBar progressBar;
     private StorageReference userProfileImageRef;
-    private String downloadImageUrl;
-    private String testString;
 
     //    private User user;
     @Override

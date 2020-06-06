@@ -9,6 +9,7 @@ import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,6 +35,8 @@ public class LoginActivity extends AppCompatActivity {
     private MaterialEditText editTextEmail, editTextPassword;
     private TextView textViewSignUp, forgotPassword;
     private ImageView imageHide, imageShow;
+    private RelativeLayout parent;
+
     private FirebaseAuth mAuth;
 
 
@@ -49,6 +52,14 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         initViews();
+
+        parent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO: Dismiss keyboard
+
+            }
+        });
 
         mAuth = FirebaseAuth.getInstance();
         utils = new Utils(this);
@@ -208,6 +219,7 @@ public class LoginActivity extends AppCompatActivity {
         editTextEmail.addValidator(new RegexpValidator("Not a valid email", Utils.getRegexEmailPattern()));
         imageHide = (ImageView) findViewById(R.id.imageHide);
         imageShow = (ImageView) findViewById(R.id.imageShow);
+        parent = (RelativeLayout) findViewById(R.id.parentLoginMain);
 
     }
 }

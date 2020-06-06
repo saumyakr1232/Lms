@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -119,13 +120,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             case R.id.profile:
                 Toast.makeText(this, "Profile selected", Toast.LENGTH_SHORT).show();
             case R.id.home:
-                Toast.makeText(this, "Already in Home", Toast.LENGTH_SHORT).show();
+                drawer.closeDrawer(Gravity.LEFT);
                 break;
             case R.id.liveLecture:
                 Toast.makeText(this, "Live selected", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.test:
-                Toast.makeText(this, "Tests selected", Toast.LENGTH_SHORT).show();
+                Intent intentTest = new Intent(HomeActivity.this, TestActivity.class);
+                startActivity(intentTest);
                 break;
             case R.id.announcements:
                 final Intent intent = new Intent(HomeActivity.this, AnnouncementActivity.class);

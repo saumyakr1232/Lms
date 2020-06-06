@@ -3,22 +3,12 @@ package com.labstechnology.project1.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.labstechnology.project1.Utils;
-
 public class QuizScore implements Parcelable {
     private int id;
     private String uId;
-    private int quizId;
+    private String quizId;
     private double score;
     private double outOf;
-
-    public QuizScore(String uId, int quizId, double score, double outOf) {
-        this.id = Utils.getQuizId();
-        this.uId = uId;
-        this.quizId = quizId;
-        this.score = score;
-        this.outOf = outOf;
-    }
 
     public QuizScore() {
     }
@@ -26,23 +16,9 @@ public class QuizScore implements Parcelable {
     protected QuizScore(Parcel in) {
         id = in.readInt();
         uId = in.readString();
-        quizId = in.readInt();
+        quizId = in.readString();
         score = in.readDouble();
         outOf = in.readDouble();
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
-        dest.writeString(uId);
-        dest.writeInt(quizId);
-        dest.writeDouble(score);
-        dest.writeDouble(outOf);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
     }
 
     public static final Creator<QuizScore> CREATOR = new Creator<QuizScore>() {
@@ -73,11 +49,11 @@ public class QuizScore implements Parcelable {
         this.uId = uId;
     }
 
-    public int getQuizId() {
+    public String getQuizId() {
         return quizId;
     }
 
-    public void setQuizId(int quizId) {
+    public void setQuizId(String quizId) {
         this.quizId = quizId;
     }
 
@@ -102,11 +78,23 @@ public class QuizScore implements Parcelable {
         return "QuizScore{" +
                 "id=" + id +
                 ", uId='" + uId + '\'' +
-                ", quizId=" + quizId +
+                ", quizId='" + quizId + '\'' +
                 ", score=" + score +
                 ", outOf=" + outOf +
                 '}';
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(uId);
+        dest.writeString(quizId);
+        dest.writeDouble(score);
+        dest.writeDouble(outOf);
+    }
 }

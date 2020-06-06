@@ -66,33 +66,6 @@ public class SettingsActivity extends AppCompatActivity {
         });
 
 
-//        btnDayNight.setOnCheckedChangeListener(new SwitchButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(SwitchButton view, boolean isChecked) {
-//                if (btnDayNight.isChecked()) {
-//                    AlertDialog.Builder builder = new AlertDialog.Builder(SettingsActivity.this)
-//                            .setMessage("Dark Mode is under development :")
-//                            .setTitle("")
-//                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-//                                @Override
-//                                public void onClick(DialogInterface dialog, int which) {
-//                                    dialog.dismiss();
-//                                    btnDayNight.setChecked(false);
-//                                }
-//                            });
-//
-//                    builder.show();
-//
-////                   utils.setDarkThemePreference(true);
-////                   AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-////                   btnDayNight.setChecked(true);
-//                } else {
-////                   AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-////                   utils.setDarkThemePreference(false);
-//                }
-//            }
-//        });
-
         cardPrivacyPolicy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

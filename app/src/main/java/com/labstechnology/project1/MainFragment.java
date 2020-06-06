@@ -2,6 +2,8 @@ package com.labstechnology.project1;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -13,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -57,6 +60,7 @@ public class MainFragment extends Fragment {
         database = FirebaseDatabaseReference.DATABASE;
 
         myRef = database.getReference("announcements");
+
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -75,6 +79,7 @@ public class MainFragment extends Fragment {
                 }
                 Log.d(TAG, "onDataChange: announcement:" + announcements);
                 notificationRecViewAdapter.setItems(announcements);
+                autoScroll();
 
             }
 
@@ -83,7 +88,6 @@ public class MainFragment extends Fragment {
 
             }
         });
-
 
         return view;
     }
@@ -95,7 +99,26 @@ public class MainFragment extends Fragment {
 
         notificationRecView.setAdapter(notificationRecViewAdapter);
 
-        notificationRecView.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL, false));
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext()) {
+            @Override
+            public void smoothScrollToPosition(RecyclerView recyclerView, RecyclerView.State state, int position) {
+                LinearSmoothScroller smoothScroller = new LinearSmoothScroller(getActivity()) {
+                    private static final float SPEED = 400f;// Change this                value (default=25f)
+
+                    @Override
+                    protected float calculateSpeedPerPixel(DisplayMetrics displayMetrics) {
+                        return SPEED / displayMetrics.densityDpi;
+                    }
+                };
+                smoothScroller.setTargetPosition(position);
+                startSmoothScroll(smoothScroller);
+            }
+
+        };
+        layoutManager.setOrientation(RecyclerView.HORIZONTAL);
+        notificationRecView.setLayoutManager(layoutManager);
+
+//        notificationRecView.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL, false));
 
     }
 
@@ -139,5 +162,29 @@ public class MainFragment extends Fragment {
 
     }
 
+    public void autoScroll() {
+        final int speedScroll = 5000;
+        final Handler handler = new Handler();
+        final Runnable runnable = new Runnable() {
+            int count = 0;
 
+            @Override
+            public void run() {
+                Log.d(TAG, "run: called");
+                if (count == notificationRecViewAdapter.getItemCount())
+                    count = 0;
+                if (count < notificationRecViewAdapter.getItemCount()) {
+                    notificationRecView.smoothScrollToPosition(++count);
+                    handler.postDelayed(this, speedScroll);
+                }
+            }
+        };
+        handler.postDelayed(runnable, speedScroll);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        bottomNavigationView.setSelectedItemId(R.id.home);
+    }
 }

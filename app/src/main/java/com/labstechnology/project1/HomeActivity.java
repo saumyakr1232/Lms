@@ -38,6 +38,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     private DrawerLayout drawer;
     private NavigationView navigationView;
+    private View hView;
     private androidx.appcompat.widget.Toolbar toolbar;
 
 
@@ -98,6 +99,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     protected void onStart() {
         super.onStart();
         updateNavigationHeaderView();
+
     }
 
     private void initViews() {
@@ -105,6 +107,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         toolbar = findViewById(R.id.toolbar);
         drawer = (DrawerLayout) findViewById(R.id.drawer);
         navigationView = (NavigationView) findViewById(R.id.navigationDrawer);
+        hView = navigationView.getHeaderView(0);
 
 
     }
@@ -191,10 +194,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     private void updateNavigationHeaderView() {
         Log.d(TAG, "updateNavigationHeaderView: called");
-        View headerView = navigationView.inflateHeaderView(R.layout.navigation_header);
-        final ImageView userProfilePhoto = (ImageView) headerView.findViewById(R.id.imageProfile);
-        final TextView textName = (TextView) headerView.findViewById(R.id.txtName);
-        final TextView textEnrollment = (TextView) headerView.findViewById(R.id.txtEnrollment1);
+        final ImageView userProfilePhoto = (ImageView) hView.findViewById(R.id.imageProfileNavHeader);
+        final TextView textName = (TextView) hView.findViewById(R.id.txtName);
+        final TextView textEnrollment = (TextView) hView.findViewById(R.id.txtEnrollment1);
 
         userDatabase.addValueEventListener(new ValueEventListener() {
             @SuppressLint("SetTextI18n")

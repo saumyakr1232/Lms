@@ -2,39 +2,56 @@ package com.labstechnology.project1;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.OpenableColumns;
 import android.util.Log;
+import android.util.Size;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
+import androidx.core.widget.NestedScrollView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.labstechnology.project1.models.AssignmentResponse;
 import com.labstechnology.project1.models.User;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.rengwuxian.materialedittext.validation.METValidator;
 import com.rengwuxian.materialedittext.validation.RegexpValidator;
 
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Objects;
 
 import ru.katso.livebutton.LiveButton;
+import xyz.hasnat.sweettoast.SweetToast;
 
 public class AddAssignmentActivity extends AppCompatActivity {
     private static final String TAG = "AddAssignmentActivity";
@@ -44,10 +61,23 @@ public class AddAssignmentActivity extends AppCompatActivity {
     private LiveButton btnDone;
     private CardView cardDocument;
     private ImageView imgDocument;
-    private RelativeLayout parent;
+    private static final int FILE_SELECT_CODE = 0;
+    private NestedScrollView parent;
     private androidx.appcompat.widget.Toolbar toolbar;
 
     private int mYear, mMonth, mDay, mHour, mMinute;
+    private TextView txtChooseFile, txtFileName, txtFileSize;
+    private StorageReference assignmentDocumentsRef;
+    private DatabaseReference rttDatabaseAssRef;
+    private String id;
+
+    private Uri documentUri;
+
+    private Utils utils;
+
+    private String FileName, FileSize;
+    private long sizeOfFile;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,25 +85,24 @@ public class AddAssignmentActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_assignment);
 
         initViews();
+        utils = new Utils(this);
+
+        final DatabaseReference myRef = FirebaseDatabaseReference.DATABASE.getReference().child("assignments");
+        id = myRef.push().getKey();
+
+        rttDatabaseAssRef = FirebaseDatabaseReference.DATABASE.getReference().child(FirebaseConstants.ASSIGNMENTS).child(id);
+
+        assignmentDocumentsRef = FirebaseStorage.getInstance().getReference().child("assignmentDocumentsAdmin").child(id);
 
         parent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                //TODO: hide soft input
+                closeKeyboard();
             }
         });
 
-        editTextTitle.setPrimaryColor(this.getColor(R.color.colorAccent));
-        editTextDescription.setPrimaryColor(this.getColor(R.color.colorAccent));
-        editTextTime.setPrimaryColor(this.getColor(R.color.colorAccent));
-        editTextDate.setPrimaryColor(this.getColor(R.color.colorAccent));
-        if (Utils.getDarkThemePreference(this)) {
-            editTextTitle.setTextColor(this.getColor(R.color.white1));
-            editTextDescription.setTextColor(this.getColor(R.color.white1));
-            editTextDate.setTextColor(this.getColor(R.color.white1));
-            editTextTime.setTextColor(this.getColor(R.color.white1));
-        }
+        handleEditTextColors();
 
 
         setSupportActionBar(toolbar);
@@ -100,6 +129,30 @@ public class AddAssignmentActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 showTimePicker();
+            }
+        });
+        editTextTime.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    showTimePicker();
+                }
+            }
+        });
+
+        editTextDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    showDatePicker();
+                }
+            }
+        });
+
+        cardDocument.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showFileChooser();
             }
         });
 
@@ -139,12 +192,12 @@ public class AddAssignmentActivity extends AppCompatActivity {
                     });
                 } else {
                     progressBar.setVisibility(View.VISIBLE);
-                    final DatabaseReference myRef = FirebaseDatabaseReference.DATABASE.getReference().child("assignments");
+
                     Date date = new Date();
                     long time = date.getTime();
                     Timestamp timestamp = new Timestamp(time);
                     HashMap<String, Object> assignment = new HashMap<>();
-                    String id = myRef.push().getKey();
+
                     assignment.put("id", id);
                     assignment.put("title", editTextTitle.getText().toString());
                     assignment.put("description", editTextDescription.getText().toString());
@@ -155,7 +208,7 @@ public class AddAssignmentActivity extends AppCompatActivity {
                     assignment.put("responses", new ArrayList<AssignmentResponse>());
 
                     assert id != null;
-                    myRef.child(id).setValue(assignment).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    myRef.child(id).updateChildren(assignment).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
@@ -169,10 +222,26 @@ public class AddAssignmentActivity extends AppCompatActivity {
                             }
                         }
                     });
+                    uploadDocumentAndLinkToAssignment();
 
                 }
             }
         });
+
+    }
+
+    private void handleEditTextColors() {
+        Log.d(TAG, "handleEditTextColors: called");
+        editTextTitle.setPrimaryColor(this.getColor(R.color.colorAccent));
+        editTextDescription.setPrimaryColor(this.getColor(R.color.colorAccent));
+        editTextTime.setPrimaryColor(this.getColor(R.color.colorAccent));
+        editTextDate.setPrimaryColor(this.getColor(R.color.colorAccent));
+        if (Utils.getDarkThemePreference(this)) {
+            editTextTitle.setTextColor(this.getColor(R.color.white1));
+            editTextDescription.setTextColor(this.getColor(R.color.white1));
+            editTextDate.setTextColor(this.getColor(R.color.white1));
+            editTextTime.setTextColor(this.getColor(R.color.white1));
+        }
 
     }
 
@@ -195,8 +264,12 @@ public class AddAssignmentActivity extends AppCompatActivity {
         cardDocument = (CardView) findViewById(R.id.cardUpload);
         imgDocument = (ImageView) findViewById(R.id.imgDocument);
         progressBar = (ProgressBar) findViewById(R.id.progressBarFile);
-        parent = (RelativeLayout) findViewById(R.id.parent);
+        parent = (NestedScrollView) findViewById(R.id.parent);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+        txtChooseFile = (TextView) findViewById(R.id.txtChooseFile);
+        txtFileName = (TextView) findViewById(R.id.txtFileName);
+        txtFileSize = (TextView) findViewById(R.id.txtFileSize);
+
     }
 
     private void showDatePicker() {
@@ -236,4 +309,169 @@ public class AddAssignmentActivity extends AppCompatActivity {
         onBackPressed();
         return true;
     }
+
+    private void closeKeyboard() {
+        View view = AddAssignmentActivity.this.getCurrentFocus();
+        if (null != view) {
+            InputMethodManager imm = (InputMethodManager) AddAssignmentActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
+    private void showFileChooser() {
+        Log.d(TAG, "showFileChooser: called");
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("*/*");
+
+        // Only pick openable and local files. Theoretically we could pull files from google drive
+        // or other applications that have networked files, but that's unnecessary for this example.
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        //intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+
+        try {
+            startActivityForResult(
+                    Intent.createChooser(intent, "Select a File to Upload"),
+                    FILE_SELECT_CODE);
+        } catch (android.content.ActivityNotFoundException ex) {
+            // Potentially direct the user to the Market with a Dialog
+            SweetToast.warning(this, "Please install a File Manager.", Toast.LENGTH_LONG);
+        }
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        switch (requestCode) {
+            case FILE_SELECT_CODE:
+                if (resultCode == RESULT_OK) {
+                    Log.d(TAG, "onActivityResult: got the uri of document");
+                    // Get the Uri of the selected file
+                    documentUri = data.getData();
+                    Log.d(TAG, "File Uri: " + documentUri.toString());
+                    String documentPath = data.getType();
+                    String mimeType = getContentResolver().getType(documentUri);
+                    Log.d(TAG, "onActivityResult: mimeType" + mimeType);
+
+                    Cursor returnCursor =
+                            getContentResolver().query(documentUri, null, null, null, null);
+                    /*
+                     * Get the column indexes of the data in the Cursor,
+                     * move to the first row in the Cursor, get the data,
+                     * and display it.
+                     */
+                    int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+                    int sizeIndex = returnCursor.getColumnIndex(OpenableColumns.SIZE);
+                    returnCursor.moveToFirst();
+                    FileName = returnCursor.getString(nameIndex);
+                    FileSize = Long.toString(returnCursor.getLong(sizeIndex));
+                    sizeOfFile = returnCursor.getLong(sizeIndex);
+                    Log.d(TAG, "onActivityResult: Name " + returnCursor.getString(nameIndex));
+                    Log.d(TAG, "onActivityResult: Size" + Long.toString(returnCursor.getLong(sizeIndex)));
+
+                    setDocumentCard();
+//
+//                    Log.d(TAG, "onActivityResult: file extension"+ documentPath);
+//                    // Get the path
+//                    String path = documentUri.getPath();
+//                    Log.d(TAG, "onActivityResult: file"+ path);
+
+                    // Get the file instance
+                    // File file = new File(path);
+//                    Log.d(TAG, "onActivityResult: file"+ file.canRead() + "(((( "+ file.getAbsolutePath());
+//                    // Upload the file or save offline  in temp
+
+
+                }
+                break;
+            default:
+                SweetToast.warning(AddAssignmentActivity.this, "you did'nt select any file");
+                break;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+
+    }
+
+    private void setDocumentCard() {
+        Log.d(TAG, "setDocumentCard: called");
+        if (sizeOfFile < 999999) {
+            FileSize = String.valueOf(sizeOfFile / 1000) + " KB";
+        } else if (sizeOfFile > 999999) {
+            FileSize = String.valueOf(sizeOfFile / 1000000) + " MB";
+        }
+        txtFileSize.setText(FileSize);
+        txtFileName.setText(FileName);
+        //Load thumbnail of a specific media item.
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+            try {
+                Bitmap thumbnail =
+                        getApplicationContext().getContentResolver().loadThumbnail(
+                                documentUri, new Size(640, 480), null);
+
+                try {
+                    txtChooseFile.setVisibility(View.GONE);
+                    imgDocument.setImageBitmap(thumbnail);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    private void uploadDocumentAndLinkToAssignment() {
+        Log.d(TAG, "uploadDocumentAndLinkToAssignment: called");
+        final StorageReference filePath = assignmentDocumentsRef.child(id + "upload");
+        filePath.putFile(documentUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                if (task.isSuccessful()) {
+                    SweetToast.success(AddAssignmentActivity.this, "success");
+                    Log.d(TAG, "onComplete: document update successful");
+                    filePath.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Uri> task) {
+                            Log.d(TAG, "onComplete: HERE" + task.getResult());
+                            Uri url = task.getResult();
+                            assert url != null;
+                            final String downloadUrl = url.toString();
+                            Log.d(TAG, "onComplete: download url Document" + downloadUrl);
+                            HashMap<String, Object> downloadMap = new HashMap<>();
+                            downloadMap.put("resourceUrl", downloadUrl);
+                            rttDatabaseAssRef.updateChildren(downloadMap).addOnCompleteListener(
+                                    new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                progressBar.setVisibility(View.GONE);
+                                                Log.d(TAG, "onComplete: Document is linked to Assignment successful");
+                                                SweetToast.info(AddAssignmentActivity.this, "Document is linked to your Assignment successfully 😎");
+                                            } else {
+                                                progressBar.setVisibility(View.GONE);
+                                                SweetToast.error(AddAssignmentActivity.this, "Unable to link profile picture to your account, try again 🤐");
+                                                Log.d(TAG, "onComplete: Document link to Assignment is unsuccessful 😎");
+                                                SweetToast.error(AddAssignmentActivity.this, Objects.requireNonNull(task.getException()).getMessage());
+                                            }
+                                        }
+                                    }
+                            ).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    SweetToast.error(AddAssignmentActivity.this, "Unable to link Document to assignment, try again 🤐");
+                                    progressBar.setVisibility(View.GONE);
+                                }
+                            });
+                        }
+                    });
+                } else {
+                    Log.d(TAG, "onComplete: error " + task.getException().getLocalizedMessage());
+                    SweetToast.error(AddAssignmentActivity.this, "image upload unsuccessful 😞");
+
+                }
+            }
+        });
+    }
+
+
 }

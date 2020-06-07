@@ -11,6 +11,7 @@ public class Assignment implements Parcelable {
     private int id;
     private String title;
     private String description;
+    private String resourceUrl;
     private String deadLineDate;
     private String deadLineTime;
     private HashMap<String, Object> timestamp;

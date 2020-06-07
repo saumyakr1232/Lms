@@ -1,6 +1,7 @@
 package com.labstechnology.project1;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -8,10 +9,10 @@ import android.text.TextWatcher;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,6 +28,7 @@ import com.rengwuxian.materialedittext.validation.RegexpValidator;
 import java.util.Objects;
 
 import ru.katso.livebutton.LiveButton;
+import xyz.hasnat.sweettoast.SweetToast;
 
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
@@ -56,8 +58,8 @@ public class LoginActivity extends AppCompatActivity {
         parent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: Dismiss keyboard
-
+                Log.d(TAG, "onClick: called");
+                closeKeyboard();
             }
         });
 
@@ -163,7 +165,7 @@ public class LoginActivity extends AppCompatActivity {
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
                                         progressDialog.dismiss();
-                                        Toast.makeText(LoginActivity.this, "Logged In", Toast.LENGTH_SHORT).show();
+                                        SweetToast.success(LoginActivity.this, "Logged In 🎆");
                                         Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                         startActivity(intent);
@@ -219,7 +221,16 @@ public class LoginActivity extends AppCompatActivity {
         editTextEmail.addValidator(new RegexpValidator("Not a valid email", Utils.getRegexEmailPattern()));
         imageHide = (ImageView) findViewById(R.id.imageHide);
         imageShow = (ImageView) findViewById(R.id.imageShow);
-        parent = (RelativeLayout) findViewById(R.id.parentLoginMain);
+        parent = (RelativeLayout) findViewById(R.id.parent);
 
+    }
+
+    private void closeKeyboard() {
+        View view = this.getCurrentFocus();
+        Log.d(TAG, "closeKeyboard: called");
+        if (null != view) {
+            InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 }

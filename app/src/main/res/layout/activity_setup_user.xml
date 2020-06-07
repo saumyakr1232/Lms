@@ -35,6 +35,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
+            android:id="@+id/parent"
             android:layout_height="match_parent">
 
             <ProgressBar
@@ -73,6 +74,7 @@
                             android:layout_centerHorizontal="true"
                             android:layout_centerVertical="true" />
 
+
                         <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="40dp"
@@ -92,6 +94,17 @@
 
 
                 </androidx.cardview.widget.CardView>
+
+                <ProgressBar
+                    android:id="@+id/progressBarImage"
+                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/cardProfilePicture"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="10dp"
+                    android:indeterminate="true"
+                    android:visibility="gone" />
             </RelativeLayout>
 
             <RelativeLayout
@@ -163,9 +176,10 @@
 
                 <RadioGroup
                     android:id="@+id/rgGender"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/editDOB"
+                    android:layout_centerHorizontal="true"
                     android:orientation="horizontal">
 
                     <RadioButton

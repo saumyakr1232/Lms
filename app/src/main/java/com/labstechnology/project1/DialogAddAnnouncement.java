@@ -49,10 +49,8 @@ public class DialogAddAnnouncement extends DialogFragment {
         parent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+            closeKeyboard();
 
-                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                assert imm != null;
-                imm.hideSoftInputFromWindow(parent.getWindowToken(), 0);
             }
         });
 
@@ -138,6 +136,17 @@ public class DialogAddAnnouncement extends DialogFragment {
         imgAnnounce = (ImageView) view.findViewById(R.id.imgAnnounce);
 
 
+    }
+
+    private void closeKeyboard() {
+        View view = getDialog().getCurrentFocus();
+        Log.d(TAG, "closeKeyboard: view" + view);
+        if (null != view) {
+
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+
+        }
     }
 
 

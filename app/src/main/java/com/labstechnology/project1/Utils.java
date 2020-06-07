@@ -2,6 +2,8 @@ package com.labstechnology.project1;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -20,6 +22,8 @@ import com.labstechnology.project1.CallBacks.FireBaseCallBack;
 import com.labstechnology.project1.models.Announcement;
 
 import java.lang.reflect.Type;
+import java.net.URISyntaxException;
+import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -137,6 +141,35 @@ public class Utils {
                 }
             }
         });
+
+    }
+
+    public static String getPath(Context context, Uri uri) throws URISyntaxException {
+        if ("content".equalsIgnoreCase(uri.getScheme())) {
+            String[] projection = {"_data"};
+            Cursor cursor = null;
+
+            try {
+                cursor = context.getContentResolver().query(uri, projection, null, null, null);
+                int column_index = cursor.getColumnIndexOrThrow("_data");
+                if (cursor.moveToFirst()) {
+                    return cursor.getString(column_index);
+                }
+            } catch (Exception e) {
+                // Eat it
+            }
+        } else if ("file".equalsIgnoreCase(uri.getScheme())) {
+            return uri.getPath();
+        }
+
+
+        return null;
+    }
+
+    public boolean isImageFile(String path) {
+        String mimeType = URLConnection.guessContentTypeFromName(path);
+        Log.d(TAG, "isImageFile: file Type" + mimeType);
+        return mimeType != null && mimeType.indexOf("image") == 0;
 
     }
 

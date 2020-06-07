@@ -1,7 +1,7 @@
 package com.labstechnology.project1;
 
 import android.app.DatePickerDialog;
-import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -10,11 +10,13 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -42,6 +44,7 @@ import java.util.HashMap;
 import java.util.Objects;
 
 import ru.katso.livebutton.LiveButton;
+import xyz.hasnat.sweettoast.SweetToast;
 
 public class SetupUserActivity extends AppCompatActivity {
     private static final String TAG = "SetupUserActivity";
@@ -49,10 +52,8 @@ public class SetupUserActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private DatabaseReference userDatabase;
-    private final static int CHOOSE_PHOTO = 1;
     private String currentUserID;
 
-    private ProgressDialog progressDialog;
 
     private CardView CardProfileImage;
     private ImageView imgProfile;
@@ -62,7 +63,8 @@ public class SetupUserActivity extends AppCompatActivity {
     private RadioButton rbGender;
     private LiveButton btnDone;
     private int mYear, mMonth, mDay;
-    private ProgressBar progressBar;
+    private ProgressBar progressBar, progressBarImage;
+    private RelativeLayout parent, profilePicRelLayout;
     private StorageReference userProfileImageRef;
 
     //    private User user;
@@ -74,6 +76,19 @@ public class SetupUserActivity extends AppCompatActivity {
         setContentView(R.layout.activity_setup_user);
 
         initViews();
+
+        parent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                closeKeyboard();
+            }
+        });
+        profilePicRelLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                closeKeyboard();
+            }
+        });
 
         if (Utils.getDarkThemePreference(this)) {
             EmailEditText.setTextColor(getColor(R.color.white1));
@@ -127,20 +142,21 @@ public class SetupUserActivity extends AppCompatActivity {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
 
             if (resultCode == RESULT_OK) {
+                assert result != null;
                 Uri resultUri = result.getUri();
                 Log.d(TAG, "onActivityResult: bitmap" + resultUri.toString());
                 imgProfile.setImageURI(resultUri);
 
                 //OutputStream stream = new ByteArrayOutputStream();
 
-
+                progressBarImage.setVisibility(View.VISIBLE);
                 final StorageReference filePath = userProfileImageRef.child(currentUserID + ".jpg");
                 filePath.putFile(resultUri)
                         .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                                 if (task.isSuccessful()) {
-                                    Toast.makeText(SetupUserActivity.this, "Profile image is uploaded successfully", Toast.LENGTH_LONG).show();
+                                    SweetToast.info(SetupUserActivity.this, "Profile image is uploaded successfully");
                                     Log.d(TAG, "onComplete: image upload successful");
                                     filePath.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
                                         @Override
@@ -150,22 +166,28 @@ public class SetupUserActivity extends AppCompatActivity {
                                             assert url != null;
                                             final String downloadUrl = url.toString();
                                             Log.d(TAG, "onComplete: download url" + downloadUrl);
-                                            userDatabase.child("profileImage").setValue(downloadUrl).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            HashMap<String, Object> downloadMap = new HashMap<>();
+                                            downloadMap.put("profileImage", downloadUrl);
+                                            userDatabase.updateChildren(downloadMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
                                                     if (task.isSuccessful()) {
+                                                        progressBarImage.setVisibility(View.GONE);
                                                         Log.d(TAG, "onComplete: image linked to profile successful");
-                                                        Toast.makeText(SetupUserActivity.this, "image linked to your profile successfully", Toast.LENGTH_LONG).show();
+                                                        SweetToast.info(SetupUserActivity.this, "image linked to your profile successfully 😎");
 
                                                     } else {
-                                                        Log.d(TAG, "onComplete: image link to profile is unsuccessful");
-                                                        Toast.makeText(SetupUserActivity.this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                                                        progressBarImage.setVisibility(View.GONE);
+                                                        SweetToast.error(SetupUserActivity.this, "Unable to link profile picture to your account, try again 🤐");
+                                                        Log.d(TAG, "onComplete: image link to profile is unsuccessful 😎");
+                                                        SweetToast.error(SetupUserActivity.this, Objects.requireNonNull(task.getException()).getMessage());
                                                     }
                                                 }
                                             }).addOnFailureListener(new OnFailureListener() {
                                                 @Override
                                                 public void onFailure(@NonNull Exception e) {
-                                                    Toast.makeText(SetupUserActivity.this, "Failed to get the image download url", Toast.LENGTH_SHORT).show();
+                                                    SweetToast.error(SetupUserActivity.this, "Unable to link profile picture to your account, try again 🤐");
+                                                    progressBarImage.setVisibility(View.GONE);
                                                 }
                                             });
 
@@ -173,6 +195,7 @@ public class SetupUserActivity extends AppCompatActivity {
                                     });
 
                                 } else {
+                                    SweetToast.error(SetupUserActivity.this, "image upload unsuccessful 😞");
                                     Log.d(TAG, "onComplete: image upload unsuccessful");
                                 }
                             }
@@ -244,13 +267,15 @@ public class SetupUserActivity extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     if (task.isSuccessful()) {
+                        SweetToast.success(SetupUserActivity.this, "Congrats your picture is in ☁☁☁");
                         Log.d(TAG, "onComplete: sending user to HomeActivity");
                         progressBar.setVisibility(View.GONE);
                         Intent intent1 = new Intent(SetupUserActivity.this, HomeActivity.class);
                         intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent1);
-                        Toast.makeText(SetupUserActivity.this, "Data Updated Successfully", Toast.LENGTH_LONG).show();
                     } else {
+                        SweetToast.error(SetupUserActivity.this, "Some Error Occurred, 😟");
+                        progressBar.setVisibility(View.GONE);
                         Toast.makeText(SetupUserActivity.this, Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_LONG).show();
                     }
                 }
@@ -337,6 +362,16 @@ public class SetupUserActivity extends AppCompatActivity {
             }
         }); //TODO: generalize this validation valid only for indian mob Nos.
 
+        DOBEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    showDatePicker();
+                }
+
+            }
+        });
+
         DOBEditText.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
@@ -374,6 +409,18 @@ public class SetupUserActivity extends AppCompatActivity {
         DOBEditText = (MaterialEditText) findViewById(R.id.editDOB);
         radioGroupGender = (RadioGroup) findViewById(R.id.rgGender);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        parent = (RelativeLayout) findViewById(R.id.parent);
+        profilePicRelLayout = (RelativeLayout) findViewById(R.id.profilePicRelLayout);
+        progressBarImage = (ProgressBar) findViewById(R.id.progressBarImage);
 
+    }
+
+    private void closeKeyboard() {
+        View view = this.getCurrentFocus();
+        if (null != view) {
+
+            InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 }

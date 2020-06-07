@@ -1,6 +1,7 @@
 package com.labstechnology.project1;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -8,9 +9,10 @@ import android.text.TextWatcher;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.Toast;
+import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,6 +31,7 @@ import java.util.HashMap;
 import java.util.Objects;
 
 import ru.katso.livebutton.LiveButton;
+import xyz.hasnat.sweettoast.SweetToast;
 
 public class SignUpActivity extends AppCompatActivity {
     private static final String TAG = "SignUpActivity";
@@ -36,6 +39,7 @@ public class SignUpActivity extends AppCompatActivity {
     private MaterialEditText nameEditText, emailEditText, passwordEditText, confPassEditText;
     private LiveButton btnSignUp;
     private ImageView imageHide, imageShow, imageShow1, imageHide1;
+    private RelativeLayout parent;
 
     private FirebaseAuth mAuth;
     private Utils utils;
@@ -55,6 +59,13 @@ public class SignUpActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sign_up);
         initViews();
         utils = new Utils(this);
+
+        parent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                closeKeyboard();
+            }
+        });
 
         if (Utils.getDarkThemePreference(this)) {
             emailEditText.setTextColor(getColor(R.color.white1));
@@ -91,11 +102,11 @@ public class SignUpActivity extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
-                                        Toast.makeText(SignUpActivity.this, getString(R.string.registration_successful), Toast.LENGTH_SHORT).show();
+                                        SweetToast.success(SignUpActivity.this, getString(R.string.registration_successful) + "🎆");
                                         signInUser();
                                     } else {
                                         progressBar.setVisibility(View.GONE);
-                                        Toast.makeText(SignUpActivity.this, Objects.requireNonNull(task.getException()).getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                                        SweetToast.error(SignUpActivity.this, Objects.requireNonNull(task.getException()).getLocalizedMessage() + "🧐");
                                         utils.setSignedIn(false);
                                     }
 
@@ -107,6 +118,7 @@ public class SignUpActivity extends AppCompatActivity {
                     progressBar.setVisibility(View.GONE);
                     passwordEditText.setError(getString(R.string.passwords_did_not_match));
                     confPassEditText.setError(getString(R.string.passwords_did_not_match));
+                    SweetToast.error(SignUpActivity.this, "Common.. 😤");
                     utils.setSignedIn(false);
                 }
 
@@ -126,13 +138,13 @@ public class SignUpActivity extends AppCompatActivity {
                             handleEnrollmentSituation();
 
                             progressBar.setVisibility(View.GONE);
-                            Toast.makeText(SignUpActivity.this, "Logged In", Toast.LENGTH_SHORT).show();
+                            SweetToast.success(SignUpActivity.this, "Logged In 🤩");
                             Intent intent = new Intent(SignUpActivity.this, SetupUserActivity.class);
                             String email = emailEditText.getText().toString();
                             intent.putExtra("email", email);
                             startActivity(intent);
                         } else {
-                            Toast.makeText(SignUpActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            SweetToast.error(SignUpActivity.this, task.getException().getMessage() + "🧐");
                             progressBar.setVisibility(View.GONE);
                             Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
                             startActivity(intent);
@@ -149,7 +161,7 @@ public class SignUpActivity extends AppCompatActivity {
         Utils.findLastEnrollmentNo(new FireBaseCallBack() {
             @Override
             public void onSuccess(Object object) {
-                Toast.makeText(SignUpActivity.this, "Getting enrollment no for you", Toast.LENGTH_SHORT).show();
+                SweetToast.info(SignUpActivity.this, "Getting enrollment no for you 🛸");
                 String value = (String) object;
                 Integer enrollment = Integer.parseInt(value) + 1;
                 value = enrollment.toString();
@@ -164,10 +176,10 @@ public class SignUpActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
                             Log.d(TAG, "onComplete: enrollment no is set");
-                            Toast.makeText(SignUpActivity.this, "EnrollmentNo is set ", Toast.LENGTH_SHORT).show();
+                            SweetToast.success(SignUpActivity.this, "EnrollmentNo is set 🎆 ");
 
                         } else {
-                            Toast.makeText(SignUpActivity.this, Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
+                            SweetToast.error(SignUpActivity.this, Objects.requireNonNull(task.getException()).getMessage() + " 👈");
                         }
                     }
                 });
@@ -343,6 +355,16 @@ public class SignUpActivity extends AppCompatActivity {
         nameEditText.addValidator(new RegexpValidator("Not a valid name", Utils.getRegexNamePattern()));
         emailEditText.addValidator(new RegexpValidator("Not a valid Email", Utils.getRegexEmailPattern()));
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        parent = (RelativeLayout) findViewById(R.id.parent);
 
+    }
+
+    private void closeKeyboard() {
+        View view = this.getCurrentFocus();
+        if (null != view) {
+
+            InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 }

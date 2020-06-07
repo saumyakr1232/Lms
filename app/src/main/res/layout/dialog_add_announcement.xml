@@ -5,10 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/parentAddAnnouncementDialog"
-    android:padding="10dp">s
+    android:padding="10dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
+        android:id="@+id/parentRelLayout"
         android:layout_height="wrap_content">
 
         <ProgressBar

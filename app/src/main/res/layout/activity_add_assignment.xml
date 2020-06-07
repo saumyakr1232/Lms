@@ -4,8 +4,227 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/parent"
     tools:context=".AddAssignmentActivity">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:id="@+id/parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/firstRelLayout">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+            <TextView
+                android:id="@+id/textAnnouncement"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:text="Add New Assignment"
+                android:textSize="26sp"
+                android:textStyle="bold" />
+
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/editTextTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/uploadCenter"
+                android:layout_centerHorizontal="true"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:drawableStart="@drawable/ic_title"
+                android:drawablePadding="10dp"
+                android:hint="@string/title"
+                android:inputType="text"
+                android:singleLine="true"
+                app:met_floatingLabel="highlight"
+                app:met_floatingLabelTextColor="@color/colorAccent"
+                app:met_singleLineEllipsis="true"
+                app:met_textColorHint="#808080" />
+
+            <!--TODO: change icon for god's sake-->
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/editTextDescription"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_below="@id/pickDeadline"
+                android:layout_centerHorizontal="true"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:drawableStart="@drawable/ic_description"
+                android:drawablePadding="10dp"
+                android:gravity="top|left"
+                android:hint="@string/description"
+                android:inputType="textMultiLine"
+                android:maxLines="30"
+                android:scrollbars="vertical"
+                app:met_floatingLabel="highlight"
+                app:met_floatingLabelTextColor="@color/colorAccent"
+                app:met_textColorHint="#808080"
+                tools:ignore="RtlHardcoded" />
+
+            <TextView
+                android:id="@+id/txtDeadline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/editTextTitle"
+                android:layout_marginStart="10dp"
+                android:text="DeadLine"
+                android:textSize="16sp" />
+
+            <RelativeLayout
+                android:id="@+id/pickDeadline"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/txtDeadline">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true">
+
+                    <com.rengwuxian.materialedittext.MaterialEditText
+                        android:id="@+id/editTextDeadLineTime"
+                        android:layout_width="130dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:drawableStart="@drawable/ic_watch_later_24px"
+                        android:drawablePadding="10dp"
+                        android:hint="Time"
+                        android:inputType="time"
+                        android:singleLine="true"
+                        app:met_floatingLabel="highlight"
+                        app:met_floatingLabelTextColor="@color/colorAccent"
+                        app:met_textColorHint="#808080" />
+
+                    <com.rengwuxian.materialedittext.MaterialEditText
+                        android:id="@+id/editTextDeadLineDate"
+                        android:layout_width="130dp"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_toRightOf="@id/editTextDeadLineTime"
+                        android:drawableStart="@drawable/ic_event_24px"
+                        android:drawablePadding="10dp"
+                        android:hint="Date"
+                        android:inputType="date"
+                        android:singleLine="true"
+                        app:met_floatingLabel="highlight"
+                        app:met_floatingLabelTextColor="@color/colorAccent"
+                        app:met_textColorHint="#808080" />
+
+                </RelativeLayout>
+
+
+            </RelativeLayout>
+
+
+            <ru.katso.livebutton.LiveButton xmlns:livebutton="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/btnDone3"
+                android:layout_width="140dp"
+                android:layout_height="43dp"
+                android:layout_below="@id/editTextDescription"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:gravity="center"
+                android:inputType="textLongMessage"
+                android:text="Done"
+                android:textColor="@color/white1"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                livebutton:backgroundColor="@color/button1"
+                livebutton:corners="4dp"
+                livebutton:normalHeight="6dp"
+                livebutton:pressedHeight="2dp"
+                livebutton:shadowColor="#47776F" />
+
+            <RelativeLayout
+                android:id="@+id/uploadCenter"
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:layout_below="@id/textAnnouncement"
+                android:layout_marginTop="20dp">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardUpload"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:elevation="5dp"
+                    app:cardCornerRadius="5dp">
+
+                    <ImageView
+                        android:id="@+id/imgDocument"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_undraw_add_file_4gfw" />
+
+                    <TextView
+                        android:id="@+id/txtChooseFile"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:text="Choose File"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="18sp"
+                        android:translationZ="90dp" />
+                </androidx.cardview.widget.CardView>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@id/cardUpload">
+
+                    <TextView
+                        android:id="@+id/txtFileName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginTop="10dp"
+                        android:text="File Name"
+                        android:textColor="@color/colorAccent" />
+
+                    <TextView
+                        android:id="@+id/txtFileSize"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/txtFileName"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginTop="10dp"
+                        android:text="0.0 MB"
+                        android:textColor="@color/colorAccent" />
+
+                    <ProgressBar
+                        android:id="@+id/progressBarFile"
+                        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/txtFileSize"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="20dp"
+                        android:layout_marginBottom="10dp"
+                        android:indeterminate="true"
+                        android:visibility="gone" />
+
+                </RelativeLayout>
+
+
+            </RelativeLayout>
+        </RelativeLayout>
+    </androidx.core.widget.NestedScrollView>
 
     <RelativeLayout
         android:id="@+id/firstRelLayout"
@@ -18,198 +237,6 @@
             android:layout_height="wrap_content"
             android:background="@color/colorPrimaryDark"
             android:elevation="4dp" />
-
-    </RelativeLayout>
-
-
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_centerHorizontal="true"
-        android:layout_margin="20dp"
-        android:indeterminate="true"
-        android:visibility="gone" />
-
-    <TextView
-        android:id="@+id/textAnnouncement"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/firstRelLayout"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
-        android:text="Add New Assignment"
-        android:textSize="26sp"
-        android:textStyle="bold" />
-
-    <com.rengwuxian.materialedittext.MaterialEditText
-        android:id="@+id/editTextTitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/uploadCenter"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="10dp"
-        android:drawableStart="@drawable/ic_title"
-        android:drawablePadding="10dp"
-        android:hint="@string/title"
-        android:inputType="text"
-        android:singleLine="true"
-        app:met_floatingLabel="highlight"
-        app:met_floatingLabelTextColor="@color/colorAccent"
-        app:met_singleLineEllipsis="true"
-        app:met_textColorHint="#808080" />
-
-    <!--TODO: change icon for god's sake-->
-    <com.rengwuxian.materialedittext.MaterialEditText
-        android:id="@+id/editTextDescription"
-        android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:layout_below="@id/pickDeadline"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="10dp"
-        android:drawableStart="@drawable/ic_description"
-        android:drawablePadding="10dp"
-        android:gravity="top|left"
-        android:hint="@string/description"
-        android:inputType="textMultiLine"
-        android:maxLines="30"
-        android:scrollbars="vertical"
-        app:met_floatingLabel="highlight"
-        app:met_floatingLabelTextColor="@color/colorAccent"
-        app:met_textColorHint="#808080"
-        tools:ignore="RtlHardcoded" />
-
-    <TextView
-        android:id="@+id/txtDeadline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/editTextTitle"
-        android:text="DeadLine"
-        android:textSize="16sp" />
-
-    <RelativeLayout
-        android:id="@+id/pickDeadline"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/txtDeadline">
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true">
-
-            <com.rengwuxian.materialedittext.MaterialEditText
-                android:id="@+id/editTextDeadLineTime"
-                android:layout_width="130dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
-                android:drawableStart="@drawable/ic_watch_later_24px"
-                android:drawablePadding="10dp"
-                android:hint="Time"
-                android:inputType="time"
-                android:singleLine="true"
-                app:met_floatingLabel="highlight"
-                app:met_floatingLabelTextColor="@color/colorAccent"
-                app:met_textColorHint="#808080" />
-
-            <com.rengwuxian.materialedittext.MaterialEditText
-                android:id="@+id/editTextDeadLineDate"
-                android:layout_width="130dp"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_toRightOf="@id/editTextDeadLineTime"
-                android:drawableStart="@drawable/ic_event_24px"
-                android:drawablePadding="10dp"
-                android:hint="Date"
-                android:inputType="date"
-                android:singleLine="true"
-                app:met_floatingLabel="highlight"
-                app:met_floatingLabelTextColor="@color/colorAccent"
-                app:met_textColorHint="#808080" />
-
-        </RelativeLayout>
-
-
-    </RelativeLayout>
-
-
-    <ru.katso.livebutton.LiveButton xmlns:livebutton="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/btnDone3"
-        android:layout_width="140dp"
-        android:layout_height="43dp"
-        android:layout_below="@id/editTextDescription"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-        android:gravity="center"
-        android:inputType="textLongMessage"
-        android:text="Done"
-        android:textColor="@color/white1"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        livebutton:backgroundColor="@color/button1"
-        livebutton:corners="4dp"
-        livebutton:normalHeight="6dp"
-        livebutton:pressedHeight="2dp"
-        livebutton:shadowColor="#47776F" />
-
-    <RelativeLayout
-        android:id="@+id/uploadCenter"
-        android:layout_width="match_parent"
-        android:layout_height="160dp"
-        android:layout_below="@id/textAnnouncement"
-        android:layout_marginTop="20dp">
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardUpload"
-            android:layout_width="wrap_content"
-            android:layout_height="120dp"
-            android:layout_centerHorizontal="true"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:elevation="5dp"
-            app:cardCornerRadius="5dp">
-
-            <ImageView
-                android:id="@+id/imgDocument"
-                android:layout_width="wrap_content"
-                android:layout_height="120dp"
-                android:scaleType="fitCenter"
-                android:src="@drawable/ic_undraw_add_file_4gfw" />
-        </androidx.cardview.widget.CardView>
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="10dp"
-            android:text="Choose File"
-            android:textColor="@color/colorAccent"
-            android:textSize="18sp"
-            android:translationZ="90dp" />
-
-        <ProgressBar
-            android:id="@+id/progressBarFile"
-            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/cardUpload"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="10dp"
-            android:indeterminate="true"
-            android:visibility="gone" />
-
 
     </RelativeLayout>
 

@@ -108,13 +108,12 @@ public class AddAssignmentActivity extends AppCompatActivity {
 
 
         setSupportActionBar(toolbar);
-        toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
-        toolbar.setTitle("Add Assignments");
-        toolbar.setTitleTextColor(getColor(R.color.white1));
+        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
+        toolbar.setTitle("Add Assignment");
+        toolbar.setTitleTextColor(getResources().getColor(R.color.white1));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white);
-
         editTextDate.addValidator(new RegexpValidator("Not a valid Date", Utils.getRegexDatePattern()));
         //TODO: validate time
 
@@ -154,7 +153,12 @@ public class AddAssignmentActivity extends AppCompatActivity {
         cardDocument.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showFileChooser();
+                if (progressBar.getVisibility() == GONE) {
+                    showFileChooser();
+                } else {
+                    SweetToast.error(AddAssignmentActivity.this, "Wait, Document is uploading");
+                }
+
             }
         });
 
@@ -425,6 +429,7 @@ public class AddAssignmentActivity extends AppCompatActivity {
     }
 
     private void uploadDocumentAndLinkToAssignment() {
+        txtChooseFile.setVisibility(GONE);
         Log.d(TAG, "uploadDocumentAndLinkToAssignment: called");
         progressBar.setVisibility(View.VISIBLE);
         final StorageReference filePath = assignmentDocumentsRef.child(id + "upload");
@@ -449,6 +454,9 @@ public class AddAssignmentActivity extends AppCompatActivity {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if (task.isSuccessful()) {
+                                                txtChooseFile.setVisibility(View.VISIBLE);
+                                                txtFileSize.setVisibility(GONE);
+                                                txtFileName.setVisibility(View.VISIBLE);
                                                 progressBar.setVisibility(GONE);
                                                 Log.d(TAG, "onComplete: Document is linked to Assignment successful");
                                                 SweetToast.info(AddAssignmentActivity.this, "Document is linked to your Assignment successfully");

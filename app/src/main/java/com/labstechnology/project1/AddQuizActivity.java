@@ -104,12 +104,13 @@ public class AddQuizActivity extends AppCompatActivity {
 
 
         setSupportActionBar(toolbar);
-        toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
-        toolbar.setTitle("Add Assignments");
-        toolbar.setTitleTextColor(getColor(R.color.white1));
+        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
+        toolbar.setTitle("Add Quiz");
+        toolbar.setTitleTextColor(getResources().getColor(R.color.white1));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white);
+        editTextDate.addValidator(new RegexpValidator("Not a valid Date", Utils.getRegexDatePattern()));
 
         editTextDate.addValidator(new RegexpValidator("Not a valid Date", Utils.getRegexDatePattern()));
         //TODO: validate time
@@ -150,7 +151,12 @@ public class AddQuizActivity extends AppCompatActivity {
         cardDocument.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showFileChooser();
+                if (progressBar.getVisibility() == GONE) {
+                    showFileChooser();
+                } else {
+                    SweetToast.info(AddQuizActivity.this, "wait File is uploading");
+                }
+
             }
         });
 
@@ -159,7 +165,11 @@ public class AddQuizActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (editTextTitle.getText().toString().equals("") || editTextDescription.getText().toString().equals("")
-                        || editTextDate.getText().toString().equals("") || editTextTime.getText().toString().equals("")) {
+                        || editTextDate.getText().toString().equals("") || editTextTime.getText().toString().equals("")
+                        || documentUri == null) {
+                    if (documentUri == null) {
+                        SweetToast.error(AddQuizActivity.this, "You have not selected any document");
+                    }
                     editTextTitle.setMinCharacters(2);
                     editTextTitle.setMaxCharacters(30);
                     editTextDescription.setMinCharacters(5);
@@ -208,11 +218,11 @@ public class AddQuizActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
-                                Toast.makeText(AddQuizActivity.this, "Quiz Added Successfully", Toast.LENGTH_SHORT).show();
+                                SweetToast.success(AddQuizActivity.this, "Quiz Added Successfully");
                                 Log.d(TAG, "onComplete: Quiz is pushed");
                                 clearFields();
                             } else {
-                                Toast.makeText(AddQuizActivity.this, "Try Again", Toast.LENGTH_SHORT).show();
+                                SweetToast.error(AddQuizActivity.this, "Try Again");
                                 Log.d(TAG, "onComplete: error occurred during pushing Quiz " + task.getException().getLocalizedMessage());
                             }
                         }
@@ -317,13 +327,19 @@ public class AddQuizActivity extends AppCompatActivity {
 
     private void showFileChooser() {
         Log.d(TAG, "showFileChooser: called");
+
+        String[] mimeTypes =
+                {"application/pdf", "text/plain",
+                        "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"};
+
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("*/*");
 
         // Only pick openable and local files. Theoretically we could pull files from google drive
         // or other applications that have networked files, but that's unnecessary for this example.
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         //intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+        intent.setType("*/*");
+        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
 
         try {
             startActivityForResult(
@@ -347,36 +363,42 @@ public class AddQuizActivity extends AppCompatActivity {
                     String documentPath = data.getType();
                     String mimeType = getContentResolver().getType(documentUri);
                     Log.d(TAG, "onActivityResult: mimeType" + mimeType);
+                    if (mimeType.equals("image/jpeg")) {
+                        SweetToast.error(AddQuizActivity.this, "This Format is not allowed");
+                        documentUri = null;
 
-                    Cursor returnCursor =
-                            getContentResolver().query(documentUri, null, null, null, null);
-                    /*
-                     * Get the column indexes of the data in the Cursor,
-                     * move to the first row in the Cursor, get the data,
-                     * and display it.
-                     */
-                    int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
-                    int sizeIndex = returnCursor.getColumnIndex(OpenableColumns.SIZE);
-                    returnCursor.moveToFirst();
-                    FileName = returnCursor.getString(nameIndex);
-                    FileSize = Long.toString(returnCursor.getLong(sizeIndex));
-                    sizeOfFile = returnCursor.getLong(sizeIndex);
-                    Log.d(TAG, "onActivityResult: Name " + returnCursor.getString(nameIndex));
-                    Log.d(TAG, "onActivityResult: Size" + Long.toString(returnCursor.getLong(sizeIndex)));
+                    } else {
 
-                    setDocumentCard();
+                        Cursor returnCursor =
+                                getContentResolver().query(documentUri, null, null, null, null);
+                        /*
+                         * Get the column indexes of the data in the Cursor,
+                         * move to the first row in the Cursor, get the data,
+                         * and display it.
+                         */
+                        int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+                        int sizeIndex = returnCursor.getColumnIndex(OpenableColumns.SIZE);
+                        returnCursor.moveToFirst();
+                        FileName = returnCursor.getString(nameIndex);
+                        FileSize = Long.toString(returnCursor.getLong(sizeIndex));
+                        sizeOfFile = returnCursor.getLong(sizeIndex);
+                        Log.d(TAG, "onActivityResult: Name " + returnCursor.getString(nameIndex));
+                        Log.d(TAG, "onActivityResult: Size" + Long.toString(returnCursor.getLong(sizeIndex)));
+
+                        setDocumentCard();
 //
 //                    Log.d(TAG, "onActivityResult: file extension"+ documentPath);
 //                    // Get the path
 //                    String path = documentUri.getPath();
 //                    Log.d(TAG, "onActivityResult: file"+ path);
 
-                    // Get the file instance
-                    // File file = new File(path);
+                        // Get the file instance
+                        // File file = new File(path);
 //                    Log.d(TAG, "onActivityResult: file"+ file.canRead() + "(((( "+ file.getAbsolutePath());
 //                    // Upload the file or save offline  in temp
 
 
+                    }
                 }
                 break;
             default:
@@ -389,28 +411,30 @@ public class AddQuizActivity extends AppCompatActivity {
 
     private void setDocumentCard() {
         Log.d(TAG, "setDocumentCard: called");
-        if (sizeOfFile < 999999) {
-            FileSize = String.valueOf(sizeOfFile / 1000) + " KB";
-        } else if (sizeOfFile > 999999) {
-            FileSize = String.valueOf(sizeOfFile / 1000000) + " MB";
-        }
-        txtFileSize.setText(FileSize);
-        txtFileName.setText(FileName);
-        //Load thumbnail of a specific media item.
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-            try {
-                Bitmap thumbnail =
-                        getApplicationContext().getContentResolver().loadThumbnail(
-                                documentUri, new Size(640, 480), null);
-
+        if (documentUri != null) {
+            if (sizeOfFile < 999999) {
+                FileSize = String.valueOf(sizeOfFile / 1000) + " KB";
+            } else if (sizeOfFile > 999999) {
+                FileSize = String.valueOf(sizeOfFile / 1000000) + " MB";
+            }
+            txtFileSize.setText(FileSize);
+            txtFileName.setText(FileName);
+            //Load thumbnail of a specific media item.
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
                 try {
-                    txtChooseFile.setVisibility(GONE);
-                    imgDocument.setImageBitmap(thumbnail);
-                } catch (Exception e) {
+                    Bitmap thumbnail =
+                            getApplicationContext().getContentResolver().loadThumbnail(
+                                    documentUri, new Size(640, 480), null);
+
+                    try {
+                        txtChooseFile.setVisibility(GONE);
+                        imgDocument.setImageBitmap(thumbnail);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
             }
         }
 
@@ -418,55 +442,62 @@ public class AddQuizActivity extends AppCompatActivity {
 
     private void uploadDocumentAndLinkToAssignment() {
         Log.d(TAG, "uploadDocumentAndLinkToAssignment: called");
-        progressBar.setVisibility(View.VISIBLE);
-        final StorageReference filePath = quizDocumentsRef.child(id + "upload");
-        filePath.putFile(documentUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                if (task.isSuccessful()) {
-                    SweetToast.success(AddQuizActivity.this, "success");
-                    Log.d(TAG, "onComplete: document update successful");
-                    filePath.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Uri> task) {
-                            Log.d(TAG, "onComplete: HERE" + task.getResult());
-                            Uri url = task.getResult();
-                            assert url != null;
-                            final String downloadUrl = url.toString();
-                            Log.d(TAG, "onComplete: download url Document" + downloadUrl);
-                            HashMap<String, Object> downloadMap = new HashMap<>();
-                            downloadMap.put("resourceUrl", downloadUrl);
-                            rttDatabaseQuizRef.updateChildren(downloadMap).addOnCompleteListener(
-                                    new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if (task.isSuccessful()) {
-                                                progressBar.setVisibility(GONE);
-                                                Log.d(TAG, "onComplete: Document is linked to Quiz successful");
-                                                SweetToast.info(AddQuizActivity.this, "Document is linked to your Quiz successfully");
-                                            } else {
-                                                progressBar.setVisibility(GONE);
-                                                Log.d(TAG, "onComplete: Document link to Assignment is unsuccessful 😎");
-                                                SweetToast.error(AddQuizActivity.this, Objects.requireNonNull(task.getException()).getMessage());
+        if (documentUri != null) {
+            txtChooseFile.setVisibility(GONE);
+            progressBar.setVisibility(View.VISIBLE);
+            final StorageReference filePath = quizDocumentsRef.child(id + "upload");
+            filePath.putFile(documentUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        SweetToast.success(AddQuizActivity.this, "success");
+                        Log.d(TAG, "onComplete: document update successful");
+                        filePath.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Uri> task) {
+                                Log.d(TAG, "onComplete: HERE" + task.getResult());
+                                Uri url = task.getResult();
+                                assert url != null;
+                                final String downloadUrl = url.toString();
+                                Log.d(TAG, "onComplete: download url Document" + downloadUrl);
+                                HashMap<String, Object> downloadMap = new HashMap<>();
+                                downloadMap.put("resourceUrl", downloadUrl);
+                                rttDatabaseQuizRef.updateChildren(downloadMap).addOnCompleteListener(
+                                        new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if (task.isSuccessful()) {
+                                                    txtFileName.setText("File Name");
+                                                    txtFileSize.setText("0.0 MB");
+                                                    progressBar.setVisibility(GONE);
+                                                    txtChooseFile.setVisibility(View.VISIBLE);
+                                                    Log.d(TAG, "onComplete: Document is linked to Quiz successful");
+                                                    SweetToast.info(AddQuizActivity.this, "Document is linked to your Quiz successfully");
+
+                                                } else {
+                                                    progressBar.setVisibility(GONE);
+                                                    Log.d(TAG, "onComplete: Document link to Assignment is unsuccessful 😎");
+                                                    SweetToast.error(AddQuizActivity.this, Objects.requireNonNull(task.getException()).getMessage());
+                                                }
                                             }
                                         }
+                                ).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        SweetToast.error(AddQuizActivity.this, "Unable to link Document to assignment, try again");
+                                        progressBar.setVisibility(GONE);
                                     }
-                            ).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    SweetToast.error(AddQuizActivity.this, "Unable to link Document to assignment, try again");
-                                    progressBar.setVisibility(GONE);
-                                }
-                            });
-                        }
-                    });
-                } else {
-                    Log.d(TAG, "onComplete: error " + task.getException().getLocalizedMessage());
-                    SweetToast.error(AddQuizActivity.this, "Document upload unsuccessful 😞");
+                                });
+                            }
+                        });
+                    } else {
+                        Log.d(TAG, "onComplete: error " + task.getException().getLocalizedMessage());
+                        SweetToast.error(AddQuizActivity.this, "Document upload unsuccessful 😞");
 
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
 

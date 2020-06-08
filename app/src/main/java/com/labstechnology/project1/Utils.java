@@ -21,6 +21,7 @@ import com.google.gson.reflect.TypeToken;
 import com.labstechnology.project1.CallBacks.FireBaseCallBack;
 import com.labstechnology.project1.models.Announcement;
 import com.labstechnology.project1.models.Assignment;
+import com.labstechnology.project1.models.Quiz;
 import com.labstechnology.project1.models.User;
 
 import java.lang.reflect.Type;
@@ -265,6 +266,20 @@ public class Utils {
     public boolean isUserAttemptThisAssignment(Assignment assignment) {
         Log.d(TAG, "isUserAttemptAssignment: called");
         ArrayList<User> usersAttempted = assignment.getAttemptedBy();
+        if (usersAttempted == null) {
+            return false;
+        }
+        for (User user : usersAttempted) {
+            if (user.getuId().equals(Utils.getCurrentUid())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isUserAttemptThisQuiz(Quiz quiz) {
+        Log.d(TAG, "isUserAttemptAssignment: called");
+        ArrayList<User> usersAttempted = quiz.getAttemptedBy();
         if (usersAttempted == null) {
             return false;
         }

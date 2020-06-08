@@ -10,7 +10,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.clans.fab.FloatingActionButton;
@@ -21,7 +21,10 @@ import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.labstechnology.project1.adapters.AssignmentRecViewAdapter;
+import com.labstechnology.project1.adapters.QuizRecViewAdapter;
 import com.labstechnology.project1.models.Assignment;
+import com.labstechnology.project1.models.Quiz;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -36,10 +39,11 @@ public class TestActivity extends AppCompatActivity {
     private View view;
 
     private AssignmentRecViewAdapter assignmentRecViewAdapter;
+    private QuizRecViewAdapter quizRecViewAdapter;
 
 
     private FirebaseDatabase database;
-    private DatabaseReference myRef;
+    private DatabaseReference myRefAssignment, myRefQuizzes;
 
 
     @Override
@@ -82,13 +86,17 @@ public class TestActivity extends AppCompatActivity {
 
         assignmentRecViewAdapter = new AssignmentRecViewAdapter(context);
         recyclerViewAssignments.setAdapter(assignmentRecViewAdapter);
-        recyclerViewAssignments.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
+        recyclerViewAssignments.setLayoutManager(new GridLayoutManager(this, 2, RecyclerView.HORIZONTAL, false));
+
+        quizRecViewAdapter = new QuizRecViewAdapter(context);
+        recyclerViewQuizzes.setAdapter(quizRecViewAdapter);
+        recyclerViewQuizzes.setLayoutManager(new GridLayoutManager(this, 2, RecyclerView.HORIZONTAL, false));
 
 
         database = FirebaseDatabaseReference.DATABASE;
 
-        myRef = database.getReference("assignments");
-        myRef.addValueEventListener(new ValueEventListener() {
+        myRefAssignment = database.getReference("assignments");
+        myRefAssignment.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Log.d(TAG, "onDataChange: snapshot" + dataSnapshot.toString());
@@ -117,6 +125,37 @@ public class TestActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
                 Toast.makeText(TestActivity.this, "some error occurred" + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        myRefQuizzes = database.getReference("quizzes");
+        myRefQuizzes.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.d(TAG, "onDataChange: snapshot" + dataSnapshot.toString());
+                ArrayList<Quiz> quizzes = new ArrayList<>();
+
+                for (DataSnapshot oneSnapshot : dataSnapshot.getChildren()) {
+                    try {
+                        Quiz quiz = oneSnapshot.getValue(Quiz.class);
+                        Log.d(TAG, "onDataChange: quiz" + quiz);
+                        Log.d(TAG, "onDataChange: quiz key" + oneSnapshot.getKey());
+                        quizzes.add(0, quiz);
+                        assignmentRecViewAdapter.notifyDataSetChanged();
+                    } catch (DatabaseException e) {
+                        Log.d(TAG, "onDataChange: error occurred  at " + dataSnapshot.getChildren().toString() + e.getLocalizedMessage());
+                        e.printStackTrace();
+                    }
+
+
+                }
+                Log.d(TAG, "onDataChange: announcement:" + quizzes);
+                quizRecViewAdapter.setQuizzes(quizzes);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
 

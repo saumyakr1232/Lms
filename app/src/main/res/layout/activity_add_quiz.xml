@@ -141,7 +141,6 @@
                 android:id="@+id/uploadCenter"
                 android:layout_width="match_parent"
                 android:layout_height="160dp"
-                android:layout_below="@id/textAnnouncement"
                 android:layout_marginTop="20dp">
 
                 <androidx.cardview.widget.CardView
@@ -170,6 +169,15 @@
                         android:textSize="18sp"
                         android:translationZ="90dp" />
                 </androidx.cardview.widget.CardView>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_toRightOf="@id/cardUpload"
+                    android:text="Only '.doc','.docx',and \n'.txt'  files are allowed"
+                    android:textColor="@color/colorAccent" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"

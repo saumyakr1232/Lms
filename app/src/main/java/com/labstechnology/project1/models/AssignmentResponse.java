@@ -3,9 +3,11 @@ package com.labstechnology.project1.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.HashMap;
-
 public class AssignmentResponse implements Parcelable {
+    private String id;
+    private String uId;
+    private String assignmentId;
+    private String documentUri;
     public static final Creator<AssignmentResponse> CREATOR = new Creator<AssignmentResponse>() {
         @Override
         public AssignmentResponse createFromParcel(Parcel in) {
@@ -17,13 +19,18 @@ public class AssignmentResponse implements Parcelable {
             return new AssignmentResponse[size];
         }
     };
-    private String id;
-    private String uId;
-    private String assignmentId;
-    private String documentUri;
-    private HashMap<String, Object> timestamp;
 
     public AssignmentResponse() {
+    }
+
+    private long timestamp;
+
+    public AssignmentResponse(String id, String uId, String assignmentId, String documentUri, long timestamp) {
+        this.id = id;
+        this.uId = uId;
+        this.assignmentId = assignmentId;
+        this.documentUri = documentUri;
+        this.timestamp = timestamp;
     }
 
     protected AssignmentResponse(Parcel in) {
@@ -31,6 +38,12 @@ public class AssignmentResponse implements Parcelable {
         uId = in.readString();
         assignmentId = in.readString();
         documentUri = in.readString();
+        timestamp = in.readLong();
+    }
+
+    public static Creator<AssignmentResponse> getCREATOR() {
+
+        return CREATOR;
     }
 
     public String getId() {
@@ -65,11 +78,11 @@ public class AssignmentResponse implements Parcelable {
         this.documentUri = documentUri;
     }
 
-    public HashMap<String, Object> getTimestamp() {
+    public long getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(HashMap<String, Object> timestamp) {
+    public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
 
@@ -95,5 +108,6 @@ public class AssignmentResponse implements Parcelable {
         dest.writeString(uId);
         dest.writeString(assignmentId);
         dest.writeString(documentUri);
+        dest.writeLong(timestamp);
     }
 }

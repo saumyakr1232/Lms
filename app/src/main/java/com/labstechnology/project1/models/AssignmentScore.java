@@ -3,8 +3,6 @@ package com.labstechnology.project1.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.labstechnology.project1.Utils;
-
 public class AssignmentScore implements Parcelable {
     private int id;
     private String uId;
@@ -13,7 +11,6 @@ public class AssignmentScore implements Parcelable {
     private double outOf;
 
     public AssignmentScore(String uId, int assignmentId, double score, double outOf) {
-        this.id = Utils.getAssignmentId();
         this.uId = uId;
         this.assignmentId = assignmentId;
         this.score = score;

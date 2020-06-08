@@ -40,6 +40,7 @@ public class SettingsActivity extends AppCompatActivity {
         toolbar.setTitleTextColor(getColor(R.color.white1));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white);
 
 
         btnDayNight.setDuration(450);

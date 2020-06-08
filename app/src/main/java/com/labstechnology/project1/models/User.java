@@ -3,9 +3,10 @@ package com.labstechnology.project1.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 
 public class User implements Parcelable {
+
     public static final Creator<User> CREATOR = new Creator<User>() {
         @Override
         public User createFromParcel(Parcel in) {
@@ -22,15 +23,16 @@ public class User implements Parcelable {
     private String LastName;
     private String emailId;
     private String mobileNo;
-    private String profilePicture;
+    private String uId;
     private String dateOfBirth;
     private String gender;
-    private ArrayList<Quiz> attemptedQuizzes;
-    private ArrayList<Assignment> attemptedAssignments;
+    private String profileImage;
+    private HashMap<String, String> attemptedQuizzes;
 
     public User() {
     }
-    private String uId;
+
+    private HashMap<String, String> attemptedAssignments;//assignment.id to response.id
 
     protected User(Parcel in) {
         uId = in.readString();
@@ -39,11 +41,13 @@ public class User implements Parcelable {
         LastName = in.readString();
         emailId = in.readString();
         mobileNo = in.readString();
-        profilePicture = in.readString();
+        profileImage = in.readString();
         dateOfBirth = in.readString();
         gender = in.readString();
-        attemptedQuizzes = in.createTypedArrayList(Quiz.CREATOR);
-        attemptedAssignments = in.createTypedArrayList(Assignment.CREATOR);
+    }
+
+    public static Creator<User> getCREATOR() {
+        return CREATOR;
     }
 
     public String getuId() {
@@ -94,12 +98,12 @@ public class User implements Parcelable {
         this.mobileNo = mobileNo;
     }
 
-    public String getProfilePicture() {
-        return profilePicture;
+    public String getProfileImage() {
+        return profileImage;
     }
 
-    public void setProfilePicture(String profilePicture) {
-        this.profilePicture = profilePicture;
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
     }
 
     public String getDateOfBirth() {
@@ -118,37 +122,20 @@ public class User implements Parcelable {
         this.gender = gender;
     }
 
-    public ArrayList<Quiz> getAttemptedQuizzes() {
+    public HashMap<String, String> getAttemptedQuizzes() {
         return attemptedQuizzes;
     }
 
-    public void setAttemptedQuizzes(ArrayList<Quiz> attemptedQuizzes) {
+    public void setAttemptedQuizzes(HashMap<String, String> attemptedQuizzes) {
         this.attemptedQuizzes = attemptedQuizzes;
     }
 
-    public ArrayList<Assignment> getAttemptedAssignments() {
+    public HashMap<String, String> getAttemptedAssignments() {
         return attemptedAssignments;
     }
 
-    public void setAttemptedAssignments(ArrayList<Assignment> attemptedAssignments) {
+    public void setAttemptedAssignments(HashMap<String, String> attemptedAssignments) {
         this.attemptedAssignments = attemptedAssignments;
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "uId='" + uId + '\'' +
-                ", enrollmentNo='" + enrollmentNo + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", LastName='" + LastName + '\'' +
-                ", emailId='" + emailId + '\'' +
-                ", mobileNo='" + mobileNo + '\'' +
-                ", profilePicture='" + profilePicture + '\'' +
-                ", dateOfBirth='" + dateOfBirth + '\'' +
-                ", gender='" + gender + '\'' +
-                ", attemptedQuizzes=" + attemptedQuizzes +
-                ", attemptedAssignments=" + attemptedAssignments +
-                '}';
     }
 
     @Override
@@ -164,11 +151,26 @@ public class User implements Parcelable {
         dest.writeString(LastName);
         dest.writeString(emailId);
         dest.writeString(mobileNo);
-        dest.writeString(profilePicture);
+        dest.writeString(profileImage);
         dest.writeString(dateOfBirth);
         dest.writeString(gender);
-        dest.writeTypedList(attemptedQuizzes);
-        dest.writeTypedList(attemptedAssignments);
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "uId='" + uId + '\'' +
+                ", enrollmentNo='" + enrollmentNo + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", LastName='" + LastName + '\'' +
+                ", emailId='" + emailId + '\'' +
+                ", mobileNo='" + mobileNo + '\'' +
+                ", profileImage='" + profileImage + '\'' +
+                ", dateOfBirth='" + dateOfBirth + '\'' +
+                ", gender='" + gender + '\'' +
+                ", attemptedQuizzes=" + attemptedQuizzes +
+                ", attemptedAssignments=" + attemptedAssignments +
+                '}';
     }
 }
 

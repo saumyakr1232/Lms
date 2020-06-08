@@ -132,4 +132,19 @@ public class Assignment implements Parcelable {
         dest.writeTypedList(attemptedBy);
         dest.writeTypedList(responses);
     }
+
+    @Override
+    public String toString() {
+        return "Assignment{" +
+                "id='" + id + '\'' +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", resourceUrl='" + resourceUrl + '\'' +
+                ", deadLineDate='" + deadLineDate + '\'' +
+                ", deadLineTime='" + deadLineTime + '\'' +
+                ", timestamp=" + timestamp +
+                ", attemptedBy=" + attemptedBy +
+                ", responses=" + responses +
+                '}';
+    }
 }

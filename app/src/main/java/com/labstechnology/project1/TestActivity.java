@@ -104,8 +104,9 @@ public class TestActivity extends AppCompatActivity {
 
                 for (DataSnapshot oneSnapshot : dataSnapshot.getChildren()) {
                     try {
+                        Log.d(TAG, "onDataChange: dataSnapshot Assignment test activity");
                         Assignment assignment = oneSnapshot.getValue(Assignment.class);
-                        Log.d(TAG, "onDataChange: assignment" + assignment);
+                        Log.d(TAG, "onDataChange: assignment" + assignment.toString());
                         Log.d(TAG, "onDataChange: assignment key" + oneSnapshot.getKey());
                         assignments.add(0, assignment);
                         assignmentRecViewAdapter.notifyDataSetChanged();

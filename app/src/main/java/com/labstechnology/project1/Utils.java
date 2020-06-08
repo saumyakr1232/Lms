@@ -2,8 +2,6 @@ package com.labstechnology.project1;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -25,7 +23,6 @@ import com.labstechnology.project1.models.Quiz;
 import com.labstechnology.project1.models.User;
 
 import java.lang.reflect.Type;
-import java.net.URISyntaxException;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -86,51 +83,11 @@ public class Utils {
         return REGEX_NAME_PATTERN;
     }
 
-    public static int getQuizId() {
-        return quizId;
-    }
-
-    public static void setQuizId(int quizId) {
-        Utils.quizId = quizId;
-    }
-
-    public static int getAssignmentId() {
-        return assignmentId;
-    }
-
-    public static void setAssignmentId(int assignmentId) {
-        Utils.assignmentId = assignmentId;
-    }
-
-    public static int getQuizScoreId() {
-        return quizScoreId;
-    }
-
-    public static void setQuizScoreId(int quizScoreId) {
-        Utils.quizScoreId = quizScoreId;
-    }
-
-    public static int getAssignmentScoreId() {
-        return assignmentScoreId;
-    }
-
-    public static void setAssignmentScoreId(int assignmentScoreId) {
-        Utils.assignmentScoreId = assignmentScoreId;
-    }
 
     public static int getEventId() {
         return eventId;
     }
 
-    public static void setEventId(int eventId) {
-        Utils.eventId = eventId;
-    }
-
-    public static int getAnnouncementId() {
-
-        announcementId++;
-        return announcementId;
-    }
 
     public static void setLastEnrollmentNo() {
         Log.d(TAG, "setLastEnrollmentNo: called");
@@ -146,232 +103,6 @@ public class Utils {
             }
         });
 
-    }
-
-    public static String getPath(Context context, Uri uri) throws URISyntaxException {
-        if ("content".equalsIgnoreCase(uri.getScheme())) {
-            String[] projection = {"_data"};
-            Cursor cursor = null;
-
-            try {
-                cursor = context.getContentResolver().query(uri, projection, null, null, null);
-                int column_index = cursor.getColumnIndexOrThrow("_data");
-                if (cursor.moveToFirst()) {
-                    return cursor.getString(column_index);
-                }
-            } catch (Exception e) {
-                // Eat it
-            }
-        } else if ("file".equalsIgnoreCase(uri.getScheme())) {
-            return uri.getPath();
-        }
-
-
-        return null;
-    }
-
-    public boolean isImageFile(String path) {
-        String mimeType = URLConnection.guessContentTypeFromName(path);
-        Log.d(TAG, "isImageFile: file Type" + mimeType);
-        return mimeType != null && mimeType.indexOf("image") == 0;
-
-    }
-
-    public static String getCurrentUid() {
-        Log.d(TAG, "getCurrentUid: called");
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        String currentUserID = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
-        return currentUserID;
-    }
-
-    /**
-     * @param time        in milliseconds (Timestamp)
-     * @param mDateFormat SimpleDateFormat
-     * @return
-     */
-    public static String getDateTimeFromTimeStamp(Long time, String mDateFormat) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat(mDateFormat);
-        //dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-        Date dateTime = new Date(time);
-        return dateFormat.format(dateTime);
-    }
-
-    public static void findLastEnrollmentNo(final FireBaseCallBack callBack) {
-        final DatabaseReference myRef = FirebaseDatabaseReference.DATABASE.getReference().child("lastEnrollmentNo");
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Log.d(TAG, "onDataChange: datasnapshot" + dataSnapshot);
-                String lastEnrollmentNo = dataSnapshot.getValue(String.class);
-                Log.d(TAG, "onDataChange: got last enrollment no" + lastEnrollmentNo);
-                callBack.onSuccess(lastEnrollmentNo);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-
-    }
-
-    public static void updateLastEnrollmentNo(String enrollmentNo) {
-        Log.d(TAG, "updateLastEnrollmentNo: called");
-        final DatabaseReference myRef = FirebaseDatabaseReference.DATABASE.getReference().child("lastEnrollmentNo");
-        myRef.setValue(enrollmentNo).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                    Log.d(TAG, "onComplete: updating of enrollment no is complete");
-                } else {
-                    Log.d(TAG, "onComplete: error occurred during the updating of enrollment no" + task.getException().getLocalizedMessage());
-                }
-            }
-        });
-
-
-    }
-
-    public static void setAnnouncementId(int announcementId) {
-        Utils.announcementId = announcementId;
-    }
-
-    public static int getQuestionId() {
-        return questionId;
-    }
-
-    public static void setQuestionId(int questionId) {
-        Utils.questionId = questionId;
-    }
-
-    public static String getDatabaseName() {
-        return DATABASE_NAME;
-    }
-
-    public void setSignedIn(boolean value) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(DATABASE_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean("signedIn", value);
-        editor.apply();
-
-    }
-
-    public static String formatDateToFormat(Date date, String format) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat(format, new Locale("en"));
-        //dateFormat.setTimeZone(TimeZone.getTimeZone("Local"));
-        return dateFormat.format(date);
-    }
-
-    public boolean isUserAttemptThisAssignment(Assignment assignment) {
-        Log.d(TAG, "isUserAttemptAssignment: called");
-        ArrayList<User> usersAttempted = assignment.getAttemptedBy();
-        if (usersAttempted == null) {
-            return false;
-        }
-        for (User user : usersAttempted) {
-            if (user.getuId().equals(Utils.getCurrentUid())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean isUserAttemptThisQuiz(Quiz quiz) {
-        Log.d(TAG, "isUserAttemptAssignment: called");
-        ArrayList<User> usersAttempted = quiz.getAttemptedBy();
-        if (usersAttempted == null) {
-            return false;
-        }
-        for (User user : usersAttempted) {
-            if (user.getuId().equals(Utils.getCurrentUid())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public void setAckAnnouncement(Announcement ackAnnouncement) {
-        Log.d(TAG, "setAckAnnouncement: called" + ackAnnouncement.getId());
-        SharedPreferences sharedPreferences = context.getSharedPreferences(DATABASE_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        Gson gson = new Gson();
-        Type type = new TypeToken<ArrayList<String>>() {
-        }.getType();
-
-        String value = sharedPreferences.getString("ackAnnouncements", null);
-        ArrayList<String> oldAcks = gson.fromJson(value, type);
-
-        if (oldAcks != null) {
-            oldAcks.add(ackAnnouncement.getId());
-            editor.putString("ackAnnouncements", gson.toJson(oldAcks));
-            editor.commit();
-        } else {
-            oldAcks = new ArrayList<>();
-            oldAcks.add(ackAnnouncement.getId());
-            editor.putString("ackAnnouncements", gson.toJson(oldAcks));
-            editor.commit();
-        }
-
-    }
-
-    public ArrayList<String> getAckAnnouncements() {
-        Log.d(TAG, "getAckAnnouncements: called");
-        SharedPreferences sharedPreferences = context.getSharedPreferences(DATABASE_NAME, Context.MODE_PRIVATE);
-        String value = sharedPreferences.getString("ackAnnouncements", null);
-        Gson gson = new Gson();
-        Type type = new TypeToken<ArrayList<String>>() {
-        }.getType();
-        ArrayList<String> ackAnnouncements = gson.fromJson(value, type);
-        if (ackAnnouncements != null) {
-            Log.d(TAG, "getAckAnnouncements: ackAnnouncements " + ackAnnouncements.toString());
-            return ackAnnouncements;
-        }
-        return new ArrayList<>();
-
-    }
-
-    public boolean isNewAnnouncement(Announcement announcement) {
-        Gson gson = new Gson();
-        Type type = new TypeToken<ArrayList<String>>() {
-        }.getType();
-        ArrayList<String> ackAnnouncements = getAckAnnouncements();
-        if (announcement != null) {
-            if (ackAnnouncements.contains(announcement.getId())) {
-                return false;
-            } else {
-                return true;
-            }
-        } else {
-            return true;
-        }
-    }
-
-    public void setDarkThemePreference(boolean value) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(DATABASE_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean("darkThemePreference", value);
-        editor.apply();
-    }
-
-    public static boolean getDarkThemePreference(Context context) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(DATABASE_NAME, Context.MODE_PRIVATE);
-        return sharedPreferences.getBoolean("darkThemePreference", false);
-    }
-
-    public boolean isAdmin() {
-        Log.d(TAG, "isAdmin: called");
-        //TODO: write proper logic
-        return true;
-    }
-
-    public static void setTheme(Context context) {
-        if (Utils.getDarkThemePreference(context)) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-
-        } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        }
     }
 
     public static String getTerms() {
@@ -480,6 +211,87 @@ public class Utils {
                 "\n" +
                 "As long as the website and the information and services on the website are provided free of charge, we will not be liable for any loss or damage of any nature.\n";
         return value;
+    }
+
+    public boolean isImageFile(String path) {
+        String mimeType = URLConnection.guessContentTypeFromName(path);
+        Log.d(TAG, "isImageFile: file Type" + mimeType);
+        return mimeType != null && mimeType.indexOf("image") == 0;
+
+    }
+
+    public static String getCurrentUid() {
+        Log.d(TAG, "getCurrentUid: called");
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        String currentUserID = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
+        return currentUserID;
+    }
+
+    /**
+     * @param time        in milliseconds (Timestamp)
+     * @param mDateFormat SimpleDateFormat
+     * @return
+     */
+    public static String getDateTimeFromTimeStamp(Long time, String mDateFormat) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(mDateFormat);
+        //dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        Date dateTime = new Date(time);
+        return dateFormat.format(dateTime);
+    }
+
+    public static void findLastEnrollmentNo(final FireBaseCallBack callBack) {
+        final DatabaseReference myRef = FirebaseDatabaseReference.DATABASE.getReference().child("lastEnrollmentNo");
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.d(TAG, "onDataChange: datasnapshot" + dataSnapshot);
+                String lastEnrollmentNo = dataSnapshot.getValue(String.class);
+                Log.d(TAG, "onDataChange: got last enrollment no" + lastEnrollmentNo);
+                callBack.onSuccess(lastEnrollmentNo);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+    }
+
+    public static void updateLastEnrollmentNo(String enrollmentNo) {
+        Log.d(TAG, "updateLastEnrollmentNo: called");
+        final DatabaseReference myRef = FirebaseDatabaseReference.DATABASE.getReference().child("lastEnrollmentNo");
+        myRef.setValue(enrollmentNo).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Log.d(TAG, "onComplete: updating of enrollment no is complete");
+                } else {
+                    Log.d(TAG, "onComplete: error occurred during the updating of enrollment no" + task.getException().getLocalizedMessage());
+                }
+            }
+        });
+
+
+    }
+
+    public static String getDatabaseName() {
+        return DATABASE_NAME;
+    }
+
+    public void setSignedIn(boolean value) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(DATABASE_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("signedIn", value);
+        editor.apply();
+
+    }
+
+    public static String formatDateToFormat(Date date, String format) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(format, new Locale("en"));
+        //dateFormat.setTimeZone(TimeZone.getTimeZone("Local"));
+        return dateFormat.format(date);
     }
 
     public static String getTPartyNotices() {
@@ -598,6 +410,127 @@ public class Utils {
         return value;
     }
 
+    public boolean isUserAttemptThisQuiz(Quiz quiz) {
+        Log.d(TAG, "isUserAttemptAssignment: called");
+        ArrayList<User> usersAttempted = quiz.getAttemptedBy();
+        if (usersAttempted == null) {
+            return false;
+        }
+        for (User user : usersAttempted) {
+            if (user.getuId().equals(Utils.getCurrentUid())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void setAckAnnouncement(Announcement ackAnnouncement) {
+        Log.d(TAG, "setAckAnnouncement: called" + ackAnnouncement.getId());
+        SharedPreferences sharedPreferences = context.getSharedPreferences(DATABASE_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Gson gson = new Gson();
+        Type type = new TypeToken<ArrayList<String>>() {
+        }.getType();
+
+        String value = sharedPreferences.getString("ackAnnouncements", null);
+        ArrayList<String> oldAcks = gson.fromJson(value, type);
+
+        if (oldAcks != null) {
+            oldAcks.add(ackAnnouncement.getId());
+            editor.putString("ackAnnouncements", gson.toJson(oldAcks));
+            editor.commit();
+        } else {
+            oldAcks = new ArrayList<>();
+            oldAcks.add(ackAnnouncement.getId());
+            editor.putString("ackAnnouncements", gson.toJson(oldAcks));
+            editor.commit();
+        }
+
+    }
+
+    public ArrayList<String> getAckAnnouncements() {
+        Log.d(TAG, "getAckAnnouncements: called");
+        SharedPreferences sharedPreferences = context.getSharedPreferences(DATABASE_NAME, Context.MODE_PRIVATE);
+        String value = sharedPreferences.getString("ackAnnouncements", null);
+        Gson gson = new Gson();
+        Type type = new TypeToken<ArrayList<String>>() {
+        }.getType();
+        ArrayList<String> ackAnnouncements = gson.fromJson(value, type);
+        if (ackAnnouncements != null) {
+            Log.d(TAG, "getAckAnnouncements: ackAnnouncements " + ackAnnouncements.toString());
+            return ackAnnouncements;
+        }
+        return new ArrayList<>();
+
+    }
+
+    public boolean isNewAnnouncement(Announcement announcement) {
+        Gson gson = new Gson();
+        Type type = new TypeToken<ArrayList<String>>() {
+        }.getType();
+        ArrayList<String> ackAnnouncements = getAckAnnouncements();
+        if (announcement != null) {
+            if (ackAnnouncements.contains(announcement.getId())) {
+                return false;
+            } else {
+                return true;
+            }
+        } else {
+            return true;
+        }
+    }
+
+    public void setDarkThemePreference(boolean value) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(DATABASE_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("darkThemePreference", value);
+        editor.apply();
+    }
+
+    public static boolean getDarkThemePreference(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(DATABASE_NAME, Context.MODE_PRIVATE);
+        return sharedPreferences.getBoolean("darkThemePreference", false);
+    }
+
+    public boolean isAdmin() {
+        Log.d(TAG, "isAdmin: called");
+        //TODO: write proper logic
+        return true;
+    }
+
+    public static void setTheme(Context context) {
+        if (Utils.getDarkThemePreference(context)) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
+    }
+
+    private void checkUserExistence(final FireBaseCallBack fireBaseCallBack) {
+        Log.d(TAG, "checkUserExistence: called");
+        mAuth = FirebaseAuth.getInstance();
+        UserReference = FirebaseDatabaseReference.DATABASE.getReference().child("User");
+        final String current_user_id = mAuth.getCurrentUser().getUid();
+
+
+        UserReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (!dataSnapshot.hasChild(current_user_id)) {
+                    fireBaseCallBack.onSuccess(dataSnapshot);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                fireBaseCallBack.onError(databaseError);
+            }
+        });
+
+
+    }
+
     public static String getPrivacyPolicy() {
         String value = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Turpis in eu mi bibendum neque. Massa tincidunt dui ut ornare. Urna molestie at elementum eu facilisis. Facilisi nullam vehicula ipsum a arcu cursus vitae congue mauris. Purus in mollis nunc sed id semper risus in hendrerit. Tempor id eu nisl nunc mi ipsum faucibus vitae aliquet. Luctus venenatis lectus magna fringilla urna porttitor rhoncus dolor purus. Nisi est sit amet facilisis magna etiam tempor orci eu. Mauris ultrices eros in cursus turpis massa tincidunt dui. Arcu odio ut sem nulla pharetra diam sit. Habitant morbi tristique senectus et netus et malesuada fames ac. Sed augue lacus viverra vitae congue eu consequat. Sagittis purus sit amet volutpat consequat mauris nunc congue. In nibh mauris cursus mattis molestie. Erat imperdiet sed euismod nisi porta. Vivamus at augue eget arcu.\n" +
                 "\n" +
@@ -661,20 +594,20 @@ public class Utils {
         return value;
     }
 
-
-    private void checkUserExistence(final FireBaseCallBack fireBaseCallBack) {
-        Log.d(TAG, "checkUserExistence: called");
-        mAuth = FirebaseAuth.getInstance();
-        UserReference = FirebaseDatabaseReference.DATABASE.getReference().child("User");
-        final String current_user_id = mAuth.getCurrentUser().getUid();
+    public void getCurrentUser(final FireBaseCallBack fireBaseCallBack) {
+        Log.d(TAG, "getCurrentUser: called");
 
 
-        UserReference.addListenerForSingleValueEvent(new ValueEventListener() {
+        UserReference = FirebaseDatabaseReference.DATABASE.getReference()
+                .child(FirebaseConstants.USERS).child(getCurrentUid());
+        UserReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (!dataSnapshot.hasChild(current_user_id)) {
-                    fireBaseCallBack.onSuccess(dataSnapshot);
-                }
+                User user = dataSnapshot.getValue(User.class);
+                assert user != null;
+                user.setuId(Utils.getCurrentUid());
+                Log.d(TAG, "onDataChange: user" + user.toString());
+                fireBaseCallBack.onSuccess(user);
             }
 
             @Override
@@ -684,6 +617,23 @@ public class Utils {
         });
 
 
+    }
+
+    public boolean isUserAttemptThisAssignment(Assignment assignment) {
+        Log.d(TAG, "isUserAttemptAssignment: called");
+        ArrayList<User> usersAttempted = new ArrayList<>();
+        if (assignment != null) {
+            usersAttempted = assignment.getAttemptedBy();
+        }
+        if (usersAttempted == null) {
+            return false;
+        }
+        for (User user : usersAttempted) {
+            if (user.getuId().equals(Utils.getCurrentUid())) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

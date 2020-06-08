@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="16dp">
+
+    <TextView
+        android:id="@+id/textTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="16dp"
+        android:text="Assignment title"
+        android:textAlignment="center"
+        android:textColor="@color/colorAccent"
+        android:textSize="20sp" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/imageAddFile"
+        android:layout_width="wrap_content"
+        android:layout_height="150dp"
+        android:layout_below="@id/textTitle"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        android:elevation="5dp"
+        app:cardCornerRadius="5dp">
+
+        <ImageView
+            android:id="@+id/imgDocument"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_add_file2_gvbb" />
+
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/txtAddHere"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textTitle"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_toRightOf="@id/imageAddFile"
+        android:text="Add Your Assignment Here.."
+        android:textColor="@color/colorAccent"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/formatDesc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txtAddHere"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_toRightOf="@id/imageAddFile"
+        android:text="Only '.pdf' format is allowed"
+        android:textColor="@color/colorAccent"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/textFileName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/formatDesc"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="20dp"
+        android:layout_toRightOf="@id/imageAddFile"
+        android:text="File Name"
+        android:textColor="@color/colorAccent" />
+
+    <TextView
+        android:id="@+id/textFileSize"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textFileName"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_toRightOf="@id/imageAddFile"
+        android:text="0.0 MB"
+        android:textColor="@color/colorAccent" />
+
+    <ProgressBar
+        android:id="@+id/progressBarFile"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textFileSize"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_toRightOf="@id/imageAddFile"
+        android:indeterminate="true"
+        android:visibility="gone" />
+
+    <ru.katso.livebutton.LiveButton xmlns:livebutton="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/btnUpload"
+        android:layout_width="140dp"
+        android:layout_height="43dp"
+        android:layout_below="@id/imageAddFile"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="18dp"
+        android:layout_marginBottom="18dp"
+        android:gravity="center"
+        android:text="Upload"
+        android:textColor="@color/white1"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        livebutton:backgroundColor="@color/button1"
+        livebutton:corners="4dp"
+        livebutton:normalHeight="6dp"
+        livebutton:pressedHeight="2dp"
+        livebutton:shadowColor="#47776F" />
+
+</RelativeLayout>

@@ -141,15 +141,14 @@
                 android:id="@+id/uploadCenter"
                 android:layout_width="match_parent"
                 android:layout_height="160dp"
-                android:layout_below="@id/textAnnouncement"
                 android:layout_marginTop="20dp">
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardUpload"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_height="150dp"
                     android:layout_marginStart="10dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="5dp"
                     android:elevation="5dp"
                     app:cardCornerRadius="5dp">
 

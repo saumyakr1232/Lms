@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AssignmentActivity">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/textTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="10dp"
+                android:text="Assignment Title"
+                android:textAlignment="center"
+                android:textColor="@color/colorPrimary"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textDesc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/textTitle"
+                android:layout_margin="16dp"
+                android:text="Description"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/txtDueDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/textDesc"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="16dp"
+                android:text="Due Date"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/textDueDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/txtDueDate"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="16dp"
+                android:text="2 jun 12:30 AM"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/textCountDown"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/textDesc"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="16dp"
+                android:text="2 days 3 hr remaining"
+                android:textColor="@color/colorFailed" />
+
+            <Button
+                android:id="@+id/btnAddSubmission"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/textDueDate"
+                android:layout_centerHorizontal="true"
+                android:text="Add Submission" />
+
+            <Button
+                android:id="@+id/btnRemoveSubmission"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/btnAddSubmission"
+                android:layout_centerHorizontal="true"
+                android:text="Remove Submission"
+                android:visibility="gone" />
+
+
+        </RelativeLayout>
+
+
+    </androidx.core.widget.NestedScrollView>
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimaryDark"
+        android:elevation="4dp" />
+
+</RelativeLayout>

@@ -9,4 +9,13 @@
     <color name="lightBlue">#918DCC</color>
     <color name="mediumBlue">#636087</color>
     <color name="textcolor">#ffffff</color>
+    <color name="green">#67DC5B</color>
+
+    <color name="colorPrimaryN">#1A1A1A</color>
+    <color name="colorPrimaryDarkN">#1A1A1A</color>
+    <color name="colorAccentN">#6200EE</color>
+    <color name="colorWhite">#FFFFFF</color>
+    <color name="colorSubtitle">#C8C8C8</color>
+    <color name="colorFailed">#FF5F5F</color>
+    <color name="colorSelect">#5F5F5F</color>
 </resources>

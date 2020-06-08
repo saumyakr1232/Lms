@@ -30,21 +30,10 @@ public class User implements Parcelable {
 
     public User() {
     }
-
-    public User(String enrollmentNo, String firstName, String lastName, String emailId, String mobileNo, String profilePicture, String dateOfBirth, String gender, ArrayList<Quiz> attemptedQuizzes, ArrayList<Assignment> attemptedAssignments) {
-        this.enrollmentNo = enrollmentNo;
-        this.firstName = firstName;
-        LastName = lastName;
-        this.emailId = emailId;
-        this.mobileNo = mobileNo;
-        this.profilePicture = profilePicture;
-        this.dateOfBirth = dateOfBirth;
-        this.gender = gender;
-        this.attemptedQuizzes = attemptedQuizzes;
-        this.attemptedAssignments = attemptedAssignments;
-    }
+    private String uId;
 
     protected User(Parcel in) {
+        uId = in.readString();
         enrollmentNo = in.readString();
         firstName = in.readString();
         LastName = in.readString();
@@ -55,6 +44,14 @@ public class User implements Parcelable {
         gender = in.readString();
         attemptedQuizzes = in.createTypedArrayList(Quiz.CREATOR);
         attemptedAssignments = in.createTypedArrayList(Assignment.CREATOR);
+    }
+
+    public String getuId() {
+        return uId;
+    }
+
+    public void setuId(String uId) {
+        this.uId = uId;
     }
 
     public String getEnrollmentNo() {
@@ -140,7 +137,8 @@ public class User implements Parcelable {
     @Override
     public String toString() {
         return "User{" +
-                "enrollmentNo='" + enrollmentNo + '\'' +
+                "uId='" + uId + '\'' +
+                ", enrollmentNo='" + enrollmentNo + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", LastName='" + LastName + '\'' +
                 ", emailId='" + emailId + '\'' +
@@ -160,6 +158,7 @@ public class User implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(uId);
         dest.writeString(enrollmentNo);
         dest.writeString(firstName);
         dest.writeString(LastName);

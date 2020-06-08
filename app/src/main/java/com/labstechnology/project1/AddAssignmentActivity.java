@@ -53,6 +53,8 @@ import java.util.Objects;
 import ru.katso.livebutton.LiveButton;
 import xyz.hasnat.sweettoast.SweetToast;
 
+import static android.view.View.GONE;
+
 public class AddAssignmentActivity extends AppCompatActivity {
     private static final String TAG = "AddAssignmentActivity";
 
@@ -157,6 +159,7 @@ public class AddAssignmentActivity extends AppCompatActivity {
         });
 
 
+
         btnDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -190,7 +193,7 @@ public class AddAssignmentActivity extends AppCompatActivity {
                             return !isEmpty;
                         }
                     });
-                } else {
+                } else if (progressBar.getVisibility() == GONE) {
                     progressBar.setVisibility(View.VISIBLE);
 
                     Date date = new Date();
@@ -212,7 +215,6 @@ public class AddAssignmentActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
-                                progressBar.setVisibility(View.GONE);
                                 Toast.makeText(AddAssignmentActivity.this, "assignment Added Successfully", Toast.LENGTH_SHORT).show();
                                 Log.d(TAG, "onComplete: assignment is pushed");
                                 clearFields();
@@ -224,6 +226,8 @@ public class AddAssignmentActivity extends AppCompatActivity {
                     });
                     uploadDocumentAndLinkToAssignment();
 
+                } else {
+                    SweetToast.error(AddAssignmentActivity.this, "Wait Until file is uploading");
                 }
             }
         });
@@ -281,7 +285,7 @@ public class AddAssignmentActivity extends AppCompatActivity {
         DatePickerDialog datePickerDialog = new DatePickerDialog(AddAssignmentActivity.this, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                String date = dayOfMonth + "-" + month + "-" + year;
+                String date = dayOfMonth + "-" + (month) + "-" + year; //TODO : hereljadsl foidsfakld fjdsji
                 editTextDate.setText(date);
             }
         }, mYear, mMonth, mDay);
@@ -408,7 +412,7 @@ public class AddAssignmentActivity extends AppCompatActivity {
                                 documentUri, new Size(640, 480), null);
 
                 try {
-                    txtChooseFile.setVisibility(View.GONE);
+                    txtChooseFile.setVisibility(GONE);
                     imgDocument.setImageBitmap(thumbnail);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -422,6 +426,7 @@ public class AddAssignmentActivity extends AppCompatActivity {
 
     private void uploadDocumentAndLinkToAssignment() {
         Log.d(TAG, "uploadDocumentAndLinkToAssignment: called");
+        progressBar.setVisibility(View.VISIBLE);
         final StorageReference filePath = assignmentDocumentsRef.child(id + "upload");
         filePath.putFile(documentUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
             @Override
@@ -444,12 +449,11 @@ public class AddAssignmentActivity extends AppCompatActivity {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if (task.isSuccessful()) {
-                                                progressBar.setVisibility(View.GONE);
+                                                progressBar.setVisibility(GONE);
                                                 Log.d(TAG, "onComplete: Document is linked to Assignment successful");
-                                                SweetToast.info(AddAssignmentActivity.this, "Document is linked to your Assignment successfully 😎");
+                                                SweetToast.info(AddAssignmentActivity.this, "Document is linked to your Assignment successfully");
                                             } else {
-                                                progressBar.setVisibility(View.GONE);
-                                                SweetToast.error(AddAssignmentActivity.this, "Unable to link profile picture to your account, try again 🤐");
+                                                progressBar.setVisibility(GONE);
                                                 Log.d(TAG, "onComplete: Document link to Assignment is unsuccessful 😎");
                                                 SweetToast.error(AddAssignmentActivity.this, Objects.requireNonNull(task.getException()).getMessage());
                                             }
@@ -458,8 +462,8 @@ public class AddAssignmentActivity extends AppCompatActivity {
                             ).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
-                                    SweetToast.error(AddAssignmentActivity.this, "Unable to link Document to assignment, try again 🤐");
-                                    progressBar.setVisibility(View.GONE);
+                                    SweetToast.error(AddAssignmentActivity.this, "Unable to link Document to assignment, try again");
+                                    progressBar.setVisibility(GONE);
                                 }
                             });
                         }

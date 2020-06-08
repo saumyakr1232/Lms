@@ -7,23 +7,29 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Quiz implements Parcelable {
-    private int id;
+    private String id;
     private String title;
     private String description;
+    private String deadLineDate;
+    private String deadLineTime;
     private HashMap<String, Object> timeStamp;
     private ArrayList<MultipleChoiceQuestion> questions;
     private ArrayList<User> attemptedBy;
-    private HashMap<String, String> results;
+    private ArrayList<QuizScore> scores;
 
     public Quiz() {
     }
 
+
     protected Quiz(Parcel in) {
-        id = in.readInt();
+        id = in.readString();
         title = in.readString();
         description = in.readString();
+        deadLineDate = in.readString();
+        deadLineTime = in.readString();
         questions = in.createTypedArrayList(MultipleChoiceQuestion.CREATOR);
         attemptedBy = in.createTypedArrayList(User.CREATOR);
+        scores = in.createTypedArrayList(QuizScore.CREATOR);
     }
 
     public static final Creator<Quiz> CREATOR = new Creator<Quiz>() {
@@ -38,11 +44,11 @@ public class Quiz implements Parcelable {
         }
     };
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -60,6 +66,22 @@ public class Quiz implements Parcelable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getDeadLineDate() {
+        return deadLineDate;
+    }
+
+    public void setDeadLineDate(String deadLineDate) {
+        this.deadLineDate = deadLineDate;
+    }
+
+    public String getDeadLineTime() {
+        return deadLineTime;
+    }
+
+    public void setDeadLineTime(String deadLineTime) {
+        this.deadLineTime = deadLineTime;
     }
 
     public HashMap<String, Object> getTimeStamp() {
@@ -86,24 +108,26 @@ public class Quiz implements Parcelable {
         this.attemptedBy = attemptedBy;
     }
 
-    public HashMap<String, String> getResults() {
-        return results;
+    public ArrayList<QuizScore> getScores() {
+        return scores;
     }
 
-    public void setResults(HashMap<String, String> results) {
-        this.results = results;
+    public void setScores(ArrayList<QuizScore> scores) {
+        this.scores = scores;
     }
 
     @Override
     public String toString() {
         return "Quiz{" +
-                "id=" + id +
+                "id='" + id + '\'' +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
+                ", deadLineDate='" + deadLineDate + '\'' +
+                ", deadLineTime='" + deadLineTime + '\'' +
                 ", timeStamp=" + timeStamp +
                 ", questions=" + questions +
                 ", attemptedBy=" + attemptedBy +
-                ", results=" + results +
+                ", scores=" + scores +
                 '}';
     }
 
@@ -114,11 +138,14 @@ public class Quiz implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
+        dest.writeString(id);
         dest.writeString(title);
         dest.writeString(description);
+        dest.writeString(deadLineDate);
+        dest.writeString(deadLineTime);
         dest.writeTypedList(questions);
         dest.writeTypedList(attemptedBy);
+        dest.writeTypedList(scores);
     }
 }
 

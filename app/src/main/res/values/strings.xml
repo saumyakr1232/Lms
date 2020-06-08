@@ -22,8 +22,8 @@
     <string name="forgot_your_password">Forgot Your Password?</string>
     <string name="registration_successful">Registration Successful</string>
     <string name="sign_up_with_google">SignUp with Google</string>
-    <string name="sign_up_with_facebook">Signup with Facebook</string>
-    <string name="passwords_did_not_match">Passwords did\'nt match</string>
+    <string name="sign_up_with_facebook">Sign Up with Facebook</string>
+    <string name="passwords_did_not_match">Passwords didn\'t match</string>
     <string name="www_elearn_com">www.elearn.com</string>
     <string name="drawer_open">Drawer open</string>
     <string name="drawer_close">drawer close</string>
@@ -34,7 +34,7 @@
     <string name="exitDialogImage">exitDialogImage</string>
     <string name="home">Home</string>
     <string name="live">Live</string>
-    <string name="quizes">Quizes</string>
+    <string name="quizes">Quizzes</string>
     <string name="events">Events</string>
     <string name="announcements">Announcements</string>
     <string name="tests">Tests</string>

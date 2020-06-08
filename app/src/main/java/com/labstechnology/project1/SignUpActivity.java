@@ -118,7 +118,6 @@ public class SignUpActivity extends AppCompatActivity {
                     progressBar.setVisibility(View.GONE);
                     passwordEditText.setError(getString(R.string.passwords_did_not_match));
                     confPassEditText.setError(getString(R.string.passwords_did_not_match));
-                    SweetToast.error(SignUpActivity.this, "Common.. 😤");
                     utils.setSignedIn(false);
                 }
 

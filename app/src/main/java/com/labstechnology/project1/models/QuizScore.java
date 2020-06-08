@@ -3,18 +3,21 @@ package com.labstechnology.project1.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.HashMap;
+
 public class QuizScore implements Parcelable {
-    private int id;
+    private String id;
     private String uId;
     private String quizId;
     private double score;
     private double outOf;
+    private HashMap<MultipleChoiceQuestion, String> result;
 
     public QuizScore() {
     }
 
     protected QuizScore(Parcel in) {
-        id = in.readInt();
+        id = in.readString();
         uId = in.readString();
         quizId = in.readString();
         score = in.readDouble();
@@ -33,11 +36,11 @@ public class QuizScore implements Parcelable {
         }
     };
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -73,14 +76,23 @@ public class QuizScore implements Parcelable {
         this.outOf = outOf;
     }
 
+    public HashMap<MultipleChoiceQuestion, String> getResult() {
+        return result;
+    }
+
+    public void setResult(HashMap<MultipleChoiceQuestion, String> result) {
+        this.result = result;
+    }
+
     @Override
     public String toString() {
         return "QuizScore{" +
-                "id=" + id +
+                "id='" + id + '\'' +
                 ", uId='" + uId + '\'' +
                 ", quizId='" + quizId + '\'' +
                 ", score=" + score +
                 ", outOf=" + outOf +
+                ", result=" + result +
                 '}';
     }
 
@@ -91,7 +103,7 @@ public class QuizScore implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
+        dest.writeString(id);
         dest.writeString(uId);
         dest.writeString(quizId);
         dest.writeDouble(score);

@@ -20,6 +20,8 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.labstechnology.project1.CallBacks.FireBaseCallBack;
 import com.labstechnology.project1.models.Announcement;
+import com.labstechnology.project1.models.Assignment;
+import com.labstechnology.project1.models.User;
 
 import java.lang.reflect.Type;
 import java.net.URISyntaxException;
@@ -27,7 +29,8 @@ import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.TimeZone;
+import java.util.Locale;
+import java.util.Objects;
 
 
 public class Utils {
@@ -173,6 +176,25 @@ public class Utils {
 
     }
 
+    public static String getCurrentUid() {
+        Log.d(TAG, "getCurrentUid: called");
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        String currentUserID = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
+        return currentUserID;
+    }
+
+    /**
+     * @param time        in milliseconds (Timestamp)
+     * @param mDateFormat SimpleDateFormat
+     * @return
+     */
+    public static String getDateTimeFromTimeStamp(Long time, String mDateFormat) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(mDateFormat);
+        //dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        Date dateTime = new Date(time);
+        return dateFormat.format(dateTime);
+    }
+
     public static void findLastEnrollmentNo(final FireBaseCallBack callBack) {
         final DatabaseReference myRef = FirebaseDatabaseReference.DATABASE.getReference().child("lastEnrollmentNo");
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -234,16 +256,24 @@ public class Utils {
 
     }
 
-    /**
-     * @param time        in milliseconds (Timestamp)
-     * @param mDateFormat SimpleDateFormat
-     * @return
-     */
-    public static String getDateTimeFromTimeStamp(Long time, String mDateFormat) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat(mDateFormat);
-        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-        Date dateTime = new Date(time);
-        return dateFormat.format(dateTime);
+    public static String formatDateToFormat(Date date, String format) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(format, new Locale("en"));
+        //dateFormat.setTimeZone(TimeZone.getTimeZone("Local"));
+        return dateFormat.format(date);
+    }
+
+    public boolean isUserAttemptThisAssignment(Assignment assignment) {
+        Log.d(TAG, "isUserAttemptAssignment: called");
+        ArrayList<User> usersAttempted = assignment.getAttemptedBy();
+        if (usersAttempted == null) {
+            return false;
+        }
+        for (User user : usersAttempted) {
+            if (user.getuId().equals(Utils.getCurrentUid())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void setAckAnnouncement(Announcement ackAnnouncement) {

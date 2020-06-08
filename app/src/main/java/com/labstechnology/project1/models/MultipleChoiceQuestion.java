@@ -3,33 +3,39 @@ package com.labstechnology.project1.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.labstechnology.project1.Utils;
-
 import java.util.ArrayList;
 
 public class MultipleChoiceQuestion implements Parcelable {
-    private int id;
+    private String id;
     private String question;
     private ArrayList<String> options;
-    private String hint;
+    private String answer;
     private int flag;
 
     public MultipleChoiceQuestion() {
-    }
 
-    public MultipleChoiceQuestion(String question, ArrayList<String> options, String hint) {
-        this.id = Utils.getQuestionId();
-        this.question = question;
-        this.options = options;
-        this.hint = hint;
     }
 
     protected MultipleChoiceQuestion(Parcel in) {
-        id = in.readInt();
+        id = in.readString();
         question = in.readString();
         options = in.createStringArrayList();
-        hint = in.readString();
+        answer = in.readString();
         flag = in.readInt();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(question);
+        dest.writeStringList(options);
+        dest.writeString(answer);
+        dest.writeInt(flag);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<MultipleChoiceQuestion> CREATOR = new Creator<MultipleChoiceQuestion>() {
@@ -44,11 +50,11 @@ public class MultipleChoiceQuestion implements Parcelable {
         }
     };
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -68,12 +74,12 @@ public class MultipleChoiceQuestion implements Parcelable {
         this.options = options;
     }
 
-    public String getHint() {
-        return hint;
+    public String getAnswer() {
+        return answer;
     }
 
-    public void setHint(String hint) {
-        this.hint = hint;
+    public void setAnswer(String answer) {
+        this.answer = answer;
     }
 
     public int getFlag() {
@@ -87,25 +93,11 @@ public class MultipleChoiceQuestion implements Parcelable {
     @Override
     public String toString() {
         return "MultipleChoiceQuestion{" +
-                "id=" + id +
+                "id='" + id + '\'' +
                 ", question='" + question + '\'' +
                 ", options=" + options +
-                ", hint='" + hint + '\'' +
+                ", answer='" + answer + '\'' +
                 ", flag=" + flag +
                 '}';
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
-        dest.writeString(question);
-        dest.writeStringList(options);
-        dest.writeString(hint);
-        dest.writeInt(flag);
     }
 }

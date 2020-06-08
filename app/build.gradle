@@ -93,4 +93,7 @@ dependencies {
 
     //custom toast
     implementation 'com.github.TheHasnatBD:SweetToast:1.0.2'
+
+    //expandable list
+    implementation 'com.diegodobelo.expandingview:expanding-view:0.9.4'
 }

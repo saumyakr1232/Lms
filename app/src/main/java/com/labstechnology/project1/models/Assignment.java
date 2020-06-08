@@ -8,7 +8,7 @@ import java.util.HashMap;
 
 
 public class Assignment implements Parcelable {
-    private int id;
+    private String id;
     private String title;
     private String description;
     private String resourceUrl;
@@ -22,9 +22,10 @@ public class Assignment implements Parcelable {
     }
 
     protected Assignment(Parcel in) {
-        id = in.readInt();
+        id = in.readString();
         title = in.readString();
         description = in.readString();
+        resourceUrl = in.readString();
         deadLineDate = in.readString();
         deadLineTime = in.readString();
         attemptedBy = in.createTypedArrayList(User.CREATOR);
@@ -43,11 +44,11 @@ public class Assignment implements Parcelable {
         }
     };
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -65,6 +66,14 @@ public class Assignment implements Parcelable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getResourceUrl() {
+        return resourceUrl;
+    }
+
+    public void setResourceUrl(String resourceUrl) {
+        this.resourceUrl = resourceUrl;
     }
 
     public String getDeadLineDate() {
@@ -108,30 +117,16 @@ public class Assignment implements Parcelable {
     }
 
     @Override
-    public String toString() {
-        return "Assignment{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", deadLineDate='" + deadLineDate + '\'' +
-                ", deadLineTime='" + deadLineTime + '\'' +
-                ", timestamp=" + timestamp +
-                ", attemptedBy=" + attemptedBy +
-                ", responses=" + responses +
-                '}';
-    }
-
-
-    @Override
     public int describeContents() {
         return 0;
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
+        dest.writeString(id);
         dest.writeString(title);
         dest.writeString(description);
+        dest.writeString(resourceUrl);
         dest.writeString(deadLineDate);
         dest.writeString(deadLineTime);
         dest.writeTypedList(attemptedBy);

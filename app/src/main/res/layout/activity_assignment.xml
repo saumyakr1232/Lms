@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".AssignmentActivity">
 
     <androidx.core.widget.NestedScrollView
@@ -56,20 +57,68 @@
                 android:textColor="@color/colorPrimary" />
 
             <TextView
+                android:id="@+id/txtRemaining"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/textDesc"
+                android:text="Time remaining :"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
                 android:id="@+id/textCountDown"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/textDesc"
-                android:layout_alignParentStart="true"
-                android:layout_marginStart="16dp"
-                android:text="2 days 3 hr remaining"
+                android:layout_marginStart="5dp"
+                android:layout_toRightOf="@id/txtRemaining"
+                android:text="2 days 3 hr"
                 android:textColor="@color/colorFailed" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardThumbnail"
+                android:layout_width="140dp"
+                android:layout_height="140dp"
+                android:layout_below="@id/textCountDown"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="20dp"
+                android:elevation="5dp"
+                app:cardCornerRadius="8dp">
+
+
+                <ImageView
+                    android:id="@+id/thumbnail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="140dp"
+                    android:src="@drawable/ic_pdf" />
+
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:id="@+id/textFileName"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/cardThumbnail"
+                android:layout_marginStart="16dp"
+                android:text="File Name"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/textFileSize"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/cardThumbnail"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="16dp"
+                android:text="0.0 MB"
+                android:textColor="@color/colorPrimary" />
+
 
             <Button
                 android:id="@+id/btnAddSubmission"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/textDueDate"
+                android:layout_below="@id/textFileName"
                 android:layout_centerHorizontal="true"
                 android:text="Add Submission" />
 

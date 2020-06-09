@@ -2,6 +2,7 @@ package com.labstechnology.project1;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.text.format.DateFormat;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -292,6 +293,10 @@ public class Utils {
         SimpleDateFormat dateFormat = new SimpleDateFormat(format, new Locale("en"));
         //dateFormat.setTimeZone(TimeZone.getTimeZone("Local"));
         return dateFormat.format(date);
+    }
+
+    public static String convertMillsToFormat(String dateInMilliseconds, String dateFormat) {
+        return DateFormat.format(dateFormat, Long.parseLong(dateInMilliseconds)).toString();
     }
 
     public static String getTPartyNotices() {
@@ -604,10 +609,14 @@ public class Utils {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
-                assert user != null;
-                user.setuId(Utils.getCurrentUid());
-                Log.d(TAG, "onDataChange: user" + user.toString());
-                fireBaseCallBack.onSuccess(user);
+                if (user != null) {
+                    user.setuId(Utils.getCurrentUid());
+                    Log.d(TAG, "onDataChange: user" + user.toString());
+                    fireBaseCallBack.onSuccess(user);
+                } else {
+                    fireBaseCallBack.onSuccess(new User());
+                }
+
             }
 
             @Override

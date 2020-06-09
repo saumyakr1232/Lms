@@ -289,7 +289,7 @@ public class AddAssignmentActivity extends AppCompatActivity {
         DatePickerDialog datePickerDialog = new DatePickerDialog(AddAssignmentActivity.this, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                String date = dayOfMonth + "-" + (month) + "-" + year; //TODO : hereljadsl foidsfakld fjdsji
+                String date = dayOfMonth + "-" + (month + 1) + "-" + year;//Month start from zero
                 editTextDate.setText(date);
             }
         }, mYear, mMonth, mDay);

@@ -77,7 +77,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true">
 
-                    <com.rengwuxian.materialedittext.MaterialEditText
+                    <TextView
                         android:id="@+id/editTextDeadLineTime"
                         android:layout_width="130dp"
                         android:layout_height="wrap_content"
@@ -88,12 +88,9 @@
                         android:drawablePadding="10dp"
                         android:hint="Time"
                         android:inputType="time"
-                        android:singleLine="true"
-                        app:met_floatingLabel="highlight"
-                        app:met_floatingLabelTextColor="@color/colorAccent"
-                        app:met_textColorHint="#808080" />
+                        android:singleLine="true" />
 
-                    <com.rengwuxian.materialedittext.MaterialEditText
+                    <TextView
                         android:id="@+id/editTextDeadLineDate"
                         android:layout_width="130dp"
                         android:layout_height="wrap_content"
@@ -104,12 +101,10 @@
                         android:layout_toRightOf="@id/editTextDeadLineTime"
                         android:drawableStart="@drawable/ic_event_24px"
                         android:drawablePadding="10dp"
-                        android:hint="Date"
-                        android:inputType="date"
-                        android:singleLine="true"
-                        app:met_floatingLabel="highlight"
-                        app:met_floatingLabelTextColor="@color/colorAccent"
-                        app:met_textColorHint="#808080" />
+                        android:hint="18dp"
+                        android:text="Date"
+
+                        />
 
                 </RelativeLayout>
 

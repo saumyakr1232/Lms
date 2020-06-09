@@ -87,28 +87,21 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
 
 
+        updateNavigationHeaderView();
 
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, new MainFragment());
-        transaction.commit();
 
-
-
-
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                updateNavigationHeaderView();
+                transaction.commit();
             }
         }, 2000);
 
 
     }
+
 
     private void initViews() {
         Log.d(TAG, "initViews: called");

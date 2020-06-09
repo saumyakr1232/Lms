@@ -391,7 +391,7 @@ public class SetupUserActivity extends AppCompatActivity {
         DatePickerDialog datePickerDialog = new DatePickerDialog(SetupUserActivity.this, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                String date = dayOfMonth + "-" + month + "-" + year;
+                String date = dayOfMonth + "-" + (month + 1) + "-" + year;
                 DOBEditText.setText(date);
             }
         }, mYear, mMonth, mDay);

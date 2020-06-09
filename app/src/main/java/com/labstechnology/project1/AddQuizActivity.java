@@ -38,7 +38,6 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.rengwuxian.materialedittext.validation.METValidator;
-import com.rengwuxian.materialedittext.validation.RegexpValidator;
 
 import java.io.IOException;
 import java.sql.Timestamp;
@@ -56,7 +55,8 @@ public class AddQuizActivity extends AppCompatActivity {
     private static final String TAG = "AddQuizActivity";
     private static final int FILE_SELECT_CODE = 0;
     private ProgressBar progressBar;
-    private MaterialEditText editTextTitle, editTextDescription, editTextDate, editTextTime;
+    TextView textViewTime, textViewDate;
+    private MaterialEditText editTextTitle, editTextDescription;
     private LiveButton btnDone;
     private CardView cardDocument;
     private ImageView imgDocument;
@@ -110,13 +110,9 @@ public class AddQuizActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white);
-        editTextDate.addValidator(new RegexpValidator("Not a valid Date", Utils.getRegexDatePattern()));
-
-        editTextDate.addValidator(new RegexpValidator("Not a valid Date", Utils.getRegexDatePattern()));
-        //TODO: validate time
 
 
-        editTextDate.setOnClickListener(new View.OnClickListener() {
+        textViewDate.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onClick(View v) {
@@ -124,29 +120,13 @@ public class AddQuizActivity extends AppCompatActivity {
             }
         });
 
-        editTextTime.setOnClickListener(new View.OnClickListener() {
+        textViewTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showTimePicker();
             }
         });
-        editTextTime.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    showTimePicker();
-                }
-            }
-        });
 
-        editTextDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    showDatePicker();
-                }
-            }
-        });
 
         cardDocument.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -165,7 +145,7 @@ public class AddQuizActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (editTextTitle.getText().toString().equals("") || editTextDescription.getText().toString().equals("")
-                        || editTextDate.getText().toString().equals("") || editTextTime.getText().toString().equals("")
+                        || textViewDate.getText().toString().equals("") || textViewTime.getText().toString().equals("")
                         || documentUri == null) {
                     if (documentUri == null) {
                         SweetToast.error(AddQuizActivity.this, "You have not selected any document");
@@ -185,19 +165,6 @@ public class AddQuizActivity extends AppCompatActivity {
                             return !isEmpty;
                         }
                     });
-                    editTextDate.validateWith(new METValidator("Date??? ") {
-                        @Override
-                        public boolean isValid(@NonNull CharSequence text, boolean isEmpty) {
-                            return !isEmpty;
-                        }
-                    });
-
-                    editTextTime.validateWith(new METValidator("Need a Time") {
-                        @Override
-                        public boolean isValid(@NonNull CharSequence text, boolean isEmpty) {
-                            return !isEmpty;
-                        }
-                    });
                 } else if (progressBar.getVisibility() == GONE) {
                     progressBar.setVisibility(View.VISIBLE);
 
@@ -209,8 +176,8 @@ public class AddQuizActivity extends AppCompatActivity {
                     quiz.put("id", id);
                     quiz.put("title", editTextTitle.getText().toString());
                     quiz.put("description", editTextDescription.getText().toString());
-                    quiz.put("deadLineDate", editTextDate.getText().toString());
-                    quiz.put("deadLineTime", editTextTime.getText().toString());
+                    quiz.put("deadLineDate", textViewDate.getText().toString());
+                    quiz.put("deadLineTime", textViewTime.getText().toString());
                     quiz.put("timestamp", timestamp);
 
                     assert id != null;
@@ -241,21 +208,19 @@ public class AddQuizActivity extends AppCompatActivity {
         Log.d(TAG, "handleEditTextColors: called");
         editTextTitle.setPrimaryColor(this.getColor(R.color.colorAccent));
         editTextDescription.setPrimaryColor(this.getColor(R.color.colorAccent));
-        editTextTime.setPrimaryColor(this.getColor(R.color.colorAccent));
-        editTextDate.setPrimaryColor(this.getColor(R.color.colorAccent));
         if (Utils.getDarkThemePreference(this)) {
             editTextTitle.setTextColor(this.getColor(R.color.white1));
             editTextDescription.setTextColor(this.getColor(R.color.white1));
-            editTextDate.setTextColor(this.getColor(R.color.white1));
-            editTextTime.setTextColor(this.getColor(R.color.white1));
+            textViewDate.setTextColor(this.getColor(R.color.white1));
+            textViewTime.setTextColor(this.getColor(R.color.white1));
         }
 
     }
 
     private void clearFields() {
         Log.d(TAG, "clearFields: called");
-        editTextTime.setText("");
-        editTextDate.setText("");
+        textViewTime.setText("");
+        textViewDate.setText("");
         editTextTitle.setText("");
         editTextDescription.setText("");
     }
@@ -263,8 +228,8 @@ public class AddQuizActivity extends AppCompatActivity {
 
     private void initViews() {
         Log.d(TAG, "initViews: called");
-        editTextDate = (MaterialEditText) findViewById(R.id.editTextDeadLineDate);
-        editTextTime = (MaterialEditText) findViewById(R.id.editTextDeadLineTime);
+        textViewDate = (TextView) findViewById(R.id.editTextDeadLineDate);
+        textViewTime = (TextView) findViewById(R.id.editTextDeadLineTime);
         editTextTitle = (MaterialEditText) findViewById(R.id.editTextTitle);
         editTextDescription = (MaterialEditText) findViewById(R.id.editTextDescription);
         btnDone = (LiveButton) findViewById(R.id.btnDone3);
@@ -288,8 +253,8 @@ public class AddQuizActivity extends AppCompatActivity {
         DatePickerDialog datePickerDialog = new DatePickerDialog(AddQuizActivity.this, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                String date = dayOfMonth + "-" + (month) + "-" + year; //TODO : hereljadsl foidsfakld fjdsji
-                editTextDate.setText(date);
+                String date = dayOfMonth + "-" + (month + 1) + "-" + year;
+                textViewDate.setText(date);
             }
         }, mYear, mMonth, mDay);
         datePickerDialog.show();
@@ -305,7 +270,7 @@ public class AddQuizActivity extends AppCompatActivity {
                 new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        editTextTime.setText(hourOfDay + ":" + minute);
+                        textViewTime.setText(hourOfDay + ":" + minute);
                     }
                 }, mHour, mMinute, true);
         timePickerDialog.show();

@@ -1,8 +1,10 @@
 package com.labstechnology.project1;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -56,9 +58,12 @@ public class DialogUploadAssignment extends DialogFragment {
     private ProgressBar progressBar;
     private ImageView imgDocument;
     private String FileName, FileSize;
+    private Bitmap thumbnail;
     private long sizeOfFile;
+    private OnUploadDialogResult mDialogResult;
 
     private Uri documentUri;
+
 
     private StorageReference assignmentDocumentsRef, assignmentDocumentsRef2;
     private DatabaseReference rttAssDatabaseRef;
@@ -115,22 +120,8 @@ public class DialogUploadAssignment extends DialogFragment {
             }
         });
 
-        btnUpload.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (documentUri != null && !isSubmitted) {
-                    uploadDocumentAndLinkToAssignment();
-                } else if (isSubmitted) {
-                    if (documentUri != null) {
-                        updateDocumentAndLinkToAssignment();
-                    }
+        btnUpload.setOnClickListener(new UploadListener());
 
-                } else {
-                    SweetToast.error(context, "No document selected");
-                }
-
-            }
-        });
 
         return builder.create();
     }
@@ -415,6 +406,7 @@ public class DialogUploadAssignment extends DialogFragment {
                     int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
                     int sizeIndex = returnCursor.getColumnIndex(OpenableColumns.SIZE);
                     returnCursor.moveToFirst();
+
                     FileName = returnCursor.getString(nameIndex);
                     FileSize = Long.toString(returnCursor.getLong(sizeIndex));
                     sizeOfFile = returnCursor.getLong(sizeIndex);
@@ -443,7 +435,7 @@ public class DialogUploadAssignment extends DialogFragment {
         //Load thumbnail of a specific media item.
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
             try {
-                Bitmap thumbnail =
+                thumbnail =
                         Objects.requireNonNull(context).getApplicationContext().getContentResolver().loadThumbnail(
                                 documentUri, new Size(640, 480), null);
 
@@ -459,6 +451,52 @@ public class DialogUploadAssignment extends DialogFragment {
         }
     }
 
+    @Override
+    public void onDismiss(@NonNull DialogInterface dialog) {
+        super.onDismiss(dialog);
+        final Activity activity = getActivity();
+        if (activity instanceof DialogInterface.OnDismissListener) {
+            ((DialogInterface.OnDismissListener) activity).onDismiss(dialog);
+        }
+    }
+
+    public void setDialogResult(OnUploadDialogResult dialogResult) {
+        mDialogResult = dialogResult;
+    }
+
+
+    public interface OnUploadDialogResult {
+        void finish(HashMap<String, Object> result);
+    }
+
+    private class UploadListener implements android.view.View.OnClickListener {
+
+        @Override
+        public void onClick(View v) {
+            if (mDialogResult != null) {
+                HashMap<String, Object> resultMap = new HashMap<>();
+                resultMap.put("fileName", FileName);
+                resultMap.put("fileSize", FileSize);
+                resultMap.put("thumbnail", thumbnail);
+                mDialogResult.finish(resultMap);
+
+                if (documentUri != null && !isSubmitted) {
+                    uploadDocumentAndLinkToAssignment();
+                } else if (isSubmitted) {
+                    if (documentUri != null) {
+                        updateDocumentAndLinkToAssignment();
+                    } else {
+                        SweetToast.error(context, "No document selected");
+
+                    }
+
+                } else {
+                    SweetToast.error(context, "No document selected");
+                }
+            }
+        }
+    }
+
     private void initViews(View view) {
         Log.d(TAG, "initViews: called");
         textFileName = (TextView) view.findViewById(R.id.textFileName);
@@ -470,4 +508,6 @@ public class DialogUploadAssignment extends DialogFragment {
         imgDocument = (ImageView) view.findViewById(R.id.imgDocument);
         textTitle = (TextView) view.findViewById(R.id.textTitle);
     }
+
+
 }

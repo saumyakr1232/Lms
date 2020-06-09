@@ -2,6 +2,7 @@ package com.labstechnology.project1;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -59,8 +60,8 @@ public class DialogUploadAssignment extends DialogFragment {
 
     private Uri documentUri;
 
-    private StorageReference assignmentDocumentsRef;
-    private DatabaseReference rttAssDatabaseRef, rttUserDatabaseRef;
+    private StorageReference assignmentDocumentsRef, assignmentDocumentsRef2;
+    private DatabaseReference rttAssDatabaseRef;
     private String id;
 
     private Utils utils;
@@ -68,10 +69,12 @@ public class DialogUploadAssignment extends DialogFragment {
     private Assignment assignment;
     private User user;
     private boolean isSubmitted;
+    private Context context;
 
-    public DialogUploadAssignment(Assignment assignment, boolean isSubmitted) {
+    public DialogUploadAssignment(Context context, Assignment assignment, boolean isSubmitted) {
         this.assignment = assignment;
         this.isSubmitted = isSubmitted;
+        this.context = context;
     }
 
     @NonNull
@@ -84,7 +87,7 @@ public class DialogUploadAssignment extends DialogFragment {
         initViews(view);
 
 
-        utils = new Utils(getContext());
+        utils = new Utils(context);
 
         final DatabaseReference myRef = FirebaseDatabaseReference.DATABASE.getReference().child("assignments");
         id = myRef.push().getKey();
@@ -93,9 +96,10 @@ public class DialogUploadAssignment extends DialogFragment {
                 .child(FirebaseConstants.ASSIGNMENTS).child(assignment.getId());
 
         assignmentDocumentsRef = FirebaseStorage.getInstance().getReference().child("assignmentDocumentsUsers")
-                .child(Utils.getCurrentUid()).child(id + "$" + Utils.getCurrentUid());
+                .child(Utils.getCurrentUid()).child(id + ".pdf");
 
-        rttUserDatabaseRef = FirebaseDatabaseReference.DATABASE.getReference().child(FirebaseConstants.USERS).child(Utils.getCurrentUid());
+        assignmentDocumentsRef2 = FirebaseStorage.getInstance().getReference().child("assignmentDocumentsUsers")
+                .child(Utils.getCurrentUid());
 
         textTitle.setText(assignment.getTitle());
 
@@ -105,7 +109,7 @@ public class DialogUploadAssignment extends DialogFragment {
                 if (progressBar.getVisibility() == GONE) {
                     showFileChooser();
                 } else {
-                    SweetToast.error(getContext(), "Wait, Document is uploading");
+                    SweetToast.error(context, "Wait, Document is uploading");
                 }
 
             }
@@ -117,9 +121,12 @@ public class DialogUploadAssignment extends DialogFragment {
                 if (documentUri != null && !isSubmitted) {
                     uploadDocumentAndLinkToAssignment();
                 } else if (isSubmitted) {
-                    updateDocumentAndLinkToAssignment();
+                    if (documentUri != null) {
+                        updateDocumentAndLinkToAssignment();
+                    }
+
                 } else {
-                    SweetToast.error(getContext(), "No document selected");
+                    SweetToast.error(context, "No document selected");
                 }
 
             }
@@ -131,19 +138,15 @@ public class DialogUploadAssignment extends DialogFragment {
     private void updateDocumentAndLinkToAssignment() {
         Log.d(TAG, "updateDocumentAndLinkToAssignment: called");
 
-    }
-
-    private void uploadDocumentAndLinkToAssignment() {
-        Log.d(TAG, "uploadDocumentAndLinkToAssignment: called");
         textDesc.setText("Your Assignment is uploading");
         Log.d(TAG, "uploadDocumentAndLinkToAssignment: called");
         progressBar.setVisibility(View.VISIBLE);
-        final StorageReference filePath = assignmentDocumentsRef.child(id + "upload");
+        final StorageReference filePath = assignmentDocumentsRef;
         filePath.putFile(documentUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                 if (task.isSuccessful()) {
-                    SweetToast.success(getContext(), "success");
+                    SweetToast.success(context, "success");
                     Log.d(TAG, "onComplete: document update successful");
                     filePath.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
                         @Override
@@ -156,7 +159,125 @@ public class DialogUploadAssignment extends DialogFragment {
                             utils.getCurrentUser(new FireBaseCallBack() {
                                 @Override
                                 public void onSuccess(Object object) {
-                                    User user = (User) object;
+                                    final User user = (User) object;
+                                    HashMap<String, Object> uploadMap = new HashMap<>();
+
+
+                                    Date date = new Date();
+                                    long time = date.getTime();
+//                                    Timestamp timestamp = new Timestamp(time);
+
+
+                                    AssignmentResponse assignmentResponse = new AssignmentResponse();
+                                    assignmentResponse.setId(id);
+                                    assignmentResponse.setuId(Utils.getCurrentUid());
+                                    assignmentResponse.setAssignmentId(assignment.getId());
+                                    assignmentResponse.setDocumentUri(downloadUrl);
+                                    assignmentResponse.setTimestamp(time);
+
+
+                                    //Gson gson = new Gson();
+                                    ArrayList<AssignmentResponse> assignmentResponses = assignment.getResponses();
+                                    ArrayList<AssignmentResponse> newAssignmentResponses = new ArrayList<>();
+
+                                    for (AssignmentResponse response : assignmentResponses
+                                    ) {
+                                        if (response.getAssignmentId().equals(assignment.getId())) {
+                                            Log.d(TAG, "onSuccess: HERE" + response.getId());
+                                            assignmentDocumentsRef2.child(response.getId() + ".pdf").delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if (task.isSuccessful()) {
+                                                        SweetToast.success(context, "Old file deleted successfully");
+                                                    } else {
+                                                        Log.d(TAG, "onComplete: error" + task.getException().getMessage());
+                                                    }
+                                                }
+                                            }).addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.d(TAG, "onFailure: error while deleting old file" + e.getMessage());
+                                                }
+                                            });
+                                        } else {
+                                            newAssignmentResponses.add(response);
+                                        }
+                                    }
+
+                                    newAssignmentResponses.add(assignmentResponse);
+                                    uploadMap.put("responses", newAssignmentResponses);
+
+                                    Log.d(TAG, "onSuccess: newResponses " + newAssignmentResponses.toString());
+
+                                    rttAssDatabaseRef.updateChildren(uploadMap).addOnCompleteListener(
+                                            new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if (task.isSuccessful()) {
+                                                        SweetToast.success(context, "Your submissions is updated successfully");
+                                                        progressBar.setVisibility(GONE);
+                                                        dismiss();
+                                                    }
+                                                }
+                                            }
+                                    ).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            SweetToast.error(getActivity(), "Unable to link Document to assignment, try again");
+                                            progressBar.setVisibility(GONE);
+                                        }
+                                    });
+
+
+                                }
+
+                                @Override
+                                public void onError(Object object) {
+                                    try {
+                                        DatabaseError error = (DatabaseError) object;
+                                        Log.d(TAG, "onError: error" + error.getMessage());
+                                    } catch (ClassCastException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
+
+
+                        }
+                    });
+                } else {
+                    Log.d(TAG, "onComplete: error " + task.getException().getLocalizedMessage());
+                    SweetToast.error(context, "image upload unsuccessful 😞");
+
+                }
+            }
+        });
+
+    }
+
+    private void uploadDocumentAndLinkToAssignment() {
+        Log.d(TAG, "uploadDocumentAndLinkToAssignment: called");
+        textDesc.setText("Your Assignment is uploading");
+        Log.d(TAG, "uploadDocumentAndLinkToAssignment: called");
+        progressBar.setVisibility(View.VISIBLE);
+        final StorageReference filePath = assignmentDocumentsRef;
+        filePath.putFile(documentUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                if (task.isSuccessful()) {
+                    Log.d(TAG, "onComplete: document update successful");
+                    filePath.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Uri> task) {
+                            Log.d(TAG, "onComplete: HERE" + task.getResult());
+                            Uri url = task.getResult();
+                            assert url != null;
+                            final String downloadUrl = url.toString();
+                            Log.d(TAG, "onComplete: download url Document" + downloadUrl);
+                            utils.getCurrentUser(new FireBaseCallBack() {
+                                @Override
+                                public void onSuccess(Object object) {
+                                    final User user = (User) object;
                                     HashMap<String, Object> uploadMap = new HashMap<>();
 
 
@@ -172,16 +293,15 @@ public class DialogUploadAssignment extends DialogFragment {
                                         uploadMap.put("attemptedBy", attemptedBy);
                                         Log.d(TAG, "onSuccess: we got first attempt on this assignment " + user.toString());
                                     } else {
-                                        if (utils.isUserAttemptThisAssignment(assignment)) {
                                             attemptedBy.add(user);
                                             uploadMap.put("attemptedBy", attemptedBy);
                                             Log.d(TAG, "onSuccess: not first attempt on this assignment " + assignment.getAttemptedBy().size());
-                                        }
+
 
                                     }
 
                                     AssignmentResponse assignmentResponse = new AssignmentResponse();
-                                    assignmentResponse.setId(id + "$" + Utils.getCurrentUid());
+                                    assignmentResponse.setId(id);
                                     assignmentResponse.setuId(Utils.getCurrentUid());
                                     assignmentResponse.setAssignmentId(assignment.getId());
                                     assignmentResponse.setDocumentUri(downloadUrl);
@@ -208,43 +328,20 @@ public class DialogUploadAssignment extends DialogFragment {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
                                                     if (task.isSuccessful()) {
-
-                                                        HashMap<String, String> attemptedAssignments = new HashMap<>();
-                                                        attemptedAssignments.put(assignment.getId(), id);
-
-                                                        HashMap<String, Object> updateUserMap = new HashMap<>();
-                                                        updateUserMap.put("attemptedAssignments", attemptedAssignments);
-
-                                                        rttUserDatabaseRef.updateChildren(updateUserMap).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                            @Override
-                                                            public void onComplete(@NonNull Task<Void> task) {
-                                                                textDesc.setText("File Uploaded");
-                                                                textFileSize.setVisibility(GONE);
-                                                                textFileName.setVisibility(View.VISIBLE);
-                                                                progressBar.setVisibility(GONE);
-
-                                                                dismiss();
-                                                                Log.d(TAG, "onComplete: Document is linked to Assignment successful");
-                                                                SweetToast.info(getContext(), "Document is linked to your Assignment successfully");
-                                                            }
-                                                        }).addOnFailureListener(new OnFailureListener() {
-                                                            @Override
-                                                            public void onFailure(@NonNull Exception e) {
-                                                                SweetToast.error(getContext(), "Unable to update your profile");
-                                                            }
-                                                        });
-
+                                                        progressBar.setVisibility(GONE);
+                                                        SweetToast.success(context, "success");
+                                                        dismiss();
                                                     } else {
                                                         progressBar.setVisibility(GONE);
                                                         Log.d(TAG, "onComplete: Document link to Assignment is unsuccessful 😎");
-                                                        SweetToast.error(getContext(), Objects.requireNonNull(task.getException()).getMessage());
+                                                        //SweetToast.error(context, Objects.requireNonNull(task.getException()).getMessage());
                                                     }
                                                 }
                                             }
                                     ).addOnFailureListener(new OnFailureListener() {
                                         @Override
                                         public void onFailure(@NonNull Exception e) {
-                                            SweetToast.error(getContext(), "Unable to link Document to assignment, try again");
+                                            SweetToast.error(context, "Unable to link Document to assignment, try again");
                                             progressBar.setVisibility(GONE);
                                         }
                                     });
@@ -263,12 +360,11 @@ public class DialogUploadAssignment extends DialogFragment {
                                 }
                             });
 
-
                         }
                     });
                 } else {
                     Log.d(TAG, "onComplete: error " + task.getException().getLocalizedMessage());
-                    SweetToast.error(getContext(), "image upload unsuccessful 😞");
+                    SweetToast.error(context, "image upload unsuccessful 😞");
 
                 }
             }
@@ -291,7 +387,7 @@ public class DialogUploadAssignment extends DialogFragment {
                     FILE_SELECT_CODE);
         } catch (android.content.ActivityNotFoundException ex) {
             // Potentially direct the user to the Market with a Dialog
-            SweetToast.warning(getActivity(), "Please install a File Manager.", Toast.LENGTH_LONG);
+            SweetToast.warning(context, "Please install a File Manager.", Toast.LENGTH_LONG);
         }
     }
 
@@ -306,11 +402,11 @@ public class DialogUploadAssignment extends DialogFragment {
                     documentUri = data.getData();
                     Log.d(TAG, "File Uri: " + documentUri.toString());
                     String documentPath = data.getType();
-                    String mimeType = Objects.requireNonNull(getActivity()).getContentResolver().getType(documentUri);
+                    String mimeType = Objects.requireNonNull(context).getContentResolver().getType(documentUri);
                     Log.d(TAG, "onActivityResult: mimeType" + mimeType);
 
                     Cursor returnCursor =
-                            getActivity().getContentResolver().query(documentUri, null, null, null, null);
+                            context.getContentResolver().query(documentUri, null, null, null, null);
                     /*
                      * Get the column indexes of the data in the Cursor,
                      * move to the first row in the Cursor, get the data,
@@ -330,7 +426,7 @@ public class DialogUploadAssignment extends DialogFragment {
                 }
                 break;
             default:
-                SweetToast.warning(getActivity(), "you did'nt select any file");
+                SweetToast.warning(context, "you did'nt select any file");
                 break;
         }
     }
@@ -348,7 +444,7 @@ public class DialogUploadAssignment extends DialogFragment {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
             try {
                 Bitmap thumbnail =
-                        Objects.requireNonNull(getActivity()).getApplicationContext().getContentResolver().loadThumbnail(
+                        Objects.requireNonNull(context).getApplicationContext().getContentResolver().loadThumbnail(
                                 documentUri, new Size(640, 480), null);
 
                 try {

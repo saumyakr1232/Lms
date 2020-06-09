@@ -71,6 +71,9 @@ public class AssignmentRecViewAdapter extends RecyclerView.Adapter<AssignmentRec
         if (utils.isUserAttemptThisAssignment(assignments.get(position))) {
             holder.textStatus.setText("Attempted");
             holder.textStatus.setTextColor(context.getColor(R.color.green));
+        } else {
+            holder.textStatus.setText("Pending");
+            holder.textStatus.setTextColor(context.getColor(R.color.colorRed));
         }
         holder.parent.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -58,7 +58,7 @@ public class AssignmentActivity extends AppCompatActivity {
             btnAddSubmission.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    DialogUploadAssignment dialogUploadAssignment = new DialogUploadAssignment(incomingAssignment, isSubmitted);
+                    DialogUploadAssignment dialogUploadAssignment = new DialogUploadAssignment(AssignmentActivity.this, incomingAssignment, isSubmitted);
                     dialogUploadAssignment.show(getSupportFragmentManager(), "Dialog upload submission");
                 }
             });
@@ -73,7 +73,7 @@ public class AssignmentActivity extends AppCompatActivity {
             btnAddSubmission.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    DialogUploadAssignment dialogUploadAssignment = new DialogUploadAssignment(incomingAssignment, isSubmitted);
+                    DialogUploadAssignment dialogUploadAssignment = new DialogUploadAssignment(AssignmentActivity.this, incomingAssignment, isSubmitted);
                     dialogUploadAssignment.show(getSupportFragmentManager(), "Dialog upload submission");
                 }
             });

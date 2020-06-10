@@ -12,14 +12,15 @@ public class Quiz implements Parcelable {
     private String description;
     private String deadLineDate;
     private String deadLineTime;
+    private String timeLimit;
     private HashMap<String, Object> timeStamp;
     private ArrayList<MultipleChoiceQuestion> questions;
     private ArrayList<User> attemptedBy;
+    private ArrayList<User> attempting;
     private ArrayList<QuizScore> scores;
 
     public Quiz() {
     }
-
 
     protected Quiz(Parcel in) {
         id = in.readString();
@@ -27,8 +28,10 @@ public class Quiz implements Parcelable {
         description = in.readString();
         deadLineDate = in.readString();
         deadLineTime = in.readString();
+        timeLimit = in.readString();
         questions = in.createTypedArrayList(MultipleChoiceQuestion.CREATOR);
         attemptedBy = in.createTypedArrayList(User.CREATOR);
+        attempting = in.createTypedArrayList(User.CREATOR);
         scores = in.createTypedArrayList(QuizScore.CREATOR);
     }
 
@@ -84,6 +87,14 @@ public class Quiz implements Parcelable {
         this.deadLineTime = deadLineTime;
     }
 
+    public String getTimeLimit() {
+        return timeLimit;
+    }
+
+    public void setTimeLimit(String timeLimit) {
+        this.timeLimit = timeLimit;
+    }
+
     public HashMap<String, Object> getTimeStamp() {
         return timeStamp;
     }
@@ -108,6 +119,14 @@ public class Quiz implements Parcelable {
         this.attemptedBy = attemptedBy;
     }
 
+    public ArrayList<User> getAttempting() {
+        return attempting;
+    }
+
+    public void setAttempting(ArrayList<User> attempting) {
+        this.attempting = attempting;
+    }
+
     public ArrayList<QuizScore> getScores() {
         return scores;
     }
@@ -124,9 +143,11 @@ public class Quiz implements Parcelable {
                 ", description='" + description + '\'' +
                 ", deadLineDate='" + deadLineDate + '\'' +
                 ", deadLineTime='" + deadLineTime + '\'' +
+                ", timeLimit='" + timeLimit + '\'' +
                 ", timeStamp=" + timeStamp +
                 ", questions=" + questions +
                 ", attemptedBy=" + attemptedBy +
+                ", attempting=" + attempting +
                 ", scores=" + scores +
                 '}';
     }
@@ -143,8 +164,10 @@ public class Quiz implements Parcelable {
         dest.writeString(description);
         dest.writeString(deadLineDate);
         dest.writeString(deadLineTime);
+        dest.writeString(timeLimit);
         dest.writeTypedList(questions);
         dest.writeTypedList(attemptedBy);
+        dest.writeTypedList(attempting);
         dest.writeTypedList(scores);
     }
 }

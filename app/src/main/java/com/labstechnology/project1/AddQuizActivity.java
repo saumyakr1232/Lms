@@ -55,7 +55,7 @@ public class AddQuizActivity extends AppCompatActivity {
     private static final String TAG = "AddQuizActivity";
     private static final int FILE_SELECT_CODE = 0;
     private ProgressBar progressBar;
-    TextView textViewTime, textViewDate;
+    private TextView textViewTime, textViewDate, textTimeLimit;
     private MaterialEditText editTextTitle, editTextDescription;
     private LiveButton btnDone;
     private CardView cardDocument;
@@ -127,6 +127,13 @@ public class AddQuizActivity extends AppCompatActivity {
             }
         });
 
+        textTimeLimit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showTimePicker();
+            }
+        });
+
 
         cardDocument.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -179,6 +186,7 @@ public class AddQuizActivity extends AppCompatActivity {
                     quiz.put("deadLineDate", textViewDate.getText().toString());
                     quiz.put("deadLineTime", textViewTime.getText().toString());
                     quiz.put("timestamp", timestamp);
+                    quiz.put("timeLimit", textTimeLimit.getText().toString());
 
                     assert id != null;
                     myRef.child(id).updateChildren(quiz).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -241,6 +249,7 @@ public class AddQuizActivity extends AppCompatActivity {
         txtChooseFile = (TextView) findViewById(R.id.txtChooseFile);
         txtFileName = (TextView) findViewById(R.id.txtFileName);
         txtFileSize = (TextView) findViewById(R.id.txtFileSize);
+        textTimeLimit = (TextView) findViewById(R.id.textTimeLimit);
 
     }
 

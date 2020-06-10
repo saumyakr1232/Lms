@@ -1,11 +1,16 @@
 package com.labstechnology.project1;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -19,6 +24,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.labstechnology.project1.CallBacks.FireBaseCallBack;
 import com.labstechnology.project1.models.Quiz;
+import com.labstechnology.project1.models.QuizScore;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,6 +35,9 @@ import xyz.hasnat.sweettoast.SweetToast;
 public class QuizActivity extends AppCompatActivity {
     private static final String TAG = "QuizActivity";
 
+    private TextView textDesc, textTimeLimit, textStatus, textGrade;
+    private Button btnStartQuiz;
+    private androidx.appcompat.widget.Toolbar toolbar;
     private Utils utils;
     private Quiz incomingQuiz, rttQuiz;
 
@@ -67,6 +76,15 @@ public class QuizActivity extends AppCompatActivity {
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
+        setSupportActionBar(toolbar);
+        toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
+        toolbar.setTitle(incomingQuiz.getTitle());
+        toolbar.setTitleTextColor(getColor(R.color.white1));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white);
+
 
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -147,9 +165,49 @@ public class QuizActivity extends AppCompatActivity {
 
     private void initViews() {
         Log.d(TAG, "initViews: called");
+        btnStartQuiz = (Button) findViewById(R.id.btnStartQuiz);
+        textDesc = (TextView) findViewById(R.id.textDesc);
+        textGrade = (TextView) findViewById(R.id.textGrade);
+        textStatus = (TextView) findViewById(R.id.textStatus);
+        textTimeLimit = (TextView) findViewById(R.id.textTimeLimit);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
     }
 
+    @SuppressLint("SetTextI18n")
     private void setViewsValues() {
         Log.d(TAG, "setViewsValues: called");
+
+        textDesc.setText(incomingQuiz.getDescription());
+        textTimeLimit.setText(incomingQuiz.getTimeLimit()); //todo: format time limit
+        if (utils.isUserAttemptThisQuiz(rttQuiz)) {
+            textStatus.setText("Submitted");
+            textStatus.setTextColor(getColor(R.color.green));
+            btnStartQuiz.setVisibility(View.GONE);
+        } else if (utils.isUserAttemptingThisQuiz(rttQuiz)) {
+            textStatus.setText("Attempting");
+            textStatus.setTextColor(getColor(R.color.colorWarning));
+            btnStartQuiz.setText("Continue attempt");
+        } else {
+            textStatus.setText("Not Submitted");
+            textStatus.setTextColor(getColor(R.color.colorRed));
+            btnStartQuiz.setText("Start Quiz");
+        }
+        if (utils.isUserAttemptThisQuiz(rttQuiz)) {
+            QuizScore Quizscore = utils.getQuizScore(rttQuiz);
+            double score = Quizscore.getScore();
+            double outOf = Quizscore.getOutOf();
+            textGrade.setText(score + "/" + outOf);
+
+        } else {
+            textGrade.setText(0);
+            textGrade.setTextColor(getColor(R.color.colorRed));
+        }
+
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 }

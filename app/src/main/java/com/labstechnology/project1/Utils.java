@@ -21,6 +21,7 @@ import com.labstechnology.project1.CallBacks.FireBaseCallBack;
 import com.labstechnology.project1.models.Announcement;
 import com.labstechnology.project1.models.Assignment;
 import com.labstechnology.project1.models.Quiz;
+import com.labstechnology.project1.models.QuizScore;
 import com.labstechnology.project1.models.User;
 
 import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
@@ -449,6 +450,35 @@ public class Utils {
             }
         }
         return false;
+    }
+
+    public boolean isUserAttemptingThisQuiz(Quiz quiz) {
+        Log.d(TAG, "isUserAttemptingThisQuiz: called");
+        ArrayList<User> usersAttempting = quiz.getAttempting();
+        if (usersAttempting == null) {
+            return false;
+        }
+        for (User user : usersAttempting) {
+            if (user.getuId().equals(Utils.getCurrentUid())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public QuizScore getQuizScore(Quiz quiz) {
+        Log.d(TAG, "getQuizScore: called");
+
+        ArrayList<QuizScore> scores = quiz.getScores();
+
+        for (QuizScore score : scores
+        ) {
+            if (score.getuId().equals(getCurrentUid())) {
+                return score;
+            }
+        }
+        return new QuizScore();
     }
 
     public void setAckAnnouncement(Announcement ackAnnouncement) {

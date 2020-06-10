@@ -85,13 +85,7 @@ public class AssignmentActivity extends AppCompatActivity implements DialogInter
         utils = new Utils(AssignmentActivity.this);
 
 
-        setSupportActionBar(toolbar);
-        toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
-        toolbar.setTitle("Settings");
-        toolbar.setTitleTextColor(getColor(R.color.white1));
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white);
+
 
 
         final DatabaseReference myRef = FirebaseDatabaseReference.DATABASE.getReference().child("assignments");
@@ -113,6 +107,17 @@ public class AssignmentActivity extends AppCompatActivity implements DialogInter
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
+
+
+        setSupportActionBar(toolbar);
+        toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
+        toolbar.setTitle(incomingAssignment.getTitle());
+        toolbar.setTitleTextColor(getColor(R.color.white1));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white);
+
 
         iconDownloadSubmission.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -329,17 +334,8 @@ public class AssignmentActivity extends AppCompatActivity implements DialogInter
                 if (bitmapThumbnail != null) {
                     thumbnail.setImageBitmap(bitmapThumbnail);
                 }
-                if (dateSubmission == 0) {
-                    ArrayList<AssignmentResponse> assignmentResponses = rttAssignment.getResponses();
-                    for (AssignmentResponse ar : assignmentResponses
-                    ) {
-                        if (ar.getAssignmentId() == rttAssignment.getId() && ar.getuId() == Utils.getCurrentUid()) {
-                            dateSubmission = ar.getTimestamp();
-                        }
-                    }
-                    textGradingStatus.setText(String.valueOf(dateSubmission));
+                textGradingStatus.setText("Not Graded");
                     //TODO: set Date of submission
-                }
             } else {
                 btnRemoveSubmission.setVisibility(View.GONE);
                 textSubmitted.setVisibility(GONE);

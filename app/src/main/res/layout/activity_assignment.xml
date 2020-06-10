@@ -75,7 +75,7 @@
                 android:layout_below="@id/cardHeader"
                 android:layout_margin="10dp"
                 android:text="Description"
-                android:gravity="end" />
+                android:textAlignment="textStart" />
 
             <TextView
                 android:id="@+id/txtDueDate"

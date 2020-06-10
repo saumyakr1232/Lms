@@ -97,7 +97,7 @@ dependencies {
     //expandable list
     implementation 'com.diegodobelo.expandingview:expanding-view:0.9.4'
 
-    //read more
-    implementation 'com.borjabravo:readmoretextview:2.1.0'
+    implementation files('libs/poishadow-all.jar')
+
 
 }

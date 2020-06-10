@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -21,8 +23,10 @@ import androidx.cardview.widget.CardView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.labstechnology.project1.CallBacks.FireBaseCallBack;
@@ -36,6 +40,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import xyz.hasnat.sweettoast.SweetToast;
 
@@ -45,13 +52,15 @@ public class AssignmentActivity extends AppCompatActivity implements DialogInter
     private static final String TAG = "AssignmentActivity";
 
 
-    private TextView textTitle, textDueDate, textCountDown, textFileName, textFileSize;
+    private TextView textTitle, textDueDate, textCountDown;
+    private TextView textGradingStatus, textSubmitted, textFileDownloadSize;
     private CardView cardThumbnail;
-    private ImageView thumbnail;
+    private ImageView thumbnail, thumbnailDownload, icDownloadAssignment, iconDownloadSubmission;
     private Button btnAddSubmission, btnRemoveSubmission;
     private TextView textDesc;
     private androidx.appcompat.widget.Toolbar toolbar;
     private Assignment incomingAssignment;
+    private Assignment rttAssignment;
     private boolean isSubmitted;
 
     private StorageReference assignmentDocumentsRef, assignmentDocumentsRef2;
@@ -62,6 +71,7 @@ public class AssignmentActivity extends AppCompatActivity implements DialogInter
 
     private String fileName, fileSize;
     private Bitmap bitmapThumbnail;
+    private long dateSubmission;
 
 
     @SuppressLint("SimpleDateFormat")
@@ -83,11 +93,14 @@ public class AssignmentActivity extends AppCompatActivity implements DialogInter
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white);
 
+
+        final DatabaseReference myRef = FirebaseDatabaseReference.DATABASE.getReference().child("assignments");
+
         Intent intent = getIntent();
         try {
             incomingAssignment = intent.getParcelableExtra("assignment");
             isSubmitted = intent.getBooleanExtra("isSubmitted", false);
-            final DatabaseReference myRef = FirebaseDatabaseReference.DATABASE.getReference().child("assignments");
+
             id = myRef.push().getKey();
 
             rttAssDatabaseRef = FirebaseDatabaseReference.DATABASE.getReference()
@@ -100,6 +113,21 @@ public class AssignmentActivity extends AppCompatActivity implements DialogInter
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
+
+        iconDownloadSubmission.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                downloadSubmissionPdf();
+            }
+        });
+
+        icDownloadAssignment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                downloadAssignmentDocument();
+            }
+        });
+
 
         final DialogUploadAssignment dialogUploadAssignment = new DialogUploadAssignment(AssignmentActivity.this, incomingAssignment, isSubmitted);
 
@@ -123,6 +151,8 @@ public class AssignmentActivity extends AppCompatActivity implements DialogInter
                 builder.show();
             }
         });
+        rttAssignment(myRef);
+
 
         btnAddSubmission.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -183,6 +213,14 @@ public class AssignmentActivity extends AppCompatActivity implements DialogInter
 
     }
 
+    private void downloadSubmissionPdf() {
+        Log.d(TAG, "downloadSubmissionPdf: called");
+    }
+
+    private void downloadAssignmentDocument() {
+        Log.d(TAG, "downloadAssignmentDocument: called");
+    }
+
     private void deleteSubmission() {
         Log.d(TAG, "deleteSubmission: called");
         Log.d(TAG, "uploadDocumentAndLinkToAssignment: called");
@@ -201,27 +239,29 @@ public class AssignmentActivity extends AppCompatActivity implements DialogInter
                 ArrayList<AssignmentResponse> assignmentResponses = incomingAssignment.getResponses();
                 ArrayList<AssignmentResponse> newAssignmentResponses = new ArrayList<>();
 
-                for (AssignmentResponse response : assignmentResponses
-                ) {
-                    if (response.getAssignmentId().equals(incomingAssignment.getId())) {
-                        Log.d(TAG, "onSuccess: HERE" + response.getId());
-                        assignmentDocumentsRef2.child(response.getId() + ".pdf").delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isSuccessful()) {
-                                    SweetToast.success(AssignmentActivity.this, "Old file deleted successfully");
-                                } else {
-                                    Log.d(TAG, "onComplete: error" + task.getException().getMessage());
+                if (assignmentResponses != null) {
+                    for (AssignmentResponse response : assignmentResponses
+                    ) {
+                        if (response.getAssignmentId().equals(incomingAssignment.getId())) {
+                            Log.d(TAG, "onSuccess: HERE" + response.getId());
+                            assignmentDocumentsRef2.child(response.getId() + ".pdf").delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        SweetToast.success(AssignmentActivity.this, "Old file deleted successfully");
+                                    } else {
+                                        Log.d(TAG, "onComplete: error" + task.getException().getMessage());
+                                    }
                                 }
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.d(TAG, "onFailure: error while deleting old file" + e.getMessage());
-                            }
-                        });
-                    } else {
-                        newAssignmentResponses.add(response);
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.d(TAG, "onFailure: error while deleting old file" + e.getMessage());
+                                }
+                            });
+                        } else {
+                            newAssignmentResponses.add(response);
+                        }
                     }
                 }
 
@@ -276,28 +316,57 @@ public class AssignmentActivity extends AppCompatActivity implements DialogInter
 
     private void changeViewsBasedOnStatus() {
         Log.d(TAG, "changeViewsBasedOnStatus: called");
-        if (utils.isUserAttemptThisAssignment(incomingAssignment)) {
-            Log.d(TAG, "changeViewsBasedOnStatus: user attempted this assignment " + utils.isUserAttemptThisAssignment(incomingAssignment));
-            cardThumbnail.setVisibility(View.VISIBLE);
-            textFileSize.setVisibility(View.VISIBLE);
-            textFileName.setVisibility(View.VISIBLE);
-            btnRemoveSubmission.setVisibility(View.VISIBLE);
-            btnAddSubmission.setText("Edit submission");
-            if (fileName != null) {
-                textFileName.setText(fileName);
-            }
-            if (fileSize != null) {
-                textFileSize.setText(fileSize);
-            }
-            if (bitmapThumbnail != null) {
-                thumbnail.setImageBitmap(bitmapThumbnail);
-            }
+        if (rttAssignment != null) {
+            if (utils.isUserAttemptThisAssignment(rttAssignment)) {
+                cardThumbnail.setVisibility(View.VISIBLE);
+                textFileDownloadSize.setVisibility(View.VISIBLE);
+                btnRemoveSubmission.setVisibility(View.VISIBLE);
+                btnAddSubmission.setText("Edit submission");
 
+                if (fileSize != null) { //TODO: check
+                    textFileDownloadSize.setText(fileSize);
+                }
+                if (bitmapThumbnail != null) {
+                    thumbnail.setImageBitmap(bitmapThumbnail);
+                }
+                if (dateSubmission == 0) {
+                    ArrayList<AssignmentResponse> assignmentResponses = rttAssignment.getResponses();
+                    for (AssignmentResponse ar : assignmentResponses
+                    ) {
+                        if (ar.getAssignmentId() == rttAssignment.getId() && ar.getuId() == Utils.getCurrentUid()) {
+                            dateSubmission = ar.getTimestamp();
+                        }
+                    }
+                    textGradingStatus.setText(String.valueOf(dateSubmission));
+                    //TODO: set Date of submission
+                }
+            } else {
+                btnRemoveSubmission.setVisibility(View.GONE);
+                textSubmitted.setVisibility(GONE);
+                cardThumbnail.setVisibility(GONE);
+                textGradingStatus.setVisibility(GONE);
+            }
         } else {
-            btnRemoveSubmission.setVisibility(View.GONE);
-            textFileName.setVisibility(GONE);
-            textFileSize.setVisibility(GONE);
+            if (utils.isUserAttemptThisAssignment(incomingAssignment)) {
+                cardThumbnail.setVisibility(View.VISIBLE);
+                textSubmitted.setVisibility(View.VISIBLE);
+                btnRemoveSubmission.setVisibility(View.VISIBLE);
+                btnAddSubmission.setText("Edit submission");
+                textSubmitted.setText("Submitted for grading");
+                textGradingStatus.setText("Not graded");
 
+                if (bitmapThumbnail != null) {
+                    thumbnail.setImageBitmap(bitmapThumbnail);
+                }
+
+            } else {
+                btnRemoveSubmission.setVisibility(View.GONE);
+                textSubmitted.setVisibility(GONE);
+                textGradingStatus.setVisibility(View.VISIBLE);
+
+                cardThumbnail.setVisibility(GONE);
+
+            }
         }
     }
 
@@ -305,9 +374,34 @@ public class AssignmentActivity extends AppCompatActivity implements DialogInter
     private void setViewsValues() {
         Log.d(TAG, "setViewsValues: called");
         textTitle.setText(incomingAssignment.getTitle());
-        textDesc.setText("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.");
+        String description = incomingAssignment.getDescription();
+
+        Pattern trimmer = Pattern.compile("(?:\\b(?:http|ftp|www\\.)\\S+\\b)|(?:\\b\\S+\\.com\\S*\\b)");
+        Matcher m = trimmer.matcher(description);
+        StringBuffer out = new StringBuffer();
+        int i = 1;
+        Log.d(TAG, "setViewsValues: Trimmer" + trimmer.toString());
+        ArrayList<String> links = new ArrayList<>();
+        while (m.find()) {
+            Log.d(TAG, "setViewsValues: group " + m.group() + "\n");
+            links.add(m.group());
+            m.appendReplacement(out, "<a href=\"" + m.group() + "\">URL" + i++ + "</a>");
+
+        }
+        m.appendTail(out);
+//        System.out.println(out+"!");
+//
+//        Log.d(TAG, "setViewsValues: HERe " + out.toString());
+
+
+        textDesc.setText(Html.fromHtml(out.toString()));
+        textDesc.setMovementMethod(LinkMovementMethod.getInstance());
+
+
         textDueDate.setText(incomingAssignment.getDeadLineDate() + " " + incomingAssignment.getDeadLineTime());
         //TODO: format date Here
+
+
     }
 
     private void initViews() {
@@ -321,8 +415,12 @@ public class AssignmentActivity extends AppCompatActivity implements DialogInter
         btnRemoveSubmission = (Button) findViewById(R.id.btnRemoveSubmission);
         cardThumbnail = (CardView) findViewById(R.id.cardThumbnail);
         thumbnail = (ImageView) findViewById(R.id.thumbnail);
-        textFileName = (TextView) findViewById(R.id.textFileName);
-        textFileSize = (TextView) findViewById(R.id.textFileSize);
+        textSubmitted = (TextView) findViewById(R.id.submitted);
+        textGradingStatus = (TextView) findViewById(R.id.Grading);
+        textFileDownloadSize = (TextView) findViewById(R.id.textFileDownloadSize);
+        iconDownloadSubmission = (ImageView) findViewById(R.id.iconDownloadSubmission);
+        icDownloadAssignment = (ImageView) findViewById(R.id.icDownloadAssignment);
+
 
     }
 
@@ -336,5 +434,34 @@ public class AssignmentActivity extends AppCompatActivity implements DialogInter
     @Override
     public void onDismiss(DialogInterface dialog) {
         changeViewsBasedOnStatus();
+    }
+
+    private void rttAssignment(DatabaseReference assignmentReference) {
+        Log.d(TAG, "rttAssignment: called");
+        assignmentReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot oneSnapshot : dataSnapshot.getChildren()) {
+                    if (Objects.equals(oneSnapshot.getKey(), incomingAssignment.getId())) {
+                        try {
+                            rttAssignment = oneSnapshot.getValue(Assignment.class);
+                            changeViewsBasedOnStatus();
+                        } catch (ClassCastException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void setAssignmentDocumentCard() {
+        Log.d(TAG, "setAssignmentDocumentCard: called");
     }
 }

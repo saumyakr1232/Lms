@@ -2,6 +2,7 @@ package com.labstechnology.project1.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.labstechnology.project1.QuizActivity;
 import com.labstechnology.project1.R;
 import com.labstechnology.project1.Utils;
 import com.labstechnology.project1.models.Quiz;
@@ -43,7 +45,7 @@ public class QuizRecViewAdapter extends RecyclerView.Adapter<QuizRecViewAdapter.
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         Log.d(TAG, "onBindViewHolder: called");
         holder.txtTitle.setText(quizzes.get(position).getTitle());
         try {
@@ -66,6 +68,14 @@ public class QuizRecViewAdapter extends RecyclerView.Adapter<QuizRecViewAdapter.
             holder.textStatus.setText("Attempted");
             holder.textStatus.setTextColor(context.getColor(R.color.green));
         }
+        holder.parent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, QuizActivity.class);
+                intent.putExtra("quiz", quizzes.get(position));
+                context.startActivity(intent);
+            }
+        });
 
     }
 

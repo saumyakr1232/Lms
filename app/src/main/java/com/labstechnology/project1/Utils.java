@@ -23,11 +23,18 @@ import com.labstechnology.project1.models.Assignment;
 import com.labstechnology.project1.models.Quiz;
 import com.labstechnology.project1.models.User;
 
+import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+
+import java.io.File;
+import java.io.FileInputStream;
 import java.lang.reflect.Type;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -58,14 +65,29 @@ public class Utils {
     private static final String REGEX_DATE_PATTERN = "^(?:(?:31(\\/|-|\\.)(?:0?[13578]|1[02]))\\1|(?:(?:29|30)(\\/|-|\\.)(?:0?[13-9]|1[0-2])\\2))(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$|^(?:29(\\/|-|\\.)0?2\\3(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\\d|2[0-8])(\\/|-|\\.)(?:(?:0?[1-9])|(?:1[0-2]))\\4(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$";
 
 
-
     private Context context;
     private FirebaseAuth mAuth;
     private DatabaseReference UserReference;
 
+    static {
+        System.setProperty(
+                "org.apache.poi.javax.xml.stream.XMLInputFactory",
+                "com.fasterxml.aalto.stax.InputFactoryImpl"
+        );
+        System.setProperty(
+                "org.apache.poi.javax.xml.stream.XMLOutputFactory",
+                "com.fasterxml.aalto.stax.OutputFactoryImpl"
+        );
+        System.setProperty(
+                "org.apache.poi.javax.xml.stream.XMLEventFactory",
+                "com.fasterxml.aalto.stax.EventFactoryImpl"
+        );
+    }
+
 
     public Utils(Context context) {
         this.context = context;
+
     }
 
     public static String getRegexMobileNoPattern() {
@@ -644,5 +666,32 @@ public class Utils {
         }
         return false;
     }
+
+    public String readDocxFile(File file) {
+        String text = "";
+        try {
+
+            FileInputStream fis = new FileInputStream(file.getAbsolutePath());
+
+            XWPFDocument document = new XWPFDocument(fis);
+
+
+            List<XWPFParagraph> paragraphs = document.getParagraphs();
+
+
+            for (XWPFParagraph para : paragraphs) {
+                System.out.println(para.getText());
+            }
+
+            XWPFWordExtractor we = new XWPFWordExtractor(document);
+            System.out.println(we.getText());
+            text = we.getText();
+            fis.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return text;
+    }
+
 
 }

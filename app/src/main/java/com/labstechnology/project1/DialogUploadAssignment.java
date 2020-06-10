@@ -137,6 +137,7 @@ public class DialogUploadAssignment extends DialogFragment {
             @Override
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                 if (task.isSuccessful()) {
+                    documentUri = null;
                     SweetToast.success(context, "success");
                     Log.d(TAG, "onComplete: document update successful");
                     filePath.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {

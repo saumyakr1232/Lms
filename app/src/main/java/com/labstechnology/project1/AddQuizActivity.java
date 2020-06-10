@@ -294,7 +294,7 @@ public class AddQuizActivity extends AppCompatActivity {
         Log.d(TAG, "showFileChooser: called");
 
         String[] mimeTypes =
-                {"application/pdf", "text/plain",
+                {"text/plain",
                         "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"};
 
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);

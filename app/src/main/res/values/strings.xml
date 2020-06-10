@@ -48,4 +48,5 @@
     <string name="mobile_number">Mobile Number</string>
     <string name="description">Description</string>
     <string name="title">Title</string>
+    <string name="descriptionHtlmLink"><![CDATA[Description \nyou can put Urls too.\n ex:- \"www.google.com\"]]></string>
 </resources>

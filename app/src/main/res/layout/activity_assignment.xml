@@ -15,26 +15,67 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/textTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_margin="10dp"
-                android:text="Assignment Title"
-                android:textAlignment="center"
-                android:textColor="@color/colorPrimary"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardHeader"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_margin="20dp"
+                android:elevation="5dp"
+                app:cardCornerRadius="8dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/thumbnailDownload"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:layout_margin="10dp"
+                        android:src="@drawable/ic_pdf" />
+
+                    <TextView
+                        android:id="@+id/textTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:layout_toRightOf="@+id/thumbnailDownload"
+                        android:text="Assignment 1.pdf"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/textFileDownloadSize"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/textTitle"
+                        android:layout_marginStart="10dp"
+                        android:layout_toRightOf="@id/thumbnailDownload"
+                        android:text="20.00 KB" />
+
+                    <ImageView
+                        android:id="@+id/icDownloadAssignment"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="20dp"
+                        android:src="@drawable/ic_cloud_download_24px" />
+                </RelativeLayout>
+
+
+            </androidx.cardview.widget.CardView>
+
 
             <TextView
                 android:id="@+id/textDesc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/textTitle"
-                android:layout_margin="16dp"
+                android:layout_below="@id/cardHeader"
+                android:layout_margin="10dp"
                 android:text="Description"
-                android:textAlignment="center" />
+                android:gravity="end" />
 
             <TextView
                 android:id="@+id/txtDueDate"
@@ -53,14 +94,14 @@
                 android:layout_below="@id/txtDueDate"
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="16dp"
-                android:text="2 jun 12:30 AM"
-                android:textColor="@color/colorPrimary" />
+                android:text="2 jun 12:30 AM" />
 
             <TextView
                 android:id="@+id/txtRemaining"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/textDesc"
+                android:layout_marginStart="10dp"
                 android:text="Time remaining :"
                 android:textColor="@color/colorPrimary" />
 
@@ -76,49 +117,82 @@
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardThumbnail"
-                android:layout_width="140dp"
-                android:layout_height="140dp"
-                android:layout_below="@id/textCountDown"
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:layout_below="@id/textDueDate"
                 android:layout_centerHorizontal="true"
-                android:layout_margin="20dp"
+                android:layout_margin="10dp"
+
                 android:elevation="5dp"
                 app:cardCornerRadius="8dp">
 
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
-                <ImageView
-                    android:id="@+id/thumbnail"
-                    android:layout_width="wrap_content"
-                    android:layout_height="140dp"
-                    android:src="@drawable/ic_pdf" />
+                    <TextView
+                        android:id="@+id/textFileSubmission"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:text="File submission"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="16sp" />
+
+                    <ImageView
+                        android:id="@+id/thumbnail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="100dp"
+                        android:layout_below="@id/textFileSubmission"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/ic_pdf" />
+
+                    <TextView
+                        android:id="@+id/submitted"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/textFileSubmission"
+                        android:layout_margin="10dp"
+                        android:layout_toLeftOf="@id/iconDownloadSubmission"
+                        android:layout_toRightOf="@id/thumbnail"
+                        android:text="Submitted for grading"
+                        android:textColor="@color/green" />
+
+                    <TextView
+                        android:id="@+id/Grading"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/submitted"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_toLeftOf="@id/iconDownloadSubmission"
+                        android:layout_toRightOf="@id/thumbnail"
+                        android:text="Not graded"
+                        android:textColor="@color/colorRed" />
+
+                    <ImageView
+                        android:id="@+id/iconDownloadSubmission"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="20dp"
+                        android:src="@drawable/ic_cloud_download_24px" />
+
+
+                </RelativeLayout>
+
 
             </androidx.cardview.widget.CardView>
-
-            <TextView
-                android:id="@+id/textFileName"
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/cardThumbnail"
-                android:layout_marginStart="16dp"
-                android:text="File Name"
-                android:textColor="@color/colorPrimary" />
-
-            <TextView
-                android:id="@+id/textFileSize"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/cardThumbnail"
-                android:layout_alignParentEnd="true"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="16dp"
-                android:text="0.0 MB"
-                android:textColor="@color/colorPrimary" />
 
 
             <Button
                 android:id="@+id/btnAddSubmission"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/textFileName"
+                android:layout_below="@id/cardThumbnail"
+                android:layout_marginTop="10dp"
                 android:layout_centerHorizontal="true"
                 android:text="Add Submission" />
 

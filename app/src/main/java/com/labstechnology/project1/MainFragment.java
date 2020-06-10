@@ -29,6 +29,7 @@ import com.labstechnology.project1.adapters.NotificationRecViewAdapter;
 import com.labstechnology.project1.models.Announcement;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 
 public class MainFragment extends Fragment {
@@ -109,7 +110,7 @@ public class MainFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext()) {
             @Override
             public void smoothScrollToPosition(RecyclerView recyclerView, RecyclerView.State state, int position) {
-                LinearSmoothScroller smoothScroller = new LinearSmoothScroller(getActivity()) {
+                LinearSmoothScroller smoothScroller = new LinearSmoothScroller(Objects.requireNonNull(getActivity())) {
                     private static final float SPEED = 400f;// Change this                value (default=25f)
 
                     @Override

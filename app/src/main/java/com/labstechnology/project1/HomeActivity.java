@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
@@ -30,6 +29,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import com.labstechnology.project1.CallBacks.FireBaseCallBack;
 import com.labstechnology.project1.adapters.NotificationRecViewAdapter;
 import com.labstechnology.project1.models.Announcement;
 
@@ -87,17 +87,26 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
 
 
-        updateNavigationHeaderView();
-
-        final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, new MainFragment());
-
-        new Handler().postDelayed(new Runnable() {
+        updateNavigationHeaderView(new FireBaseCallBack() {
             @Override
-            public void run() {
+            public void onSuccess(Object object) {
+                final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.fragment_container, new MainFragment());
                 transaction.commit();
+//                new Handler().postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//
+//                    }
+//                }, 2000);
+
             }
-        }, 2000);
+
+            @Override
+            public void onError(Object object) {
+
+            }
+        });
 
 
     }
@@ -194,7 +203,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    private void updateNavigationHeaderView() {
+    private void updateNavigationHeaderView(final FireBaseCallBack callBack) {
         Log.d(TAG, "updateNavigationHeaderView: called");
         final ImageView userProfilePhoto = (ImageView) hView.findViewById(R.id.imageProfileNavHeader);
         final TextView textName = (TextView) hView.findViewById(R.id.txtName);
@@ -222,6 +231,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                                 .into(userProfilePhoto);
 
                     }
+                    callBack.onSuccess(0);
                 }
 
 

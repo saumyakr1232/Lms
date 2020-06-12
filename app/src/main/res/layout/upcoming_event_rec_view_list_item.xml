@@ -27,6 +27,7 @@
                 android:textColor="@color/white1"
                 android:textStyle="bold"
                 android:textSize="18sp"
+                android:id="@+id/title"
                 android:layout_marginTop="20dp" />
 
         </RelativeLayout>
@@ -50,6 +51,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="2 days left"
+                android:id="@+id/timeLeft"
                 android:textColor="@color/white1"
                 android:layout_toEndOf="@id/imageTimer"
                 android:layout_marginStart="10dp"

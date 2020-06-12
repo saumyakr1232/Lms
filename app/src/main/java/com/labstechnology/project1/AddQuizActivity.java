@@ -123,14 +123,14 @@ public class AddQuizActivity extends AppCompatActivity {
         textViewTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showTimePicker();
+                showTimePicker(false);
             }
         });
 
         textTimeLimit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showTimePicker();
+                showTimePicker(true);
             }
         });
 
@@ -269,7 +269,7 @@ public class AddQuizActivity extends AppCompatActivity {
         datePickerDialog.show();
     }
 
-    private void showTimePicker() {
+    private void showTimePicker(final boolean isTimeLimit) {
         Log.d(TAG, "showTimePicker: called");
         final Calendar c = Calendar.getInstance();
         mHour = c.get(Calendar.HOUR_OF_DAY);
@@ -279,7 +279,12 @@ public class AddQuizActivity extends AppCompatActivity {
                 new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        textViewTime.setText(hourOfDay + ":" + minute);
+                        if (isTimeLimit) {
+                            textTimeLimit.setText(hourOfDay + ":" + minute);
+                        } else {
+                            textViewTime.setText(hourOfDay + ":" + minute);
+                        }
+
                     }
                 }, mHour, mMinute, true);
         timePickerDialog.show();

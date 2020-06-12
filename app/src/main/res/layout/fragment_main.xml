@@ -4,6 +4,13 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <ProgressBar
+        android:id="@+id/ProgressBarHome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
+
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_above="@+id/bottomNavigationView"
@@ -13,6 +20,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -33,7 +41,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/txtUpcomingEvents"
                 android:layout_below="@id/NotificationCenter"
-                android:text="Upcoming Events"
+                android:text="Assignments"
                 android:layout_marginLeft="10dp"
                 android:textSize="25sp"
                 android:textStyle="bold" />
@@ -42,7 +50,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recViewUpcomingEvents"
                 android:layout_width="match_parent"
-                android:layout_height="160dp"
+                android:layout_height="wrap_content"
                 android:layout_below="@id/txtUpcomingEvents"
                 android:layout_marginTop="10dp" />
 
@@ -59,7 +67,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Quizzes Summary"
+                android:text="Quizzes"
                 android:textSize="25sp"
                 android:textStyle="bold"
                 android:id="@+id/textQuizSummary"
@@ -67,7 +75,7 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
-                android:layout_height="160dp"
+                android:layout_height="wrap_content"
                 android:id="@+id/recViewQuizSummary"
                 android:layout_below="@id/textQuizSummary" />
 

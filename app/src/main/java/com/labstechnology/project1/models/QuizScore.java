@@ -3,6 +3,7 @@ package com.labstechnology.project1.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class QuizScore implements Parcelable {
@@ -11,7 +12,7 @@ public class QuizScore implements Parcelable {
     private String quizId;
     private double score;
     private double outOf;
-    private HashMap<MultipleChoiceQuestion, String> result;
+    private ArrayList<HashMap<String, MultipleChoiceQuestion>> result;
 
     public QuizScore() {
     }
@@ -76,24 +77,12 @@ public class QuizScore implements Parcelable {
         this.outOf = outOf;
     }
 
-    public HashMap<MultipleChoiceQuestion, String> getResult() {
+    public ArrayList<HashMap<String, MultipleChoiceQuestion>> getResult() {
         return result;
     }
 
-    public void setResult(HashMap<MultipleChoiceQuestion, String> result) {
+    public void setResult(ArrayList<HashMap<String, MultipleChoiceQuestion>> result) {
         this.result = result;
-    }
-
-    @Override
-    public String toString() {
-        return "QuizScore{" +
-                "id='" + id + '\'' +
-                ", uId='" + uId + '\'' +
-                ", quizId='" + quizId + '\'' +
-                ", score=" + score +
-                ", outOf=" + outOf +
-                ", result=" + result +
-                '}';
     }
 
     @Override
@@ -108,5 +97,17 @@ public class QuizScore implements Parcelable {
         dest.writeString(quizId);
         dest.writeDouble(score);
         dest.writeDouble(outOf);
+    }
+
+    @Override
+    public String toString() {
+        return "QuizScore{" +
+                "id='" + id + '\'' +
+                ", uId='" + uId + '\'' +
+                ", quizId='" + quizId + '\'' +
+                ", score=" + score +
+                ", outOf=" + outOf +
+                ", result=" + result +
+                '}';
     }
 }

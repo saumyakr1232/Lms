@@ -1,20 +1,28 @@
 package com.labstechnology.project1;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Environment;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -27,6 +35,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.labstechnology.project1.CallBacks.FireBaseCallBack;
@@ -34,6 +43,8 @@ import com.labstechnology.project1.models.Assignment;
 import com.labstechnology.project1.models.AssignmentResponse;
 import com.labstechnology.project1.models.User;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -41,12 +52,15 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Objects;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import pub.devrel.easypermissions.EasyPermissions;
 import xyz.hasnat.sweettoast.SweetToast;
 
 import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 
 public class AssignmentActivity extends AppCompatActivity implements DialogInterface.OnDismissListener {
     private static final String TAG = "AssignmentActivity";
@@ -55,6 +69,7 @@ public class AssignmentActivity extends AppCompatActivity implements DialogInter
     private TextView textTitle, textDueDate, textCountDown;
     private TextView textGradingStatus, textSubmitted, textFileDownloadSize;
     private CardView cardThumbnail;
+    private static final int FILE_PERMISSION_REQUEST_WRITE = 0;
     private ImageView thumbnail, thumbnailDownload, icDownloadAssignment, iconDownloadSubmission;
     private Button btnAddSubmission, btnRemoveSubmission;
     private TextView textDesc;
@@ -62,6 +77,7 @@ public class AssignmentActivity extends AppCompatActivity implements DialogInter
     private Assignment incomingAssignment;
     private Assignment rttAssignment;
     private boolean isSubmitted;
+    private static final int FILE_PERMISSION_REQUEST_READ = 2;
 
     private StorageReference assignmentDocumentsRef, assignmentDocumentsRef2;
     private DatabaseReference rttAssDatabaseRef;
@@ -72,23 +88,22 @@ public class AssignmentActivity extends AppCompatActivity implements DialogInter
     private String fileName, fileSize;
     private Bitmap bitmapThumbnail;
     private long dateSubmission;
-
+    private RelativeLayout parent;
+    private ProgressBar progressBar;
 
     @SuppressLint("SimpleDateFormat")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_assignment);
-
         initViews();
+        progressBar.setVisibility(VISIBLE);
 
         utils = new Utils(AssignmentActivity.this);
 
 
-
-
-
         final DatabaseReference myRef = FirebaseDatabaseReference.DATABASE.getReference().child("assignments");
+
 
         Intent intent = getIntent();
         try {
@@ -99,6 +114,8 @@ public class AssignmentActivity extends AppCompatActivity implements DialogInter
 
             rttAssDatabaseRef = FirebaseDatabaseReference.DATABASE.getReference()
                     .child(FirebaseConstants.ASSIGNMENTS).child(incomingAssignment.getId());
+
+            assignmentDocumentsRef = FirebaseStorage.getInstance().getReference("/assignmentDocumentsAdmin/-M9N8DcJ6VB-GlB10jSb");//.child("assignmentDocumentsAdmin").child(incomingAssignment.getId());
 
 
             assignmentDocumentsRef2 = FirebaseStorage.getInstance().getReference().child("assignmentDocumentsUsers")
@@ -122,14 +139,61 @@ public class AssignmentActivity extends AppCompatActivity implements DialogInter
         iconDownloadSubmission.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                downloadSubmissionPdf();
+                try {
+                    downloadSubmissionPdf(new FireBaseCallBack() {
+                        @Override
+                        public void onSuccess(Object object) {
+                            File file = (File) object;
+                            Log.d(TAG, "onSuccess: FILE " + file.getPath());
+                            Log.d(TAG, "onSuccess: FILE " + file.getName());
+                            Log.d(TAG, "onSuccess: FILE" + file.getTotalSpace());
+                            String size = String.valueOf(file.getTotalSpace() / 1000) + " KB";
+                            textFileDownloadSize.setText(size);
+                        }
+
+                        @Override
+                        public void onError(Object object) {
+
+                        }
+                    });
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
         icDownloadAssignment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                downloadAssignmentDocument();
+                if (EasyPermissions.hasPermissions(AssignmentActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                    try {
+                        downloadAssignmentDocument(new FireBaseCallBack() {
+                            @RequiresApi(api = Build.VERSION_CODES.N)
+                            @Override
+                            public void onSuccess(Object object) {
+                                File file = (File) object;
+                                Log.d(TAG, "onSuccess: FILE " + file.getPath());
+                                Log.d(TAG, "onSuccess: FILE " + file.getName());
+                                Log.d(TAG, "onSuccess: FILE" + file.getTotalSpace());
+                                String size = String.valueOf(file.getTotalSpace() / 1000) + " KB";
+                                textFileDownloadSize.setText(size);
+
+                            }
+
+                            @Override
+                            public void onError(Object object) {
+
+                            }
+                        });
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    EasyPermissions.requestPermissions(AssignmentActivity.this, "we need this", FILE_PERMISSION_REQUEST_WRITE
+                            , Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                }
+
+
             }
         });
 
@@ -215,15 +279,169 @@ public class AssignmentActivity extends AppCompatActivity implements DialogInter
             }
         }.start();
 
+        progressBar.setVisibility(GONE);
 
     }
 
-    private void downloadSubmissionPdf() {
-        Log.d(TAG, "downloadSubmissionPdf: called");
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
     }
 
-    private void downloadAssignmentDocument() {
+    private String getMimeType(String url) {
+        String parts[] = url.split("\\.");
+        String extension = parts[parts.length - 1];
+        String type = null;
+        if (extension != null) {
+            MimeTypeMap mime = MimeTypeMap.getSingleton();
+            type = mime.getMimeTypeFromExtension(extension);
+        }
+        return type;
+    }
+
+
+    private void downloadAssignmentDocument(final FireBaseCallBack callBack) throws IOException {
         Log.d(TAG, "downloadAssignmentDocument: called");
+        final StorageReference filePath = FirebaseStorage.getInstance().getReference("/assignmentDocumentsAdmin/" + incomingAssignment.getId() + "/" + incomingAssignment.getId() + "upload");
+
+        // final File localFile = File.createTempFile("AssignmentUpload", "");
+
+        Random generator = new Random();
+        int n = 10000;
+        n = generator.nextInt(n);
+        final String fname = "Assignment-" + n;
+
+        final File localFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), fname);
+        if (!localFile.exists()) {
+            localFile.createNewFile();
+        }
+
+        filePath.getFile(localFile).addOnCompleteListener(new OnCompleteListener<FileDownloadTask.TaskSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<FileDownloadTask.TaskSnapshot> task) {
+                SweetToast.success(AssignmentActivity.this, "Check your Download folder for " + fname);
+                icDownloadAssignment.setImageDrawable(getDrawable(R.drawable.ic_cloud_done_24px));
+                callBack.onSuccess(localFile);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+
+    public void openFile(File url) {
+        Log.d(TAG, "openFile: called");
+
+        Uri uri = Uri.fromFile(url);
+
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        if (url.toString().contains(".doc") || url.toString().contains(".docx")) {
+            // Word document
+            intent.setDataAndType(uri, "application/msword");
+        } else if (url.toString().contains(".pdf")) {
+            // PDF file
+            intent.setDataAndType(uri, "application/pdf");
+        } else if (url.toString().contains(".ppt") || url.toString().contains(".pptx")) {
+            // Powerpoint file
+            intent.setDataAndType(uri, "application/vnd.ms-powerpoint");
+        } else if (url.toString().contains(".xls") || url.toString().contains(".xlsx")) {
+            // Excel file
+            intent.setDataAndType(uri, "application/vnd.ms-excel");
+        } else if (url.toString().contains(".zip") || url.toString().contains(".rar")) {
+            // WAV audio file
+            intent.setDataAndType(uri, "application/x-wav");
+        } else if (url.toString().contains(".rtf")) {
+            // RTF file
+            intent.setDataAndType(uri, "application/rtf");
+        } else if (url.toString().contains(".wav") || url.toString().contains(".mp3")) {
+            // WAV audio file
+            intent.setDataAndType(uri, "audio/x-wav");
+        } else if (url.toString().contains(".gif")) {
+            // GIF file
+            intent.setDataAndType(uri, "image/gif");
+        } else if (url.toString().contains(".jpg") || url.toString().contains(".jpeg") || url.toString().contains(".png")) {
+            // JPG file
+            intent.setDataAndType(uri, "image/jpeg");
+        } else if (url.toString().contains(".txt")) {
+            // Text file
+            intent.setDataAndType(uri, "text/plain");
+        } else if (url.toString().contains(".3gp") || url.toString().contains(".mpg") || url.toString().contains(".mpeg") || url.toString().contains(".mpe") || url.toString().contains(".mp4") || url.toString().contains(".avi")) {
+            // Video files
+            intent.setDataAndType(uri, "video/*");
+        } else {
+            //if you want you can also define the intent type for any other file
+            //additionally use else clause below, to manage other unknown extensions
+            //in this case, Android will show all applications installed on the device
+            //so you can choose which application to use
+            intent.setDataAndType(uri, "*/*");
+        }
+
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        AssignmentActivity.this.startActivity(intent);
+
+    }
+
+    private void downloadSubmissionPdf(final FireBaseCallBack callBack) throws IOException {
+        Log.d(TAG, "downloadSubmissionPdf: called");
+
+        Random generator = new Random();
+        int n = 10000;
+        n = generator.nextInt(n);
+        final String fname = "Submission-" + n + ".pdf";
+
+        final File localFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), fname);
+        if (!localFile.exists()) {
+            localFile.createNewFile();
+        }
+
+        ArrayList<AssignmentResponse> assignmentResponses = incomingAssignment.getResponses();
+
+        if (assignmentResponses != null) {
+            for (AssignmentResponse response : assignmentResponses
+            ) {
+                if (response.getAssignmentId().equals(incomingAssignment.getId())) {
+                    Log.d(TAG, "onSuccess: HERE" + response.getId());
+                    assignmentDocumentsRef2.child(response.getId() + ".pdf").getFile(localFile).addOnCompleteListener(new OnCompleteListener<FileDownloadTask.TaskSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<FileDownloadTask.TaskSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                SweetToast.success(AssignmentActivity.this, "Check your Download folder for " + fname);
+                                iconDownloadSubmission.setImageDrawable(getDrawable(R.drawable.ic_cloud_done_24px));
+                                callBack.onSuccess(localFile);
+                            } else {
+                                Log.d(TAG, "onComplete: failed to download submission " + task.getException().getLocalizedMessage());
+                            }
+                        }
+                    });
+                }
+            }
+        }
+
+
+    }
+
+
+    private String fileExt(String url) {
+        if (url.indexOf("?") > -1) {
+            url = url.substring(0, url.indexOf("?"));
+        }
+        if (url.lastIndexOf(".") == -1) {
+            return null;
+        } else {
+            String ext = url.substring(url.lastIndexOf(".") + 1);
+            if (ext.indexOf("%") > -1) {
+                ext = ext.substring(0, ext.indexOf("%"));
+            }
+            if (ext.indexOf("/") > -1) {
+                ext = ext.substring(0, ext.indexOf("/"));
+            }
+            return ext.toLowerCase();
+
+        }
     }
 
     private void deleteSubmission() {
@@ -323,9 +541,9 @@ public class AssignmentActivity extends AppCompatActivity implements DialogInter
         Log.d(TAG, "changeViewsBasedOnStatus: called");
         if (rttAssignment != null) {
             if (utils.isUserAttemptThisAssignment(rttAssignment)) {
-                cardThumbnail.setVisibility(View.VISIBLE);
-                textFileDownloadSize.setVisibility(View.VISIBLE);
-                btnRemoveSubmission.setVisibility(View.VISIBLE);
+                cardThumbnail.setVisibility(VISIBLE);
+                textFileDownloadSize.setVisibility(VISIBLE);
+                btnRemoveSubmission.setVisibility(VISIBLE);
                 btnAddSubmission.setText("Edit submission");
 
                 if (fileSize != null) { //TODO: check
@@ -335,7 +553,7 @@ public class AssignmentActivity extends AppCompatActivity implements DialogInter
                     thumbnail.setImageBitmap(bitmapThumbnail);
                 }
                 textGradingStatus.setText("Not Graded");
-                    //TODO: set Date of submission
+                //TODO: set Date of submission
             } else {
                 btnRemoveSubmission.setVisibility(View.GONE);
                 textSubmitted.setVisibility(GONE);
@@ -344,9 +562,9 @@ public class AssignmentActivity extends AppCompatActivity implements DialogInter
             }
         } else {
             if (utils.isUserAttemptThisAssignment(incomingAssignment)) {
-                cardThumbnail.setVisibility(View.VISIBLE);
-                textSubmitted.setVisibility(View.VISIBLE);
-                btnRemoveSubmission.setVisibility(View.VISIBLE);
+                cardThumbnail.setVisibility(VISIBLE);
+                textSubmitted.setVisibility(VISIBLE);
+                btnRemoveSubmission.setVisibility(VISIBLE);
                 btnAddSubmission.setText("Edit submission");
                 textSubmitted.setText("Submitted for grading");
                 textGradingStatus.setText("Not graded");
@@ -358,7 +576,7 @@ public class AssignmentActivity extends AppCompatActivity implements DialogInter
             } else {
                 btnRemoveSubmission.setVisibility(View.GONE);
                 textSubmitted.setVisibility(GONE);
-                textGradingStatus.setVisibility(View.VISIBLE);
+                textGradingStatus.setVisibility(VISIBLE);
 
                 cardThumbnail.setVisibility(GONE);
 
@@ -416,6 +634,8 @@ public class AssignmentActivity extends AppCompatActivity implements DialogInter
         textFileDownloadSize = (TextView) findViewById(R.id.textFileDownloadSize);
         iconDownloadSubmission = (ImageView) findViewById(R.id.iconDownloadSubmission);
         icDownloadAssignment = (ImageView) findViewById(R.id.icDownloadAssignment);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        parent = (RelativeLayout) findViewById(R.id.parent);
 
 
     }

@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -25,11 +26,17 @@ import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.labstechnology.project1.adapters.AssignmentRecViewAdapter;
 import com.labstechnology.project1.adapters.NotificationRecViewAdapter;
+import com.labstechnology.project1.adapters.QuizRecViewAdapter;
 import com.labstechnology.project1.models.Announcement;
+import com.labstechnology.project1.models.Assignment;
+import com.labstechnology.project1.models.Quiz;
 
 import java.util.ArrayList;
 import java.util.Objects;
+
+import static android.view.View.GONE;
 
 
 public class MainFragment extends Fragment {
@@ -39,11 +46,17 @@ public class MainFragment extends Fragment {
     private Utils utils;
 
     private RecyclerView notificationRecView, upcomingEventRecView, liveRecView, quizSummaryRecView;
+    private ProgressBar progressBarHome;
     private NotificationRecViewAdapter notificationRecViewAdapter;
+    private AssignmentRecViewAdapter assignmentRecViewAdapter;
+    private QuizRecViewAdapter quizRecViewAdapter;
 
 
     private FirebaseDatabase database;
     private DatabaseReference myRef;
+
+
+    private DatabaseReference myRefAssignment, myRefQuizzes;
 
 
     @Nullable
@@ -51,19 +64,35 @@ public class MainFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
         initViews(view);
+        database = FirebaseDatabaseReference.DATABASE;
+
+        myRefAssignment = database.getReference("assignments");
+
 
         initBottomNavigation();
 
         initRecView();
+        progressBarHome.setVisibility(View.VISIBLE);
+
 
         utils = new Utils(getActivity());
 
 
-        database = FirebaseDatabaseReference.DATABASE;
+        populateNotification();
 
-        myRef = database.getReference("announcements");
+        getAssignments();
 
-        myRef.addValueEventListener(new ValueEventListener() {
+        getQuizzes();
+
+        progressBarHome.setVisibility(GONE);
+
+
+        return view;
+    }
+
+    private void populateNotification() {
+        DatabaseReference myRefAss = database.getReference("announcements");
+        myRefAss.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Log.d(TAG, "onDataChange: snapshot" + dataSnapshot.toString());
@@ -96,8 +125,81 @@ public class MainFragment extends Fragment {
 
             }
         });
+    }
 
-        return view;
+
+    private void getAssignments() {
+        Log.d(TAG, "getAssignments: called");
+
+
+        myRefAssignment = database.getReference("assignments");
+        myRefAssignment.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.d(TAG, "onDataChange: snapshot" + dataSnapshot.toString());
+                ArrayList<Assignment> assignments = new ArrayList<>();
+
+                for (DataSnapshot oneSnapshot : dataSnapshot.getChildren()) {
+                    try {
+                        Log.d(TAG, "onDataChange: dataSnapshot Assignment test activity");
+                        Assignment assignment = oneSnapshot.getValue(Assignment.class);
+                        Log.d(TAG, "onDataChange: assignment" + assignment.toString());
+                        Log.d(TAG, "onDataChange: assignment key" + oneSnapshot.getKey());
+                        assignments.add(0, assignment);
+                        assignmentRecViewAdapter.notifyDataSetChanged();
+                    } catch (DatabaseException e) {
+                        Log.d(TAG, "onDataChange: error occurred  at " + dataSnapshot.getChildren().toString() + e.getLocalizedMessage());
+                        e.printStackTrace();
+                    }
+
+
+                }
+                Log.d(TAG, "onDataChange: announcement:" + assignments);
+
+                assignmentRecViewAdapter.setAssignments(assignments);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                Toast.makeText(getActivity(), "some error occurred" + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+
+    private void getQuizzes() {
+        Log.d(TAG, "getQuizzes: called");
+        myRefQuizzes = database.getReference("quizzes");
+        myRefQuizzes.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.d(TAG, "onDataChange: snapshot" + dataSnapshot.toString());
+                ArrayList<Quiz> quizzes = new ArrayList<>();
+
+                for (DataSnapshot oneSnapshot : dataSnapshot.getChildren()) {
+                    try {
+                        Quiz quiz = oneSnapshot.getValue(Quiz.class);
+                        Log.d(TAG, "onDataChange: quiz" + quiz);
+                        Log.d(TAG, "onDataChange: quiz key" + oneSnapshot.getKey());
+                        quizzes.add(0, quiz);
+                        quizRecViewAdapter.notifyDataSetChanged();
+                    } catch (DatabaseException e) {
+                        Log.d(TAG, "onDataChange: error occurred  at " + dataSnapshot.getChildren().toString() + e.getLocalizedMessage());
+                        e.printStackTrace();
+                    }
+
+
+                }
+                Log.d(TAG, "onDataChange: announcement:" + quizzes);
+                quizRecViewAdapter.setQuizzes(quizzes);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void initRecView() {
@@ -127,6 +229,18 @@ public class MainFragment extends Fragment {
         notificationRecView.setLayoutManager(layoutManager);
 
 //        notificationRecView.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL, false));
+
+
+        assignmentRecViewAdapter = new AssignmentRecViewAdapter(getActivity());
+        upcomingEventRecView.setAdapter(assignmentRecViewAdapter);
+
+        upcomingEventRecView.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL, false));
+
+        quizRecViewAdapter = new QuizRecViewAdapter(getActivity());
+
+        quizSummaryRecView.setAdapter(quizRecViewAdapter);
+        quizSummaryRecView.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL, false));
+
 
     }
 
@@ -167,6 +281,7 @@ public class MainFragment extends Fragment {
         upcomingEventRecView = (RecyclerView) view.findViewById(R.id.recViewUpcomingEvents);
         quizSummaryRecView = (RecyclerView) view.findViewById(R.id.recViewQuizSummary);
         notificationRecView = (RecyclerView) view.findViewById(R.id.notificationRecView);
+        progressBarHome = (ProgressBar) view.findViewById(R.id.ProgressBarHome);
 
     }
 

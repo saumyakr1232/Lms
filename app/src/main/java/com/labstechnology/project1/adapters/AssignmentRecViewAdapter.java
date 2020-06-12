@@ -60,9 +60,7 @@ public class AssignmentRecViewAdapter extends RecyclerView.Adapter<AssignmentRec
             Log.d(TAG, "onBindViewHolder: time Here" + time);
 
             holder.txtDate.setText(Utils.formatDateToFormat(date1, "d MMM"));
-            holder.txtDate.setTextColor(context.getColor(R.color.colorBlack));
             holder.txtTime.setText(Utils.formatDateToFormat(time, "HH:mm a"));
-            holder.txtTime.setTextColor(context.getColor(R.color.colorBlack));
 
         } catch (ParseException e) {
             e.printStackTrace();
@@ -73,7 +71,6 @@ public class AssignmentRecViewAdapter extends RecyclerView.Adapter<AssignmentRec
             holder.textStatus.setTextColor(context.getColor(R.color.green));
         } else {
             holder.textStatus.setText("Pending");
-            holder.textStatus.setTextColor(context.getColor(R.color.colorRed));
         }
         holder.parent.setOnClickListener(new View.OnClickListener() {
             @Override

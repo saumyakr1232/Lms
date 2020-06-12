@@ -57,9 +57,9 @@ public class QuizRecViewAdapter extends RecyclerView.Adapter<QuizRecViewAdapter.
             Log.d(TAG, "onBindViewHolder: time Here" + time);
 
             holder.txtDate.setText(Utils.formatDateToFormat(date1, "d MMM"));
-            holder.txtDate.setTextColor(context.getColor(R.color.colorBlack));
+//            holder.txtDate.setTextColor(context.getColor(R.color.colorBlack));
             holder.txtTime.setText(Utils.formatDateToFormat(time, "HH:mm a"));
-            holder.txtTime.setTextColor(context.getColor(R.color.colorBlack));
+//            holder.txtTime.setTextColor(context.getColor(R.color.colorBlack));
 
         } catch (ParseException e) {
             e.printStackTrace();
@@ -102,6 +102,7 @@ public class QuizRecViewAdapter extends RecyclerView.Adapter<QuizRecViewAdapter.
             txtTitle = (TextView) itemView.findViewById(R.id.textTitle);
             txtTime = (TextView) itemView.findViewById(R.id.txtTime);
             txtDate = (TextView) itemView.findViewById(R.id.txtdate);
+            textStatus = (TextView) itemView.findViewById(R.id.txtStatus);
         }
     }
 }

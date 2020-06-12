@@ -20,6 +20,7 @@ import com.google.gson.reflect.TypeToken;
 import com.labstechnology.project1.CallBacks.FireBaseCallBack;
 import com.labstechnology.project1.models.Announcement;
 import com.labstechnology.project1.models.Assignment;
+import com.labstechnology.project1.models.MultipleChoiceQuestion;
 import com.labstechnology.project1.models.Quiz;
 import com.labstechnology.project1.models.QuizScore;
 import com.labstechnology.project1.models.User;
@@ -34,6 +35,7 @@ import java.lang.reflect.Type;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -697,8 +699,9 @@ public class Utils {
         return false;
     }
 
-    public String readDocxFile(File file) {
+    public ArrayList<String> readDocxFile(File file) {
         String text = "";
+        ArrayList<String> lines = new ArrayList<>();
         try {
 
             FileInputStream fis = new FileInputStream(file.getAbsolutePath());
@@ -711,6 +714,8 @@ public class Utils {
 
             for (XWPFParagraph para : paragraphs) {
                 System.out.println(para.getText());
+                lines.addAll(Arrays.asList(para.getText().split("\n")));
+
             }
 
             XWPFWordExtractor we = new XWPFWordExtractor(document);
@@ -720,7 +725,72 @@ public class Utils {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return text;
+
+        return lines;
+    }
+
+
+    public ArrayList<MultipleChoiceQuestion> getQuestionsFromFile(File file) {
+        ArrayList<String> lines = readDocxFile(file);
+        ArrayList<MultipleChoiceQuestion> questions = new ArrayList<>();
+        ArrayList<String> qs = new ArrayList<>();
+
+//        for (int i = 0; i < lines.size(); i++) {
+//            String s = lines.get(i);
+//            question.setQuestion(s);
+//            for ( j = i; j < j + 4; j++) {
+//                if(j<lines.size()){
+//                    options.add(lines.get(j));
+//                }else{
+//                    options.add("");
+//                }
+//
+//
+//            }
+//            question.setOptions(options);
+//            questions.add(question);
+//            i = j + 1;
+
+//        }
+
+
+        Log.d(TAG, "getQuestionsFromFile: lines " + lines.toString());
+        Log.d(TAG, "getQuestionsFromFile: lines size" + lines.size());
+        ArrayList<String> options = new ArrayList<>();
+        int j = 0;
+        for (int i = 0; i < lines.size(); i++) {
+            if (i % 6 == 0) {
+                qs.add(lines.get(i));
+            } else {
+                options.add(lines.get(i));
+            }
+
+        }
+        int k = 0;
+        for (String q : qs
+        ) {
+            MultipleChoiceQuestion question = new MultipleChoiceQuestion();
+            question.setQuestion(q);
+            ArrayList<String> tempOptions = new ArrayList<>();
+            for (int i = 0; i < 5; i++) {
+                if (i < options.size() && i != 4 && k != options.size()) {
+                    tempOptions.add(options.get(k));
+                    k++;
+                }
+                if (i == 4 && k != options.size()) {
+                    question.setAnswer(options.get(k));
+                    k++;
+                }
+
+
+            }
+            question.setOptions(tempOptions);
+            question.setId(String.valueOf(System.currentTimeMillis()));
+            questions.add(question);
+        }
+        Log.d(TAG, "getQuestionsFromFile: questions " + questions.toString());
+        return questions;
+
     }
 
 

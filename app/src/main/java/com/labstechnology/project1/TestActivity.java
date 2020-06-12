@@ -165,7 +165,8 @@ public class TestActivity extends AppCompatActivity {
 
     @Override
     public boolean onSupportNavigateUp() {
-        onBackPressed();
+        Intent intent = new Intent(TestActivity.this, MainActivity.class);
+        startActivity(intent);
         return true;
 
     }

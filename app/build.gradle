@@ -99,5 +99,7 @@ dependencies {
 
     implementation files('libs/poishadow-all.jar')
 
-
+    implementation 'pub.devrel:easypermissions:2.0.1'
 }
+
+

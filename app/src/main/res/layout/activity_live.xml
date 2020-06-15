@@ -32,6 +32,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@id/appBarLayout"
+            android:layout_above="@id/btnStartStream"
             android:orientation="vertical"
             android:padding="5dp" />
 
@@ -45,6 +46,15 @@
             android:layout_marginBottom="10dp"
             android:src="@drawable/ic_add"
             android:visibility="gone" />
+
+        <Button
+            android:id="@+id/btnStartStream"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="10dp"
+            android:text="Start Stream" />
 
         <ProgressBar
             android:id="@+id/progressBar"

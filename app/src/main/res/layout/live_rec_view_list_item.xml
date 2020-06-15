@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="380dp"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="5dp"
     android:id="@+id/parent"
-    android:elevation="5dp">
+    android:backgroundTint="#D1F1ED"
+    android:elevation="15dp"
+    android:padding="5dp">
 
     <RelativeLayout
         android:layout_width="match_parent"

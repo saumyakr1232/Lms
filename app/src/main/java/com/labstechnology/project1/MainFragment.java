@@ -20,12 +20,14 @@ import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.labstechnology.project1.CallBacks.FireBaseCallBack;
 import com.labstechnology.project1.adapters.AssignmentRecViewAdapter;
 import com.labstechnology.project1.adapters.LiveRecViewAdapter;
 import com.labstechnology.project1.adapters.NotificationRecViewAdapter;
@@ -53,6 +55,7 @@ public class MainFragment extends Fragment {
     private AssignmentRecViewAdapter assignmentRecViewAdapter;
     private QuizRecViewAdapter quizRecViewAdapter;
     private LiveRecViewAdapter liveRecViewAdapter;
+    private FloatingActionButton btnAddUser;
 
 
     private FirebaseDatabase database;
@@ -80,6 +83,30 @@ public class MainFragment extends Fragment {
 
         utils = new Utils(getActivity());
 
+        utils.checkForAdmin(new FireBaseCallBack() {
+            @Override
+            public void onSuccess(Object object) {
+                Boolean isAdmin = (Boolean) object;
+                if (isAdmin) {
+                    btnAddUser.setVisibility(View.VISIBLE);
+                    btnAddUser.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(getActivity(), SignUpActivity.class);
+                            startActivity(intent);
+                        }
+                    });
+                } else {
+                    btnAddUser.setVisibility(GONE);
+                }
+            }
+
+            @Override
+            public void onError(Object object) {
+
+            }
+        });
+
 
         populateNotification();
 
@@ -90,6 +117,7 @@ public class MainFragment extends Fragment {
         getLiveEvents();
 
         progressBarHome.setVisibility(GONE);
+
 
 
         return view;
@@ -327,6 +355,7 @@ public class MainFragment extends Fragment {
         quizSummaryRecView = (RecyclerView) view.findViewById(R.id.recViewQuizSummary);
         notificationRecView = (RecyclerView) view.findViewById(R.id.notificationRecView);
         progressBarHome = (ProgressBar) view.findViewById(R.id.ProgressBarHome);
+        btnAddUser = (FloatingActionButton) view.findViewById(R.id.btnAddUsers);
 
     }
 
@@ -340,7 +369,7 @@ public class MainFragment extends Fragment {
             public void run() {
                 Log.d(TAG, "run: called");
                 if (count == notificationRecViewAdapter.getItemCount())
-                    count = 0;
+                    return;
                 if (count < notificationRecViewAdapter.getItemCount()) {
                     try {
                         notificationRecView.smoothScrollToPosition(++count);

@@ -50,6 +50,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recViewUpcomingEvents"
                 android:layout_width="match_parent"
+                android:layout_margin="10dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/txtUpcomingEvents"
                 android:layout_marginTop="10dp" />
@@ -70,12 +71,14 @@
                 android:text="Quizzes"
                 android:textSize="25sp"
                 android:textStyle="bold"
+                android:layout_marginStart="10dp"
                 android:id="@+id/textQuizSummary"
                 android:layout_below="@id/recViewUpcomingEvents" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="10dp"
                 android:id="@+id/recViewQuizSummary"
                 android:layout_below="@id/textQuizSummary" />
 
@@ -84,6 +87,7 @@
                 android:id="@+id/recViewLive"
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
+                android:layout_margin="10dp"
                 android:layout_below="@id/textLive"
                 android:layout_marginTop="10dp" />
 
@@ -92,6 +96,16 @@
 
 
     </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btnAddUsers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/bottomNavigationView"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="10dp"
+        android:src="@drawable/ic_add" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"

@@ -262,6 +262,7 @@ public class SetupUserActivity extends AppCompatActivity {
             userMap.put("firstName", fName);
             userMap.put("lastName", finalLName1);
             userMap.put("dateOfBirth", dob);
+            userMap.put("mobileNo", mobileNo);
             userMap.put("gender", gender);
             userDatabase.updateChildren(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override

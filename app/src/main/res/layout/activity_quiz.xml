@@ -49,7 +49,7 @@
                         android:layout_below="@id/textDesc"
                         android:layout_marginStart="10dp"
                         android:text="Time limit: "
-                        android:textColor="@color/colorPrimary" />
+                        android:textColor="@color/colorAccent" />
 
                     <TextView
                         android:id="@+id/textTimeLimit"
@@ -91,8 +91,10 @@
                         android:id="@+id/summary"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Summary of your previous attempt"
-                        android:textColor="@color/colorPrimary" />
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="10dp"
+                        android:text="Summary of your attempt"
+                        android:textColor="@color/colorAccent" />
 
                     <TextView
                         android:id="@+id/status"
@@ -104,7 +106,7 @@
                         android:layout_marginTop="20dp"
                         android:layout_marginBottom="10dp"
                         android:text="Status"
-                        android:textColor="@color/colorPrimary"
+                        android:textColor="@color/colorAccent"
                         android:textStyle="bold" />
 
 
@@ -118,33 +120,38 @@
                         android:layout_marginEnd="30dp"
                         android:layout_marginBottom="10dp"
                         android:text="Grade"
-                        android:textColor="@color/colorPrimary"
+                        android:textColor="@color/colorAccent"
                         android:textStyle="bold" />
 
-                    <RelativeLayout
+                    <androidx.cardview.widget.CardView
                         android:layout_width="match_parent"
                         android:layout_height="65dp"
-                        android:layout_below="@id/status"
-                        android:background="#DACAEF">
+                        android:layout_below="@id/status">
 
-                        <TextView
-                            android:id="@+id/txtStatus"
+                        <RelativeLayout
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_margin="5dp"
-                            android:layout_toLeftOf="@id/textGrade"
-                            android:text="Finished \n Submitted Tuesday, 9 june /n 2020, 7:33 pm" />
+                            android:layout_height="match_parent">
 
-                        <TextView
-                            android:id="@+id/textGrade"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"
-                            android:layout_centerVertical="true"
-                            android:layout_marginEnd="30dp"
-                            android:text="18/20" />
+                            <TextView
+                                android:id="@+id/txtStatus"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_margin="5dp"
+                                android:layout_toLeftOf="@id/textGrade"
+                                android:text="Finished \n Submitted Tuesday, 9 june /n 2020, 7:33 pm" />
 
-                    </RelativeLayout>
+                            <TextView
+                                android:id="@+id/textGrade"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentEnd="true"
+                                android:layout_centerVertical="true"
+                                android:layout_marginEnd="30dp"
+                                android:text="18/20" />
+
+                        </RelativeLayout>
+
+                    </androidx.cardview.widget.CardView>
 
 
                 </RelativeLayout>
@@ -159,6 +166,7 @@
                 android:layout_below="@id/cardSummery"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="10dp"
+                android:backgroundTint="@color/colorAccent"
                 android:text="Start Quiz" />
 
         </RelativeLayout>

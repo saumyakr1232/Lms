@@ -21,7 +21,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.labstechnology.project1.CallBacks.FireBaseCallBack;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.rengwuxian.materialedittext.validation.METValidator;
 import com.rengwuxian.materialedittext.validation.RegexpValidator;
@@ -36,7 +35,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private LiveButton btnLogIn;
     private MaterialEditText editTextEmail, editTextPassword;
-    private TextView textViewSignUp, forgotPassword, textHaveAcc;
+    private TextView forgotPassword;
     private ImageView imageHide, imageShow;
     private RelativeLayout parent;
 
@@ -55,25 +54,6 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         initViews();
-
-        utils.checkForAdmin(new FireBaseCallBack() {
-            @Override
-            public void onSuccess(Object object) {
-                Boolean isAdmin = (Boolean) object;
-                if (isAdmin) {
-                    textViewSignUp.setVisibility(View.VISIBLE);
-                    textHaveAcc.setVisibility(View.VISIBLE);
-                } else {
-                    textViewSignUp.setVisibility(View.GONE);
-                    textHaveAcc.setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void onError(Object object) {
-
-            }
-        });
 
 
         mAuth = FirebaseAuth.getInstance();
@@ -168,7 +148,7 @@ public class LoginActivity extends AppCompatActivity {
                 } else {
                     progressDialog.setTitle("Logging in...");
                     progressDialog.setMessage("Please wail, this will take a moment.");
-                    progressDialog.setCancelable(false);//TODO test this
+                    progressDialog.setCancelable(false);
                     progressDialog.setCanceledOnTouchOutside(false);
                     progressDialog.show();
 
@@ -205,14 +185,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        textViewSignUp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
-                startActivity(intent);
-            }
-        });
-
         forgotPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -229,13 +201,11 @@ public class LoginActivity extends AppCompatActivity {
         btnLogIn = (LiveButton) findViewById(R.id.btnLogin);
         editTextEmail = (MaterialEditText) findViewById(R.id.editTextEmail);
         editTextPassword = (MaterialEditText) findViewById(R.id.editTextPassword);
-        textViewSignUp = (TextView) findViewById(R.id.textViewSignUp);
         forgotPassword = (TextView) findViewById(R.id.textViewForgetPassword);
         editTextEmail.addValidator(new RegexpValidator("Not a valid email", Utils.getRegexEmailPattern()));
         imageHide = (ImageView) findViewById(R.id.imageHide);
         imageShow = (ImageView) findViewById(R.id.imageShow);
         parent = (RelativeLayout) findViewById(R.id.parent);
-        textHaveAcc = (TextView) findViewById(R.id.textNotHaveAccount);
 
     }
 

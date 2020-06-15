@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -73,7 +74,7 @@ public class SettingsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(SettingsActivity.this)
                         .setTitle("Privacy policy")
-                        .setMessage(Utils.getPrivacyPolicy())
+                        .setMessage(Html.fromHtml(Utils.getPrivacyPolicy()))
                         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -106,7 +107,7 @@ public class SettingsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(SettingsActivity.this)
                         .setTitle("Terms and Conditions")
-                        .setMessage(Utils.getTerms())
+                        .setMessage(Html.fromHtml(Utils.getTerms()))
                         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {

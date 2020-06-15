@@ -1,6 +1,7 @@
 package com.labstechnology.project1;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,9 +12,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -32,6 +31,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.labstechnology.project1.CallBacks.FireBaseCallBack;
 import com.labstechnology.project1.adapters.NotificationRecViewAdapter;
 import com.labstechnology.project1.models.Announcement;
+import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.util.Objects;
 
@@ -41,6 +41,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private DrawerLayout drawer;
     private NavigationView navigationView;
     private View hView;
+    private ProgressDialog progressDialog;
     private androidx.appcompat.widget.Toolbar toolbar;
 
 
@@ -70,6 +71,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         utils = new Utils(this);
 
+        progressDialog = new ProgressDialog(this);
+
+        progressDialog.setTitle("Loading");
+        progressDialog.setMessage("Please wail, this will take a moment.");
+        progressDialog.setCancelable(false);
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.show();
+
         initViews();
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
@@ -93,6 +102,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 transaction.replace(R.id.fragment_container, new MainFragment());
                 transaction.commit();
+                progressDialog.dismiss();
 //                new Handler().postDelayed(new Runnable() {
 //                    @Override
 //                    public void run() {
@@ -127,7 +137,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         switch (item.getItemId()) {
             case R.id.profile:
-                Toast.makeText(this, "Profile selected", Toast.LENGTH_SHORT).show();
+                Intent intentProfile = new Intent(HomeActivity.this, ProfileActivity.class);
+                startActivity(intentProfile);
             case R.id.home:
                 drawer.closeDrawer(Gravity.LEFT);
                 break;
@@ -206,7 +217,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     private void updateNavigationHeaderView(final FireBaseCallBack callBack) {
         Log.d(TAG, "updateNavigationHeaderView: called");
-        final ImageView userProfilePhoto = (ImageView) hView.findViewById(R.id.imageProfileNavHeader);
+        final RoundedImageView userProfilePhoto = (RoundedImageView) hView.findViewById(R.id.imageProfileNavHeader);
         final TextView textName = (TextView) hView.findViewById(R.id.txtName);
         final TextView textEnrollment = (TextView) hView.findViewById(R.id.txtEnrollment1);
 

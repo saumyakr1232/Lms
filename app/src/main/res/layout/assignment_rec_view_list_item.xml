@@ -5,7 +5,7 @@
     android:layout_height="140dp"
     android:layout_margin="5dp"
     android:backgroundTint="@color/card_background"
-    android:elevation="5dp"
+    android:elevation="15dp"
     android:padding="7dp">
 
     <RelativeLayout

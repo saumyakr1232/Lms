@@ -48,6 +48,8 @@ public class QuizAttemptActivity extends AppCompatActivity {
 
     private ViewPagerAdapter adapter;
 
+    private boolean timesUp = false;
+
     private Utils utils;
 
 
@@ -101,60 +103,109 @@ public class QuizAttemptActivity extends AppCompatActivity {
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final QuizScore quizScore = new QuizScore();
-                quizScore.setId(Utils.getCurrentUid().substring(0, 4) + incomingQuiz.getId().substring(0, 4));
-                quizScore.setQuizId(incomingQuiz.getId());
-                quizScore.setuId(Utils.getCurrentUid());
-                quizScore.setOutOf(incomingQuiz.getQuestions().size());
-                double score = 0;
-                boolean readyToSubmit = true;
-                ArrayList<HashMap<String, MultipleChoiceQuestion>> map = new ArrayList<>();
-                for (QuizFragment fragment : fragments
-                ) {
+                AlertDialog.Builder builder2 = new AlertDialog.Builder(QuizAttemptActivity.this)
+                        .setTitle("End Quiz")
+                        .setMessage("Are you sure to end this quiz ?")
+                        .setPositiveButton("yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                final QuizScore quizScore = new QuizScore();
+                                quizScore.setId(Utils.getCurrentUid().substring(0, 4) + incomingQuiz.getId().substring(0, 4));
+                                quizScore.setQuizId(incomingQuiz.getId());
+                                quizScore.setuId(Utils.getCurrentUid());
+                                quizScore.setOutOf(incomingQuiz.getQuestions().size());
+                                double score = 0;
+                                boolean readyToSubmit = true;
+                                ArrayList<HashMap<String, MultipleChoiceQuestion>> map = new ArrayList<>();
+                                for (QuizFragment fragment : fragments
+                                ) {
 
-                    try {
-                        score += fragment.getScore();
-                        map.add(fragment.getQuestionAnswerMap());
-                        Log.d(TAG, "onClick: Answers " + fragment.getAnswer());
-                        Log.d(TAG, "onClick: Score " + fragment.getScore());
-                        Log.d(TAG, "onClick: Map " + fragment.getQuestionAnswerMap());
-                        Log.d(TAG, "onClick: Actual Answer" + fragment.getIncomingQuesion().getAnswer());
-                    } catch (NullPointerException e) {
-                        e.printStackTrace();
-                    }
+                                    try {
+                                        score += fragment.getScore();
+                                        map.add(fragment.getQuestionAnswerMap());
+                                        Log.d(TAG, "onClick: Answers " + fragment.getAnswer());
+                                        Log.d(TAG, "onClick: Score " + fragment.getScore());
+                                        Log.d(TAG, "onClick: Map " + fragment.getQuestionAnswerMap());
+                                        Log.d(TAG, "onClick: Actual Answer" + fragment.getIncomingQuesion().getAnswer());
+                                    } catch (NullPointerException e) {
+                                        e.printStackTrace();
+                                    }
 
-                    if (fragment.isIsflagged()) {
-                        readyToSubmit = false;
-                    }
+                                    if (fragment.isIsflagged()) {
+                                        readyToSubmit = false;
+                                    }
 
 
-                }
-                quizScore.setScore(score);
-                quizScore.setResult(map);
-
-                if (readyToSubmit) {
-                    saveAttempt(quizScore);
-                } else {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(QuizAttemptActivity.this)
-                            .setTitle("Flagged Questions")
-                            .setMessage("you flagged some question, Would you like to review them")
-                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
                                 }
-                            }).setNegativeButton("Submit & Finish", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
+                                quizScore.setScore(score);
+                                quizScore.setResult(map);
+
+                                if (readyToSubmit) {
                                     saveAttempt(quizScore);
+                                } else {
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(QuizAttemptActivity.this)
+                                            .setTitle("Flagged Questions")
+                                            .setMessage("you flagged some question, Would you like to review them")
+                                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    dialog.dismiss();
+                                                }
+                                            }).setNegativeButton("Submit & Finish", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    saveAttempt(quizScore);
+                                                }
+                                            });
+                                    builder.show();
                                 }
-                            });
-                    builder.show();
-                }
+                            }
+                        }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+
+                builder2.show();
 
 
             }
         });
+
+        if (timesUp) {
+            final QuizScore quizScore = new QuizScore();
+            quizScore.setId(Utils.getCurrentUid().substring(0, 4) + incomingQuiz.getId().substring(0, 4));
+            quizScore.setQuizId(incomingQuiz.getId());
+            quizScore.setuId(Utils.getCurrentUid());
+            quizScore.setOutOf(incomingQuiz.getQuestions().size());
+            double score = 0;
+            boolean readyToSubmit = true;
+            ArrayList<HashMap<String, MultipleChoiceQuestion>> map = new ArrayList<>();
+            for (QuizFragment fragment : fragments
+            ) {
+
+                try {
+                    score += fragment.getScore();
+                    map.add(fragment.getQuestionAnswerMap());
+                    Log.d(TAG, "onClick: Answers " + fragment.getAnswer());
+                    Log.d(TAG, "onClick: Score " + fragment.getScore());
+                    Log.d(TAG, "onClick: Map " + fragment.getQuestionAnswerMap());
+                    Log.d(TAG, "onClick: Actual Answer" + fragment.getIncomingQuesion().getAnswer());
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
+
+                if (fragment.isIsflagged()) {
+                    readyToSubmit = false;
+                }
+
+
+            }
+            quizScore.setScore(score);
+            quizScore.setResult(map);
+            saveAttempt(quizScore);
+        }
 
 
     }
@@ -250,6 +301,9 @@ public class QuizAttemptActivity extends AppCompatActivity {
                     @SuppressLint("SetTextI18n")
                     public void onFinish() {
                         textTimeRemaining.setText("Time's up");
+                        timesUp = true;
+
+
                     }
                 }.start();
             } catch (Exception e) {
@@ -289,7 +343,8 @@ public class QuizAttemptActivity extends AppCompatActivity {
 
     @Override
     public boolean onNavigateUp() {
-        onBackPressed();
+        btnSubmit.performClick();
+
         return true;
     }
 }

@@ -108,6 +108,7 @@ public class AnnouncementActivity extends AppCompatActivity implements Navigatio
             public void onSuccess(Object object) {
                 Boolean isAdmin = (Boolean) object;
                 if (isAdmin) {
+                    btnAddAnnouncements.setVisibility(View.VISIBLE);
                     btnAddAnnouncements.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -168,7 +169,8 @@ public class AnnouncementActivity extends AppCompatActivity implements Navigatio
                         startActivity(intent);
                         break;
                     case R.id.live:
-                        Toast.makeText(AnnouncementActivity.this, "Live selected", Toast.LENGTH_SHORT).show();
+                        Intent intent1 = new Intent(AnnouncementActivity.this, LiveActivity.class);
+                        startActivity(intent1);
                         break;
                     case R.id.tests:
                         Intent intentTest = new Intent(AnnouncementActivity.this, TestActivity.class);

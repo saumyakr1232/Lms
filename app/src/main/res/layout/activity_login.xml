@@ -146,33 +146,7 @@
                     android:textColor="@color/button1"
                     android:textSize="15sp" />
 
-                <RelativeLayout
-                    android:id="@+id/fourthRelLayout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/textViewForgetPassword"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="20dp">
 
-                    <TextView
-                        android:id="@+id/textNotHaveAccount"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/don_t_have_a_account"
-                        android:textSize="16sp" />
-
-                    <TextView
-                        android:id="@+id/textViewSignUp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
-                        android:layout_toEndOf="@id/textNotHaveAccount"
-                        android:text="@string/sign_up"
-                        android:textColor="@color/button1"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-
-                </RelativeLayout>
 
             </RelativeLayout>
 

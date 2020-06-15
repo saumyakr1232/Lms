@@ -51,7 +51,7 @@ public class LiveRecViewAdapter extends RecyclerView.Adapter<LiveRecViewAdapter.
             if (millsNow > timeMills) {
                 holder.imageLive.setVisibility(View.VISIBLE);
             }
-            String date = Utils.getDateTimeFromTimeStamp(timeMills, "d MMM 'at'");
+            String date = Utils.getDateTimeFromTimeStamp(timeMills, "d MMM ");
             String Time = Utils.getDateTimeFromTimeStamp(timeMills, "HH:mm a");
             holder.txtTimestamp.setText(Time);
             holder.txtDate.setText(date);

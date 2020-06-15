@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ProfileActivity">
+
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:id="@+id/firstRelLayout"
+                android:layout_width="match_parent"
+                android:layout_height="200dp">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@color/colorAccent" />
+
+
+                <com.makeramen.roundedimageview.RoundedImageView
+                    android:id="@+id/imageProfile"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:scaleType="centerCrop"
+                    android:src="@color/colorPrimaryDark"
+                    app:riv_border_color="#333333"
+                    app:riv_border_width="2dip"
+                    app:riv_corner_radius="30dip"
+                    app:riv_mutate_background="true"
+                    app:riv_oval="true"
+                    app:riv_tile_mode="repeat" />
+
+
+            </RelativeLayout>
+
+
+            <TextView
+                android:id="@+id/textName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/firstRelLayout"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:text="Name"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textEnrollment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/textName"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:text="Enrollment No"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/textEmail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/textEnrollment"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:text="Email Id"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/textMobNo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/textEmail"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:text="Mobile No"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/textGender"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/textMobNo"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:text="Gender"
+                android:textSize="20sp" />
+
+
+        </RelativeLayout>
+
+
+    </androidx.core.widget.NestedScrollView>
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimaryDark"
+        android:elevation="4dp" />
+
+</RelativeLayout>

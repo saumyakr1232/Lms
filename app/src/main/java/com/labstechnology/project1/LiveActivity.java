@@ -1,10 +1,12 @@
 package com.labstechnology.project1;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -34,6 +36,7 @@ public class LiveActivity extends AppCompatActivity {
 
     private androidx.appcompat.widget.Toolbar toolbar;
     private FloatingActionButton btnAddLive;
+    private Button btnStartStream;
     private RecyclerView recyclerViewLive;
     private BottomNavigationView bottomNavigationView;
     private LiveRecViewAdapter adapter;
@@ -105,6 +108,42 @@ public class LiveActivity extends AppCompatActivity {
             public void onSuccess(Object object) {
                 Boolean isAdmin = (Boolean) object;
                 if (isAdmin) {
+                    btnStartStream.setVisibility(View.VISIBLE);
+                    btnStartStream.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            String packageName = "com.prism.live";
+                            Intent intent = getPackageManager().getLaunchIntentForPackage(packageName);
+                            if (intent != null) {
+                                startActivity(intent);
+                            } else {
+                                Uri mUri = Uri.parse("market://details?id=" + "com.prism.live");
+                                Intent mIntent = new Intent(Intent.ACTION_VIEW, mUri);
+                                startActivity(mIntent);
+                            }
+
+                        }
+                    });
+                } else {
+                    btnStartStream.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onError(Object object) {
+
+            }
+        });
+
+
+        utils.checkForAdmin(new FireBaseCallBack() {
+            @Override
+            public void onSuccess(Object object) {
+                Boolean isAdmin = (Boolean) object;
+                if (isAdmin) {
+                    btnAddLive.setVisibility(View.VISIBLE);
+
+
                     btnAddLive.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -140,6 +179,7 @@ public class LiveActivity extends AppCompatActivity {
         btnAddLive = (com.google.android.material.floatingactionbutton.FloatingActionButton) findViewById(R.id.btnAddAnnouncements);
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottomNavigationView);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        btnStartStream = (Button) findViewById(R.id.btnStartStream);
     }
 
     private void initBottomNavigation() {
@@ -154,7 +194,6 @@ public class LiveActivity extends AppCompatActivity {
                         startActivity(intent);
                         break;
                     case R.id.live:
-
                         break;
                     case R.id.tests:
                         Intent intentTest = new Intent(LiveActivity.this, TestActivity.class);

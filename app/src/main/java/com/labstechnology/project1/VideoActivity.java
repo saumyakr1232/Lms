@@ -3,6 +3,9 @@ package com.labstechnology.project1;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toolbar;
 
 import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
@@ -10,12 +13,17 @@ import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerView;
 import com.labstechnology.project1.models.LiveEvent;
 
+import java.util.Objects;
+
 public class VideoActivity extends YouTubeBaseActivity {
     private static final String TAG = "VideoActivity";
 
     private YouTubePlayerView youTubePlayerView;
     private LiveEvent incomingEvent;
     private String videoId = "";
+    private Button btnClose;
+    private Toolbar toolbar;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +32,24 @@ public class VideoActivity extends YouTubeBaseActivity {
 
 
         youTubePlayerView = findViewById(R.id.youtubePlayer);
+
+
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        btnClose = (Button) findViewById(R.id.btnClose);
+
+        setActionBar(toolbar);
+        toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+        toolbar.setTitle("Live");
+        toolbar.setTitleTextColor(getColor(R.color.white1));
+        Objects.requireNonNull(getActionBar()).setDisplayHomeAsUpEnabled(true);
+
+        btnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
 
         try {

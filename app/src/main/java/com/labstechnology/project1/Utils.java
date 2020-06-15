@@ -2,6 +2,8 @@ package com.labstechnology.project1;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.text.format.DateFormat;
 import android.util.Log;
 
@@ -14,6 +16,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -551,11 +554,36 @@ public class Utils {
         return sharedPreferences.getBoolean("darkThemePreference", false);
     }
 
-    public boolean isAdmin() {
-        Log.d(TAG, "isAdmin: called");
-        //TODO: write proper logic
-        return true;
+    public void checkForAdmin(final FireBaseCallBack fireBaseCallBack) {
+        Log.d(TAG, "checkForAdmin: called");
+        FirebaseDatabase database = FirebaseDatabaseReference.DATABASE;
+        DatabaseReference myRef = database.getReference("admin");
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.d(TAG, "onDataChange: snapshot" + dataSnapshot.toString());
+                for (DataSnapshot oneSnapshot : dataSnapshot.getChildren()) {
+                    Log.d(TAG, "onDataChange: TEST" + oneSnapshot);
+                    Log.d(TAG, "onDataChange: TEST" + oneSnapshot.getKey());
+                    Log.d(TAG, "onDataChange: TEST" + Utils.getCurrentUid());
+                    if (oneSnapshot.getKey().equals(Utils.getCurrentUid())) {
+                        Log.d(TAG, "onDataChange: TEST User Is admin");
+                        fireBaseCallBack.onSuccess(Boolean.TRUE);
+                    } else {
+                        fireBaseCallBack.onSuccess(Boolean.FALSE);
+                    }
+                }
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                fireBaseCallBack.onSuccess(1);
+            }
+        });
     }
+
 
     public static void setTheme(Context context) {
         if (Utils.getDarkThemePreference(context)) {
@@ -680,6 +708,14 @@ public class Utils {
         });
 
 
+    }
+
+    private boolean isDeviceOnline() {
+        ConnectivityManager connMgr =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        assert connMgr != null;
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        return (networkInfo != null && networkInfo.isConnected());
     }
 
     public boolean isUserAttemptThisAssignment(Assignment assignment) {

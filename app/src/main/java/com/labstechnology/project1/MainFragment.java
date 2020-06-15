@@ -27,10 +27,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.labstechnology.project1.adapters.AssignmentRecViewAdapter;
+import com.labstechnology.project1.adapters.LiveRecViewAdapter;
 import com.labstechnology.project1.adapters.NotificationRecViewAdapter;
 import com.labstechnology.project1.adapters.QuizRecViewAdapter;
 import com.labstechnology.project1.models.Announcement;
 import com.labstechnology.project1.models.Assignment;
+import com.labstechnology.project1.models.LiveEvent;
 import com.labstechnology.project1.models.Quiz;
 
 import java.util.ArrayList;
@@ -50,6 +52,7 @@ public class MainFragment extends Fragment {
     private NotificationRecViewAdapter notificationRecViewAdapter;
     private AssignmentRecViewAdapter assignmentRecViewAdapter;
     private QuizRecViewAdapter quizRecViewAdapter;
+    private LiveRecViewAdapter liveRecViewAdapter;
 
 
     private FirebaseDatabase database;
@@ -83,6 +86,8 @@ public class MainFragment extends Fragment {
         getAssignments();
 
         getQuizzes();
+
+        getLiveEvents();
 
         progressBarHome.setVisibility(GONE);
 
@@ -202,6 +207,41 @@ public class MainFragment extends Fragment {
         });
     }
 
+    private void getLiveEvents() {
+        Log.d(TAG, "getLiveEvents: called");
+        myRef = database.getReference("liveEvents");
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.d(TAG, "onDataChange: snapshot" + dataSnapshot.toString());
+                ArrayList<LiveEvent> liveEvents = new ArrayList<>();
+
+                for (DataSnapshot oneSnapshot : dataSnapshot.getChildren()) {
+                    try {
+                        LiveEvent liveEvent = oneSnapshot.getValue(LiveEvent.class);
+                        Log.d(TAG, "onDataChange: announcement" + liveEvent);
+                        Log.d(TAG, "onDataChange: announcement key" + oneSnapshot.getKey());
+                        liveEvents.add(0, liveEvent);
+                        liveRecViewAdapter.notifyDataSetChanged();
+                    } catch (DatabaseException e) {
+                        Log.d(TAG, "onDataChange: error occurred  at " + dataSnapshot.getChildren().toString() + e.getLocalizedMessage());
+                        e.printStackTrace();
+                    }
+
+
+                }
+                Log.d(TAG, "onDataChange: announcement:" + liveEvents);
+                liveRecViewAdapter.setLiveEvents(liveEvents);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(getActivity(), "some error occurred" + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+
     private void initRecView() {
         Log.d(TAG, "initRecView: called");
 
@@ -241,6 +281,10 @@ public class MainFragment extends Fragment {
         quizSummaryRecView.setAdapter(quizRecViewAdapter);
         quizSummaryRecView.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL, false));
 
+        liveRecViewAdapter = new LiveRecViewAdapter(getActivity());
+        liveRecView.setAdapter(liveRecViewAdapter);
+        liveRecView.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL, false));
+
 
     }
 
@@ -254,7 +298,8 @@ public class MainFragment extends Fragment {
                     case R.id.home:
                         break;
                     case R.id.live:
-                        Toast.makeText(getActivity(), "Live selected", Toast.LENGTH_SHORT).show();
+                        Intent intentLive = new Intent(getActivity(), LiveActivity.class);
+                        startActivity(intentLive);
                         break;
                     case R.id.tests:
                         Intent intentTest = new Intent(getActivity(), TestActivity.class);

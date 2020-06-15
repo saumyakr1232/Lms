@@ -62,7 +62,7 @@
                 android:layout_marginLeft="10dp"
                 android:textSize="25sp"
                 android:textStyle="bold"
-                android:layout_below="@+id/recViewUpcomingEvents" />
+                android:layout_below="@+id/recViewQuizSummary" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -71,7 +71,7 @@
                 android:textSize="25sp"
                 android:textStyle="bold"
                 android:id="@+id/textQuizSummary"
-                android:layout_below="@id/recViewLive" />
+                android:layout_below="@id/recViewUpcomingEvents" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"

@@ -132,7 +132,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 drawer.closeDrawer(Gravity.LEFT);
                 break;
             case R.id.liveLecture:
-                Toast.makeText(this, "Live selected", Toast.LENGTH_SHORT).show();
+                Intent intentLive = new Intent(HomeActivity.this, LiveActivity.class);
+                startActivity(intentLive);
                 break;
             case R.id.test:
                 Intent intentTest = new Intent(HomeActivity.this, TestActivity.class);

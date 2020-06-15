@@ -49,4 +49,5 @@
     <string name="description">Description</string>
     <string name="title">Title</string>
     <string name="descriptionHtlmLink"><![CDATA[Description \nyou can put Urls too.\n ex:- \"www.google.com\"]]></string>
+    <string name="google_developer_api_key">AIzaSyB_757xeLQRE4VTuWqPl5gGpThHREJYfSU</string>
 </resources>

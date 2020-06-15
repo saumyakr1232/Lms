@@ -21,6 +21,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.labstechnology.project1.CallBacks.FireBaseCallBack;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.rengwuxian.materialedittext.validation.METValidator;
 import com.rengwuxian.materialedittext.validation.RegexpValidator;
@@ -35,7 +36,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private LiveButton btnLogIn;
     private MaterialEditText editTextEmail, editTextPassword;
-    private TextView textViewSignUp, forgotPassword;
+    private TextView textViewSignUp, forgotPassword, textHaveAcc;
     private ImageView imageHide, imageShow;
     private RelativeLayout parent;
 
@@ -55,13 +56,25 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         initViews();
 
-        parent.setOnClickListener(new View.OnClickListener() {
+        utils.checkForAdmin(new FireBaseCallBack() {
             @Override
-            public void onClick(View v) {
-                Log.d(TAG, "onClick: called");
-                closeKeyboard();
+            public void onSuccess(Object object) {
+                Boolean isAdmin = (Boolean) object;
+                if (isAdmin) {
+                    textViewSignUp.setVisibility(View.VISIBLE);
+                    textHaveAcc.setVisibility(View.VISIBLE);
+                } else {
+                    textViewSignUp.setVisibility(View.GONE);
+                    textHaveAcc.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onError(Object object) {
+
             }
         });
+
 
         mAuth = FirebaseAuth.getInstance();
         utils = new Utils(this);
@@ -222,6 +235,7 @@ public class LoginActivity extends AppCompatActivity {
         imageHide = (ImageView) findViewById(R.id.imageHide);
         imageShow = (ImageView) findViewById(R.id.imageShow);
         parent = (RelativeLayout) findViewById(R.id.parent);
+        textHaveAcc = (TextView) findViewById(R.id.textNotHaveAccount);
 
     }
 

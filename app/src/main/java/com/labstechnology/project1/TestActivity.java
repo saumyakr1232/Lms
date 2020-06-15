@@ -21,6 +21,7 @@ import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.labstechnology.project1.CallBacks.FireBaseCallBack;
 import com.labstechnology.project1.adapters.AssignmentRecViewAdapter;
 import com.labstechnology.project1.adapters.QuizRecViewAdapter;
 import com.labstechnology.project1.models.Assignment;
@@ -45,11 +46,15 @@ public class TestActivity extends AppCompatActivity {
     private FirebaseDatabase database;
     private DatabaseReference myRefAssignment, myRefQuizzes;
 
+    private Utils utils;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
+
+        utils = new Utils(this);
 
         initViews();
         setSupportActionBar(toolbar);
@@ -59,6 +64,23 @@ public class TestActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white);
+
+        utils.checkForAdmin(new FireBaseCallBack() {
+            @Override
+            public void onSuccess(Object object) {
+                Boolean isAdmin = (Boolean) object;
+                if (isAdmin) {
+                    fbMenu.setVisibility(View.VISIBLE);
+                } else {
+                    fbMenu.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onError(Object object) {
+
+            }
+        });
 
         fabAddQuiz.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -165,7 +187,7 @@ public class TestActivity extends AppCompatActivity {
 
     @Override
     public boolean onSupportNavigateUp() {
-        Intent intent = new Intent(TestActivity.this, MainActivity.class);
+        Intent intent = new Intent(TestActivity.this, HomeActivity.class);
         startActivity(intent);
         return true;
 

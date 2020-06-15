@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/parentAddAnnouncementDialog"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp">
+
+    <RelativeLayout
+        android:id="@+id/parentRelLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="20dp"
+            android:indeterminate="true"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/btnBackArrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp"
+            android:src="@drawable/ic_arrow_back" />
+
+
+        <TextView
+            android:id="@+id/textAnnouncement"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btnBackArrow"
+            android:layout_centerHorizontal="true"
+            android:text="Schedule New Live Stream"
+            android:textSize="26sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/imgAnnounce"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:layout_below="@id/textAnnouncement"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/ic_undraw_happy_announcement_ac67" />
+
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/editTextTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/imgAnnounce"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="10dp"
+            android:drawableStart="@drawable/ic_title"
+            android:drawablePadding="10dp"
+            android:hint="@string/title"
+            android:inputType="text"
+            android:singleLine="true"
+            app:met_floatingLabel="highlight"
+            app:met_floatingLabelTextColor="@color/colorAccent"
+            app:met_singleLineEllipsis="true"
+            app:met_textColorHint="#808080" />
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/editTextUrl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/editTextTitle"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="10dp"
+            android:drawableStart="@drawable/ic_title"
+            android:drawablePadding="10dp"
+            android:hint="URL of Stream"
+            android:inputType="text"
+            android:singleLine="true"
+            app:met_floatingLabel="highlight"
+            app:met_floatingLabelTextColor="@color/colorAccent"
+            app:met_singleLineEllipsis="true"
+            app:met_textColorHint="#808080" />
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/editTextDescription"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:layout_below="@id/editTextUrl"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="10dp"
+            android:drawableStart="@drawable/ic_description"
+            android:drawablePadding="10dp"
+            android:gravity="top|left"
+            android:hint="@string/description"
+            android:inputType="textMultiLine"
+            android:maxLines="30"
+            android:scrollbars="vertical"
+            app:met_floatingLabel="highlight"
+            app:met_floatingLabelTextColor="@color/colorAccent"
+            app:met_textColorHint="#808080"
+            tools:ignore="RtlHardcoded" />
+
+        <ru.katso.livebutton.LiveButton xmlns:livebutton="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/btnDone2"
+            android:layout_width="140dp"
+            android:layout_height="43dp"
+            android:layout_below="@id/editTextDescription"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:gravity="center"
+            android:inputType="textLongMessage"
+            android:text="Done"
+            android:textColor="@color/white1"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            livebutton:backgroundColor="@color/button1"
+            livebutton:corners="4dp"
+            livebutton:normalHeight="6dp"
+            livebutton:pressedHeight="2dp"
+            livebutton:shadowColor="#47776F" />
+
+
+    </RelativeLayout>
+
+
+</LinearLayout>

@@ -3,6 +3,7 @@
     android:layout_width="380dp"
     android:layout_height="wrap_content"
     android:layout_margin="5dp"
+    android:id="@+id/parent"
     android:elevation="5dp">
 
     <RelativeLayout
@@ -69,10 +70,12 @@
             android:layout_below="@id/textViewTitle">
 
             <ImageView
+                android:id="@+id/imageLive"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
                 android:src="@drawable/ic_live1"
-                android:layout_centerInParent="true" />
+                android:visibility="gone" />
 
         </RelativeLayout>
 
